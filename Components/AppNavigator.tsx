@@ -1,5 +1,6 @@
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { TouchableOpacity, View, Text } from 'react-native';
 import BrowseToolsScreen from '../Screens/BrowseToolsScreen';
 import MyToolsScreen from '../Screens/MyToolsScreen';
 import ProfileScreen from '../Screens/ProfileScreen';

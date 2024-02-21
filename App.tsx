@@ -2,6 +2,8 @@ import { StyleSheet } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 import AppNavigator from './Components/AppNavigator';
+import { registerRootComponent } from 'expo';
+
 
 const App:React.FC = () => {
   return (
@@ -23,4 +25,6 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+
+registerRootComponent(App);
 
