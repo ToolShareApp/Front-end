@@ -2,7 +2,6 @@ import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps"; // remove 
 import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import * as Location from "expo-location";
-import getLocation from "../utils/getLocation";
 import reverseGeocoding from "../utils/reverseGeocoding";
 import Button from "./Button";
 import { TextInput } from "react-native-paper";
@@ -13,25 +12,30 @@ export default function Map() {
 	const [reversedLocation, setReverseLocation] = useState<string>("");
 	const [address, setAddress] = useState<string>("");
 
-	useEffect(() => {
-		(async () => {
-			// if (Platform.OS === "android" && !Device.isDevice) {
-			// 	setErrorMsg(
-			// 		"Oops, this will not work on Snack in an Android Emulator. Try it on your device!"
-			// 	);
-			// 	return;
-			// }
-			let { status } = await Location.requestForegroundPermissionsAsync();
-			if (status !== "granted") {
-				setErrorMsg("Permission to access location was denied");
-				return;
-			}
-			//if permission is denied. alert to ask to change. send user to settings
+	async function getLocation() {
+		// if (Platform.OS === "android" && !Device.isDevice) {
+		// 	setErrorMsg(
+		// 		"Oops, this will not work on Snack in an Android Emulator. Try it on your device!"
+		// 	);
+		// 	return;
+		// }
+		let { status } = await Location.requestForegroundPermissionsAsync();
+		if (status !== "granted") {
+			setErrorMsg("Permission to access location was denied");
+			return;
+		}
+		//if permission is denied. alert to ask to change. send user to settings
 
-			let location: any = await Location.getCurrentPositionAsync({});
-			setLocation(location);
-			console.log(location);
-		})();
+		let location: any = await Location.getCurrentPositionAsync({});
+		setLocation(location);
+		let reversedLocation: any = await reverseGeocoding.reverseGeocode(
+			location?.coords.latitude,
+			location?.coords.longitude
+		);
+		setReverseLocation(reversedLocation.data.results[0].formatted_address);
+	}
+	useEffect(() => {
+		getLocation();
 	}, []);
 
 	let text = "Waiting..";
@@ -62,34 +66,21 @@ export default function Map() {
 								longitude: location.coords.longitude,
 							}}
 						/>
+						<Marker
+							coordinate={{
+								latitude: 35,
+								longitude: -120,
+							}}
+						/>
 					</MapView>
 					<Text>
 						Location: {location?.coords.latitude} {location?.coords.longitude}
 					</Text>
 					<Text>Reversed Location: {reversedLocation}</Text>
 					<Button
-						label="Get Location"
+						label="Update Location"
 						onPress={() => {
-							getLocation()
-								.then((res) => {
-									setLocation(res);
-								})
-								.catch((error) => {
-									setErrorMsg(error);
-								});
-						}}
-					/>
-					<Button
-						label="reverse "
-						onPress={() => {
-							reverseGeocoding
-								.reverseGeocode(
-									location?.coords.latitude,
-									location?.coords.longitude
-								)
-								.then(({ data }: any) => {
-									setReverseLocation(data.results[0].formatted_address);
-								});
+							getLocation();
 						}}
 					/>
 					<TextInput
@@ -106,7 +97,6 @@ export default function Map() {
 							});
 						}}
 					/>
-					{/* insert geolocation mapping here - ask confirmation of location here */}
 				</View>
 			)}
 		</>
