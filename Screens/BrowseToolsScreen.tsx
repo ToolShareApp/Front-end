@@ -1,9 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 
-interface BrowseToolsScreenProps {}
-
-const BrowseToolsScreen:React.FC<BrowseToolsScreenProps> = () => {
+const BrowseToolsScreen:React.FC = () => {
 	return (
 		<View>
 		</View>

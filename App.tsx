@@ -1,28 +1,21 @@
-import { StyleSheet } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 import AppNavigator from './Components/AppNavigator';
 import { registerRootComponent } from 'expo';
-
+import GlobalState from './Contexts/GlobalState';
+import { GreenTheme } from './Themes/GreenTheme'
 
 const App:React.FC = () => {
   return (
-    <PaperProvider>
+    <GlobalState apiUrl={'https://nc-toolshare.onrender.com/api/'}>
+    <PaperProvider theme={GreenTheme}>
     <NavigationContainer>
         <AppNavigator />
     </NavigationContainer>
     </PaperProvider>
+    </GlobalState>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
 
 export default App;
 
