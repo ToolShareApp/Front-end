@@ -2,10 +2,16 @@ import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps"; // remove 
 import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import * as Location from "expo-location";
+import getLocation from "../utils/getLocation";
+import reverseGeocoding from "../utils/reverseGeocoding";
+import Button from "./Button";
+import { TextInput } from "react-native-paper";
 
 export default function Map() {
 	const [location, setLocation] = useState<any>(null);
 	const [errorMsg, setErrorMsg] = useState<string>("");
+	const [reversedLocation, setReverseLocation] = useState<string>("");
+	const [address, setAddress] = useState<string>("");
 
 	useEffect(() => {
 		(async () => {
@@ -57,6 +63,50 @@ export default function Map() {
 							}}
 						/>
 					</MapView>
+					<Text>
+						Location: {location?.coords.latitude} {location?.coords.longitude}
+					</Text>
+					<Text>Reversed Location: {reversedLocation}</Text>
+					<Button
+						label="Get Location"
+						onPress={() => {
+							getLocation()
+								.then((res) => {
+									setLocation(res);
+								})
+								.catch((error) => {
+									setErrorMsg(error);
+								});
+						}}
+					/>
+					<Button
+						label="reverse "
+						onPress={() => {
+							reverseGeocoding
+								.reverseGeocode(
+									location?.coords.latitude,
+									location?.coords.longitude
+								)
+								.then(({ data }: any) => {
+									setReverseLocation(data.results[0].formatted_address);
+								});
+						}}
+					/>
+					<TextInput
+						label="Enter your address"
+						value={address}
+						style={styles.inputStyle}
+						mode="outlined"
+						onChangeText={(value) => {
+							setAddress(value);
+						}}
+						onSubmitEditing={() => {
+							reverseGeocoding.findAddress(address).then(({ data }: any) => {
+								setReverseLocation(data.results[0].formatted_address);
+							});
+						}}
+					/>
+					{/* insert geolocation mapping here - ask confirmation of location here */}
 				</View>
 			)}
 		</>
@@ -65,15 +115,22 @@ export default function Map() {
 
 const styles = StyleSheet.create({
 	container: {
+		flex: 1,
+		backgroundColor: "#fff",
 		alignItems: "center",
-		justifyContent: "center",
+		justifyContent: "flex-start",
+		padding: 20,
 	},
-	paragraph: {
-		fontSize: 18,
-		textAlign: "center",
+	inputStyle: {
+		alignSelf: "stretch",
+		marginBottom: 20,
+		backgroundColor: "#E0F2F1",
+	},
+	textMargin: {
+		marginBottom: 10,
 	},
 	map: {
 		width: "75%",
-		height: "75%",
+		height: "50%",
 	},
 });
