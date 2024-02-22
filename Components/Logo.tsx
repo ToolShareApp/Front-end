@@ -9,7 +9,7 @@ const Logo:React.FC = () => {
         height: 100,
         margin: 20,
       }}
-      source="https://avatars.githubusercontent.com/u/160129761?s=400&u=80309e13c4309ae94982b9b646b7c496bfb320cb&v=4"
+      source="https://avatars.githubusercontent.com/u/160129761?s=400&u=4c9cc24f8547b04bceaec205127090d57974804d&v=4"
       placeholder='ToolShareApp'
       contentFit="cover"
       transition={1000}

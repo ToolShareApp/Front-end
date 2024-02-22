@@ -19,9 +19,9 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 44,
     fontWeight: 'bold',
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowColor: 'rgba(0, 0, 0, 0.65)',
     textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 10,
+    textShadowRadius: 8,
   },
   tool: {
     color: '#4CAF50',

@@ -36,8 +36,14 @@ const LogInScreen:React.FC = () => {
         style={styles.inputStyle}
         mode="outlined"
       />
-      <Button icon="account-plus" mode="contained" onPress={() => onLogIn()} style={{ marginVertical: 20 }}>
+      <Button icon="login" mode="contained" onPress={() => onLogIn()} style={{ marginVertical: 20 }}>
         Log In
+      </Button>
+      <Text variant="headlineSmall" style={{ marginBottom: 10, marginTop: 20 }}>Don't have an account yet?</Text>
+      <Button icon="account-plus" mode="contained" onPress={() =>
+        navigation.navigate("SignUp")
+      } style={{ marginVertical: 20 }}>
+        Sign Up
       </Button>
     </View>
   );

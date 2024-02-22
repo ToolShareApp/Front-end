@@ -2,8 +2,10 @@ import React, { useState } from 'react'
 import { View, StyleSheet, } from "react-native";
 import { Button, Text, TextInput } from 'react-native-paper'
 import AppTitle from '../Components/AppTitle'
+import { useNavigation } from '@react-navigation/native'
 
 const SignUpScreen:React.FC = () => {
+  const navigation = useNavigation();
   const [name, setName] = useState<string>()
 
   const onSignUp = () => {
@@ -42,6 +44,12 @@ const SignUpScreen:React.FC = () => {
       />
       <Button icon="account-plus" mode="contained" onPress={() => onSignUp()} style={{ marginVertical: 20 }}>
         Sign Up
+      </Button>
+      <Text variant="headlineSmall" style={{ marginBottom: 20 }}>Already have an account?</Text>
+      <Button icon="login" mode="contained" onPress={() =>
+        navigation.navigate("LogIn")
+      } style={{ marginVertical: 20 }}>
+        Log In
       </Button>
     </View>
   );

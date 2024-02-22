@@ -30,7 +30,7 @@ const AppNavigator: React.FC = () => {
       />
 
       <Drawer.Screen
-        name="Sign Up"
+        name="SignUp"
         component={SignUpScreen}
         options={{
           title: 'Sign Up',
@@ -43,7 +43,7 @@ const AppNavigator: React.FC = () => {
           )
         }}/>
 
-      <Drawer.Screen name="Log Out" component={LogOutScreen} options={{
+      <Drawer.Screen name="LogOut" component={LogOutScreen} options={{
         title: 'Log Out',
         drawerIcon: ({ size }) => (
           <Icon
