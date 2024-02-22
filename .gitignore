@@ -36,3 +36,6 @@ yarn-error.*
 
 # android
 android
+
+# API_KEY
+API_KEY.ts

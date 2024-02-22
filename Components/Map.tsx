@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import * as Location from "expo-location";
 
-export default function UserLocation() {
+export default function Map() {
 	const [location, setLocation] = useState<any>(null);
 	const [errorMsg, setErrorMsg] = useState<string>("");
 

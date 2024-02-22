@@ -8,7 +8,7 @@ import { Icon } from "react-native-paper";
 import LogOutScreen from "../Screens/LogOutScreen";
 import LogInScreen from "../Screens/LogInScreen";
 import { GreenDrawerTheme } from "../Themes/GreenTheme";
-import UserLocation from "./UserLocation";
+import UserLocation from "./Map";
 
 const Drawer = createDrawerNavigator();
 
