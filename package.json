@@ -3,16 +3,9 @@
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-<<<<<<< HEAD
-    "start": "expo start",
-    "android": "expo run:android",
-    "android-build": "expo run:android",
-    "ios": "expo run:ios",
-=======
     "start": "expo install && expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
->>>>>>> 7d627503a2935870607ff19c3ad57f2a7ef43b8c
     "web": "expo start --web"
   },
   "dependencies": {
