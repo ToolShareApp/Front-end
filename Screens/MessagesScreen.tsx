@@ -1,9 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 
-interface MessagesScreenProps {}
-
-const MessagesScreen:React.FC<MessagesScreenProps> = () => {
+const MessagesScreen:React.FC = () => {
 	return (
 		<View>
 		</View>

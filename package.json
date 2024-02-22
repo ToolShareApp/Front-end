@@ -3,16 +3,23 @@
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
+<<<<<<< HEAD
     "start": "expo start",
     "android": "expo run:android",
     "android-build": "expo run:android",
     "ios": "expo run:ios",
+=======
+    "start": "expo install && expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+>>>>>>> 7d627503a2935870607ff19c3ad57f2a7ef43b8c
     "web": "expo start --web"
   },
   "dependencies": {
     "@react-navigation/drawer": "^6.6.7",
     "@react-navigation/native": "^6.1.10",
     "@react-navigation/native-stack": "^6.9.18",
+    "axios": "^1.6.7",
     "expo": "~50.0.7",
     "expo-status-bar": "~1.11.1",
     "react": "18.2.0",
@@ -22,7 +29,8 @@
     "react-native-reanimated": "~3.6.2",
     "react-native-safe-area-context": "4.8.2",
     "react-native-screens": "~3.29.0",
-    "react-native-vector-icons": "^10.0.3"
+    "react-native-vector-icons": "^10.0.3",
+    "expo-image": "~1.10.6"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
