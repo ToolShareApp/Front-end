@@ -9,13 +9,13 @@ const GlobalState:any = ({ children, apiUrl }) => {
     baseURL: apiUrl,
   });
 
-  api.interceptors.request.use(async(config) => {
-    if(user) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-
-    return config;
-  });
+  // api.interceptors.request.use(async(config) => {
+  //   if(user) {
+  //     config.headers.Authorization = `Bearer ${token}`;
+  //   }
+  //
+  //   return config;
+  // });
 
   return (
     <GlobalStateContext.Provider value={{user, setUser, api, token, setToken}}>
