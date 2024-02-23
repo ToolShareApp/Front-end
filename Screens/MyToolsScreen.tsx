@@ -1,11 +1,15 @@
 import React from "react";
 import { View } from "react-native";
+import MyToolsList from "../Components/MyToolsList";
 
-const MyToolsScreen:React.FC = () => {
-	return (
-		<View>
-		</View>
-	);
-}
+interface MyToolsScreenProps {}
+
+const MyToolsScreen: React.FC<MyToolsScreenProps> = () => {
+  return (
+    <View>
+      <MyToolsList />
+    </View>
+  );
+};
 
 export default MyToolsScreen;
