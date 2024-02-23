@@ -2,7 +2,6 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from '@rea
 import BrowseToolsScreen from '../Screens/BrowseToolsScreen'
 import MyToolsScreen from '../Screens/MyToolsScreen'
 import ProfileScreen from '../Screens/ProfileScreen'
-import MessagesScreen from '../Screens/MessagesScreen'
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import ToolDetailsScreen from '../Screens/ToolDetailsScreen'
@@ -13,9 +12,12 @@ import LogInScreen from '../Screens/LogInScreen'
 import { GreenDrawerTheme } from '../Themes/GreenTheme'
 import Logo from './Logo'
 import { StyleSheet, View } from 'react-native'
+import ChatScreen from '../Screens/ChatScreen'
+import ChatsListScreen from '../Screens/ChatsListScreen'
 
 const Drawer = createDrawerNavigator()
 const ToolsStack = createStackNavigator()
+const ChatStack = createStackNavigator()
 
 const DrawerNavigator: React.FC = () => {
   return (
@@ -146,7 +148,7 @@ const DrawerNavigator: React.FC = () => {
       />
       <Drawer.Screen
         name="Messages"
-        component={MessagesScreen}
+        component={ChatStackNavigator}
         options={{ title: 'Messages' }}
       />
       <Drawer.Screen
@@ -187,6 +189,20 @@ const ToolsStackNavigator: React.FC = () => {
         options={{title: 'Details' }}
       />
     </ToolsStack.Navigator>
+  )
+}
+
+const ChatStackNavigator: React.FC = () => {
+  return (
+    <ChatStack.Navigator
+      screenOptions={{
+        headerTintColor: GreenDrawerTheme.primary, // Apply color to the header items (title, back button)
+      }}
+    >
+      <ChatStack.Screen name="ChatsList" component={ChatsListScreen} options={{ title: 'Chats' }} />
+      <ChatStack.Screen name="ChatScreen" component={ChatScreen} options={({ route }) => ({ title: route.params.title })} />
+
+    </ChatStack.Navigator>
   )
 }
 
