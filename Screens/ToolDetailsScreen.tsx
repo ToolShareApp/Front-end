@@ -8,7 +8,6 @@ const ToolDetailsScreen: React.FC = () => {
   const { api } = useContext(GlobalStateContext);
   const [toolDetails, setToolDetails] = useState<object>();
   const route = useRoute();
-  const { listing_id } = route.params;
 
 
   function getToolByToolId(listing_id: number) {
