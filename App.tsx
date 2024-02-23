@@ -1,6 +1,6 @@
 import { PaperProvider } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
-import AppNavigator from './Components/AppNavigator';
+import { DrawerNavigator } from "./Components/AppNavigator";
 import { registerRootComponent } from 'expo';
 import GlobalState from './Contexts/GlobalState';
 import { GreenTheme } from './Themes/GreenTheme'
@@ -10,7 +10,7 @@ const App:React.FC = () => {
     <GlobalState apiUrl={'https://nc-toolshare.onrender.com/api/'}>
     <PaperProvider theme={GreenTheme}>
     <NavigationContainer>
-        <AppNavigator />
+    <DrawerNavigator />
     </NavigationContainer>
     </PaperProvider>
     </GlobalState>

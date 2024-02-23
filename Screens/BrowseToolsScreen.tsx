@@ -1,11 +1,15 @@
 import React from "react";
 import { View } from "react-native";
 
-const BrowseToolsScreen:React.FC = () => {
-	return (
-		<View>
-		</View>
-	);
-}
+import ToolsList from "../Components/ToolsList";
+
+const BrowseToolsScreen: React.FC = () => {
+  return (
+    <View>
+      <ToolsList />
+    </View>
+  );
+};
 
 export default BrowseToolsScreen;
+

@@ -8,6 +8,7 @@ const LogInScreen: React.FC = () => {
 	const navigation = useNavigation();
 	const [email, setEmail] = useState<string>();
 	const [password, setPassword] = useState<string>();
+	const [secureInputMode, setSecureInputMode] = useState<boolean>(true);
 
 	const onLogIn = async () => {
 		try {
@@ -33,8 +34,15 @@ const LogInScreen: React.FC = () => {
 			/>
 			<TextInput
 				label="Password"
-				secureTextEntry
-				right={<TextInput.Icon icon="eye" />}
+				secureTextEntry={secureInputMode}
+				right={
+					<TextInput.Icon
+						icon={secureInputMode ? "eye-off" : "eye"}
+						onPress={() => {
+							setSecureInputMode(!secureInputMode);
+						}}
+					/>
+				}
 				style={styles.inputStyle}
 				mode="outlined"
 			/>
