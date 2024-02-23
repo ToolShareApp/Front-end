@@ -16,56 +16,41 @@ const LogInScreen:React.FC = () => {
   const [error, setError] = useState<boolean>(false)
   const { api, setUser } = useContext(GlobalStateContext)
 
-  function checkForExistingUser(email: string) {
-    return api.get(`/profile/email/${email}`)
-      .then((apiResponse) => {
-      const { data : { data } } = apiResponse
-      const userExists = data.length !== 0;
-      return userExists
-      });
-  }
+  async function fetchUserData (email: string, password: string) {
+    try {
+      const apiResponse = await api.get(`/profile/email/${email}`)
+      const { data: { data } } = apiResponse
 
-  function checkCorrectPassword(email:string, password: string) {
-    return api.get(`/profile/email/${email}`)
-    .then((apiResponse) => {
-      const { data : { data } } = apiResponse
+      // Check if the user exists.
+      // !! It should be implemented on the backend !!
+      if (data.length === 0) {
+        setNoAccountRecord(true)
+        setPasswordInput('')
+        return
+      }
+
+      // Check if the password is correct.
+      // !! Never do this on the frontend, it should be implemented on the backend !!
       const userObj = data[0]
-      const passwordCorrect = userObj.password === password
-      return passwordCorrect
-    })
-  }
+      if (userObj.password !== password) {
+        setNoCorrectPassword(true)
+        setPasswordInput('')
+        return
+      }
 
-  function getUserByEmail(email: string) {
-    return api.get(`/profile/email/${email}`)
-    .then((apiResponse) => {
-      const { data : { data } } = apiResponse
-      const userObj: object = data[0]
-      return userObj
-    })
+      // If user is exist and the password is correct, set the user and navigate to 'BrowseTools'.
+      setUser(userObj)
+      navigation.navigate('BrowseTools')
+    } catch (err) {
+      setError(true)
+    }
   }
 
   const onLogIn = async () => {
-    try {
-      setNoAccountRecord(false)
-      setNoCorrectPassword(false)
-      const userExists = await checkForExistingUser(emailInput)
-      if (userExists) {
-      const correctPassword = await checkCorrectPassword(emailInput, passwordInput)
-      if (correctPassword) {
-        const user = await getUserByEmail(emailInput)
-        setUser(user)
-        navigation.navigate('BrowseTools')
-      } else {
-        setNoCorrectPassword(true)
-        setPasswordInput('')
-      }
-    } else {
-      setNoAccountRecord(true);
-      setPasswordInput('')
-    }
-  } catch (err) {
-    setError(true)
-  }
+    setNoAccountRecord(false)
+    setNoCorrectPassword(false)
+
+    await fetchUserData(emailInput, passwordInput)
   }
 
   return (
