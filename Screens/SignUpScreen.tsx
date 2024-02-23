@@ -65,9 +65,9 @@ const SignUpScreen:React.FC = () => {
         style={styles.inputStyle}
         mode="outlined"
         />
-      <HelperText type="error" visible={emailError !== null}>
-        Email address is invalid!
-      </HelperText>
+        <HelperText style={styles.helperStyle} type="error" visible={emailInput !== '' && emailError}>
+          Email address is invalid!
+        </HelperText>
       <TextInput
         label="Password"
         value={passwordInput}
@@ -84,6 +84,9 @@ const SignUpScreen:React.FC = () => {
         style={styles.inputStyle}
         mode="outlined"
       />
+        <HelperText style={styles.helperStyle} type="error" visible={false}>
+          Please repeat your password
+        </HelperText>
       <TextInput
         label="Confirm Password"
         value={passwordInput2}
@@ -100,9 +103,9 @@ const SignUpScreen:React.FC = () => {
         style={styles.inputStyle}
         mode="outlined"
         />
-      <HelperText type="error" visible={passwordError !== null}>
-        { passwordValidation(passwordInput, passwordInput2).error }
-      </HelperText>
+        <HelperText style={styles.helperStyle} type="error" visible={passwordInput !== '' && passwordError}>
+          { passwordError }
+        </HelperText>
       <TextInput
         label="Display Name"
         value={displayNameInput}
@@ -132,11 +135,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     padding: 20,
+    minHeight: '100%',
   },
   inputStyle: {
     alignSelf: 'stretch',
-    marginBottom: 20,
     backgroundColor: '#E0F2F1'
+  },
+  helperStyle: {
+    padding: 0,
+    margin: 0,
   },
   textMargin: {
     marginBottom: 10
