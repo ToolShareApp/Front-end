@@ -11,7 +11,9 @@ export default function Map() {
 	const [errorMsg, setErrorMsg] = useState<string>("");
 	const [reversedLocation, setReverseLocation] = useState<string>("");
 	const [address, setAddress] = useState<string>("");
+	//const locationArray = [location, "latitude: 35, longitude: -120,"];
 
+	console.log(location);
 	async function getLocation() {
 		// if (Platform.OS === "android" && !Device.isDevice) {
 		// 	setErrorMsg(
@@ -73,10 +75,10 @@ export default function Map() {
 							}}
 						/>
 					</MapView>
-					<Text>
+					{/* <Text>
 						Location: {location?.coords.latitude} {location?.coords.longitude}
-					</Text>
-					<Text>Reversed Location: {reversedLocation}</Text>
+					</Text> */}
+					<Text>Formatted Address: {reversedLocation}</Text>
 					<Button
 						label="Update Location"
 						onPress={() => {
@@ -84,8 +86,9 @@ export default function Map() {
 						}}
 					/>
 					<TextInput
-						label="Enter your address"
+						label="Enter your postcode"
 						value={address}
+						maxLength={8}
 						style={styles.inputStyle}
 						mode="outlined"
 						onChangeText={(value) => {
