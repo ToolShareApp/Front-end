@@ -1,12 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import Button from "../Components/Button";
 
 const WelcomeScreen:React.FC = () => {
-
-    function handleButtonPress() {
-        // take user to log in / sign up screen
-    }
 
 	return (
 		<View style={styles.root}>
@@ -17,7 +12,6 @@ const WelcomeScreen:React.FC = () => {
 				in their local community, and in return, they can borrow tools from
 				others. Sharing is caring!
 			</Text>
-			<Button onPress={handleButtonPress} label="Enter"/>
 		</View>
 	);
 }

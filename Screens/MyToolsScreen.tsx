@@ -1,9 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 
-interface MyToolsScreenProps {}
-
-const MyToolsScreen:React.FC<MyToolsScreenProps> = () => {
+const MyToolsScreen:React.FC = () => {
 	return (
 		<View>
 		</View>
