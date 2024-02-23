@@ -27,6 +27,7 @@ const DrawerNavigator: React.FC = () => {
 
 	return (
 		<Drawer.Navigator
+    initialRouteName="LogIn"
 			screenOptions={{
 				headerStyle: {
 					backgroundColor: GreenDrawerTheme.primary, // Apply background color to the header
