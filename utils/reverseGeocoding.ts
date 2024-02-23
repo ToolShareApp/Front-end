@@ -6,7 +6,7 @@ async function reverseGeocode(lat: string, lng: string) {
 	let place: any = await axios
 		.get(
 			`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${YOUR_API_KEY}`
-		)
+	)
 	return place
 }
 
@@ -17,7 +17,6 @@ async function findAddress(address: string) {
 		.get(
 			`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${YOUR_API_KEY}`
 	)
-	console.log(userAddress);
 	return userAddress
 }
 

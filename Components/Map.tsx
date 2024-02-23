@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import * as Location from "expo-location";
 import reverseGeocoding from "../utils/reverseGeocoding";
-import Button from "./Button";
+//import Button from "./Button";
 import { TextInput } from "react-native-paper";
 
 export default function Map() {
@@ -13,7 +13,6 @@ export default function Map() {
 	const [address, setAddress] = useState<string>("");
 	//const locationArray = [location, "latitude: 35, longitude: -120,"];
 
-	console.log(location);
 	async function getLocation() {
 		// if (Platform.OS === "android" && !Device.isDevice) {
 		// 	setErrorMsg(
@@ -36,6 +35,7 @@ export default function Map() {
 		);
 		setReverseLocation(reversedLocation.data.results[0].formatted_address);
 	}
+
 	useEffect(() => {
 		getLocation();
 	}, []);
@@ -78,13 +78,13 @@ export default function Map() {
 					{/* <Text>
 						Location: {location?.coords.latitude} {location?.coords.longitude}
 					</Text> */}
-					<Text>Formatted Address: {reversedLocation}</Text>
+					{/* <Text>Your Location: {reversedLocation}</Text>
 					<Button
 						label="Update Location"
 						onPress={() => {
 							getLocation();
 						}}
-					/>
+					/> */}
 					<TextInput
 						label="Enter your postcode"
 						value={address}
@@ -112,18 +112,14 @@ const styles = StyleSheet.create({
 		backgroundColor: "#fff",
 		alignItems: "center",
 		justifyContent: "flex-start",
-		padding: 20,
 	},
 	inputStyle: {
-		alignSelf: "stretch",
-		marginBottom: 20,
+		alignSelf: "center",
+		width: "90%",
 		backgroundColor: "#E0F2F1",
 	},
-	textMargin: {
-		marginBottom: 10,
-	},
 	map: {
-		width: "75%",
-		height: "50%",
+		width: "95%",
+		height: "75%",
 	},
 });
