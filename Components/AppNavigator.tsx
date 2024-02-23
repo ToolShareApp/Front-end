@@ -10,14 +10,13 @@ import MessagesScreen from "../Screens/MessagesScreen";
 import React, { useContext } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import ToolDetailsScreen from "../Screens/ToolDetailsScreen";
-import { Icon, Text } from "react-native-paper";
+import { Icon } from "react-native-paper";
 import LogOutScreen from "../Screens/LogOutScreen";
 import SignUpScreen from "../Screens/SignUpScreen";
 import LogInScreen from "../Screens/LogInScreen";
 import { GreenDrawerTheme } from "../Themes/GreenTheme";
 import Logo from "./Logo";
 import { StyleSheet, View } from "react-native";
-import Map from "./Map";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 
 const Drawer = createDrawerNavigator();
@@ -27,8 +26,8 @@ const DrawerNavigator: React.FC = () => {
 	const { user } = useContext(GlobalStateContext);
 
 	return (
-    <Drawer.Navigator
-      initialRouteName="LogIn"
+		<Drawer.Navigator
+			initialRouteName="BrowseTools"
 			screenOptions={{
 				headerStyle: {
 					backgroundColor: GreenDrawerTheme.primary, // Apply background color to the header
@@ -74,20 +73,6 @@ const DrawerNavigator: React.FC = () => {
 						</>
 					) : (
 						<>
-							<DrawerItem
-								label={"Map"}
-								onPress={() => {
-									props.navigation.navigate("Map");
-								}}
-								icon={({ focused, size }) => (
-									<Icon
-										source="map-search"
-										color={focused ? "#08480a" : "#0c600f"}
-										size={size}
-									/>
-								)}
-							/>
-
 							<DrawerItem
 								label={"Browse Tools"}
 								onPress={() => {
@@ -154,7 +139,6 @@ const DrawerNavigator: React.FC = () => {
 					)}
 				</DrawerContentScrollView>
 			)}>
-			<Drawer.Screen name="Map" component={Map} options={{ title: "Map" }} />
 			<Drawer.Screen
 				name="BrowseTools"
 				component={ToolsStackNavigator}
