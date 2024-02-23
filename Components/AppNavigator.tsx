@@ -2,7 +2,7 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from '@rea
 import BrowseToolsScreen from '../Screens/BrowseToolsScreen'
 import MyToolsScreen from '../Screens/MyToolsScreen'
 import ProfileScreen from '../Screens/ProfileScreen'
-import React from 'react'
+import React, { useContext } from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import ToolDetailsScreen from '../Screens/ToolDetailsScreen'
 import { Icon } from 'react-native-paper'
@@ -14,12 +14,15 @@ import { StyleSheet, View } from 'react-native'
 import ChatScreen from '../Screens/ChatScreen'
 import ChatsListScreen from '../Screens/ChatsListScreen'
 import { GreenTheme } from '../Themes/GreenTheme'
+import GlobalStateContext from '../Contexts/GlobalStateContext'
 
 const Drawer = createDrawerNavigator()
 const ToolsStack = createStackNavigator()
 const ChatStack = createStackNavigator()
 
 const DrawerNavigator: React.FC = () => {
+  const { user } = useContext(GlobalStateContext)
+
   return (
     <Drawer.Navigator
       screenOptions={{
@@ -36,97 +39,105 @@ const DrawerNavigator: React.FC = () => {
           <View style={styles.drawerLogo}>
             <Logo size={80}/>
           </View>
-          <DrawerItem
-            label={'Browse Tools'}
-            onPress={() => {
-              props.navigation.navigate('BrowseTools');
-            }}
-            icon={({ focused, size }) => (
-              <Icon
-                source="map-search"
-                color={focused ? GreenTheme.colors.accent : GreenTheme.colors.primary}
-                size={size}
+
+          { !user ? (
+              <>
+                <DrawerItem
+                  label={'Log In'}
+                  onPress={() => {
+                    props.navigation.navigate('LogIn');
+                  }}
+                  icon={({ focused, size }) => (
+                    <Icon
+                      source="login"
+                      color={focused ? GreenTheme.colors.accent : GreenTheme.colors.primary}
+                      size={size}
+                    />
+                  )}
+                />
+                <DrawerItem
+                  label={'Sign Up'}
+                  onPress={() => {
+                    props.navigation.navigate('SignUp');
+                  }}
+                  icon={({ focused, size }) => (
+                    <Icon
+                      source="account-plus"
+                      color={focused ? GreenTheme.colors.accent : GreenTheme.colors.primary}
+                      size={size}
+                    />
+                  )}
+                />
+              </>
+          ) : (
+            <>
+              <DrawerItem
+                label={'Browse Tools'}
+                onPress={() => {
+                  props.navigation.navigate('BrowseTools');
+                }}
+                icon={({ focused, size }) => (
+                  <Icon
+                    source="map-search"
+                    color={focused ? GreenTheme.colors.accent : GreenTheme.colors.primary}
+                    size={size}
+                  />
+                )}
               />
-            )}
-          />
-          <DrawerItem
-            label={'My Tools'}
-            onPress={() => {
-              props.navigation.navigate('MyTools');
-            }}
-            icon={({ focused, size }) => (
-              <Icon
-                source="hammer-wrench"
-                color={focused ? GreenTheme.colors.accent : GreenTheme.colors.primary}
-                size={size}
+              <DrawerItem
+                label={'My Tools'}
+                onPress={() => {
+                  props.navigation.navigate('MyTools');
+                }}
+                icon={({ focused, size }) => (
+                  <Icon
+                    source="hammer-wrench"
+                    color={focused ? GreenTheme.colors.accent : GreenTheme.colors.primary}
+                    size={size}
+                  />
+                )}
               />
-            )}
-          />
-          <DrawerItem
-            label={'Profile'}
-            onPress={() => {
-              props.navigation.navigate('Profile');
-            }}
-            icon={({ focused, size }) => (
-              <Icon
-                source="account"
-                color={focused ? GreenTheme.colors.accent : GreenTheme.colors.primary}
-                size={size}
+              <DrawerItem
+                label={'Profile'}
+                onPress={() => {
+                  props.navigation.navigate('Profile');
+                }}
+                icon={({ focused, size }) => (
+                  <Icon
+                    source="account"
+                    color={focused ? GreenTheme.colors.accent : GreenTheme.colors.primary}
+                    size={size}
+                  />
+                )}
               />
-            )}
-          />
-          <DrawerItem
-            label={'Messages'}
-            onPress={() => {
-              props.navigation.navigate('Messages');
-            }}
-            icon={({ focused, size }) => (
-              <Icon
-                source="forum-outline"
-                color={focused ? GreenTheme.colors.accent : GreenTheme.colors.primary}
-                size={size}
+              <DrawerItem
+                label={'Messages'}
+                onPress={() => {
+                  props.navigation.navigate('Messages');
+                }}
+                icon={({ focused, size }) => (
+                  <Icon
+                    source="forum-outline"
+                    color={focused ? GreenTheme.colors.accent : GreenTheme.colors.primary}
+                    size={size}
+                  />
+                )}
               />
-            )}
-          />
-          <DrawerItem
-            label={'Log In'}
-            onPress={() => {
-              props.navigation.navigate('LogIn');
-            }}
-            icon={({ focused, size }) => (
-              <Icon
-                source="login"
-                color={focused ? GreenTheme.colors.accent : GreenTheme.colors.primary}
-                size={size}
+              <DrawerItem
+                label={'Log Out'}
+                onPress={() => {
+                  props.navigation.navigate('LogOut');
+                }}
+                icon={({ focused, size }) => (
+                  <Icon
+                    source="logout"
+                    color={focused ? GreenTheme.colors.warning : GreenTheme.colors.error}
+                    size={size}
+                  />
+                )}
               />
-            )}
-          />
-          <DrawerItem
-            label={'Sign Up'}
-            onPress={() => {
-              props.navigation.navigate('SignUp');
-            }}
-            icon={({ focused, size }) => (
-              <Icon
-                source="account-plus"
-                color={focused ? GreenTheme.colors.accent : GreenTheme.colors.primary}
-                size={size}
-              />
-            )}
-          />
-          <DrawerItem
-            label={'Log Out'}
-            onPress={() => {
-              props.navigation.navigate('LogOut');
-            }}
-            icon={({ focused, size }) => (
-              <Icon
-                source="logout"
-                color={focused ? GreenTheme.colors.warning : GreenTheme.colors.error}
-                size={size}
-              />
-            )}
-          />
+            </>
+          )}
         </DrawerContentScrollView>
       )}
     >
