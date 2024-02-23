@@ -39,7 +39,7 @@ const LogInScreen:React.FC = () => {
     return api.get(`/profile/email/${email}`)
     .then((apiResponse) => {
       const { data : { data } } = apiResponse
-      const userObj = data[0]
+      const userObj: object = data[0]
       return userObj
     })
   }
@@ -71,7 +71,7 @@ const LogInScreen:React.FC = () => {
   return (
     <View style={styles.container}>
       <AppTitle />
-      <Text variant="displaySmall" style={{ marginBottom: 20 }}>Log In</Text>
+      <Text variant="displaySmall" style={{ marginBottom: 20, textAlign: "center", }}>Log In</Text>
       <TextInput
         label="Email"
         value={emailInput}

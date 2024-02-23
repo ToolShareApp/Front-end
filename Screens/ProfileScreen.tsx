@@ -9,7 +9,7 @@ const ProfileScreen:React.FC = () => {
 	{console.log(user)}
 	return (
 		<View>
-			<Avatar.Image size={150} source={user?.picture_url}/>
+			{/* <Avatar.Image size={150} source={user?.picture_url}/> */}
 		</View>
 	);
 }

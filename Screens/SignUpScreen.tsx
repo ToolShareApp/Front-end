@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react'
-import { View, StyleSheet, } from "react-native";
+import { View, StyleSheet } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import { Button, HelperText, Text, TextInput } from 'react-native-paper'
 import AppTitle from '../Components/AppTitle'
 import { useNavigation } from '@react-navigation/native'
@@ -11,9 +12,9 @@ const SignUpScreen:React.FC = () => {
   const { api, setUser } = useContext(GlobalStateContext)
   const [displayNameInput, setDisplayNameInput] = useState<string>('');
   const [emailInput, setEmailInput] = useState<string>('');
-  const [emailError, setEmailError] = useState<string | null>('');
+  const [emailError, setEmailError] = useState<string | null>(null);
   const [passwordInput, setPasswordInput] = useState<string>('');
-  const [passwordError, setPasswordError] = useState<string | null>('');
+  const [passwordError, setPasswordError] = useState<string | null>(null);
   const [passwordInput2, setPasswordInput2] = useState<string>('');
   const [secureInputMode, setSecureInputMode] = useState<boolean>(true);
   const [imageUrlInput, setImageUrlInput] = useState<string>('');
@@ -28,16 +29,26 @@ const SignUpScreen:React.FC = () => {
     })
   }
 
-  const onSignUp = () => {
-    setIsCreatingProfile(true);
-    postNewUser(passwordInput, emailInput, displayNameInput, imageUrlInput)
-    .then(() => {
-      navigation.navigate('Profile');
+  function getUserByEmail(email: string) {
+    return api.get(`/profile/email/${email}`)
+    .then((apiResponse) => {
+      const { data : { data } } = apiResponse
+      const userObj: object = data[0]
+      return userObj
     })
   }
 
+  const onSignUp = async () => {
+    setIsCreatingProfile(true);
+    await postNewUser(passwordInput, emailInput, displayNameInput, imageUrlInput)
+    const newUser = await getUserByEmail(emailInput)
+    setUser(newUser);
+    navigation.navigate('Profile');
+  }
+
   return (
-    <View style={styles.container}>
+    <ScrollView>
+      <View style={styles.container}>
       <AppTitle />
       <Text variant="displaySmall" style={{ marginBottom: 20 }}>Sign Up</Text>
       <TextInput
@@ -53,7 +64,7 @@ const SignUpScreen:React.FC = () => {
         }}
         style={styles.inputStyle}
         mode="outlined"
-      />
+        />
       <HelperText type="error" visible={emailError !== null}>
         Email address is invalid!
       </HelperText>
@@ -88,9 +99,9 @@ const SignUpScreen:React.FC = () => {
         right={<TextInput.Icon icon={ secureInputMode ? 'eye-off' : 'eye' } onPress={() => setSecureInputMode(!secureInputMode)}/>}
         style={styles.inputStyle}
         mode="outlined"
-      />
+        />
       <HelperText type="error" visible={passwordError !== null}>
-        { passwordValidation(password, password2).error }
+        { passwordValidation(passwordInput, passwordInput2).error }
       </HelperText>
       <TextInput
         label="Display Name"
@@ -98,8 +109,7 @@ const SignUpScreen:React.FC = () => {
         onChangeText={value => setDisplayNameInput(value)}
         style={styles.inputStyle}
         mode="outlined"
-      />
-      <TextInput label="Profile picture" textContentType={'URL'} placeholder='Insert image url here...' value={imageUrlInput} onChangeText={(value) => setImageUrlInput(value)}/>
+        />
       <Button icon="account-plus" mode="contained" onPress={() => onSignUp()} style={{ marginVertical: 20 }}>
         Sign Up
       </Button>
@@ -110,7 +120,8 @@ const SignUpScreen:React.FC = () => {
         Log In
       </Button>
       { isCreatingProfile ? <Text>Creating profile for {displayNameInput}...</Text> : null}
-    </View>
+        </View>
+    </ScrollView>
   );
 }
 

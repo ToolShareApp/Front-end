@@ -12,7 +12,7 @@ const MyToolsList: React.FC = () => {
   const [toolsList, setToolsList] = useState<object[]>();
 
   function getToolsByOwnerId() {
-    const { profile_id } = user
+    const profile_id = user?.profile_id
     return api.get(`/listing/owner/${profile_id}`).then((apiResponse: any) => {
       const {
         data: { data },
