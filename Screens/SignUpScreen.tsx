@@ -1,23 +1,39 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { View, StyleSheet, } from "react-native";
 import { Button, HelperText, Text, TextInput } from 'react-native-paper'
 import AppTitle from '../Components/AppTitle'
 import { useNavigation } from '@react-navigation/native'
 import { emailValidation, passwordValidation } from '../utils/utils'
+import GlobalStateContext from '../Contexts/GlobalStateContext';
 
 const SignUpScreen:React.FC = () => {
   const navigation = useNavigation();
-  const [name, setName] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
+  const { api, setUser } = useContext(GlobalStateContext)
+  const [displayNameInput, setDisplayNameInput] = useState<string>('');
+  const [emailInput, setEmailInput] = useState<string>('');
   const [emailError, setEmailError] = useState<string | null>('');
-  const [password, setPassword] = useState<string>('');
+  const [passwordInput, setPasswordInput] = useState<string>('');
   const [passwordError, setPasswordError] = useState<string | null>('');
-  const [password2, setPassword2] = useState<string>('');
-  const [secureInputMode, setSecureInputMode] = useState<boolean>(true)
+  const [passwordInput2, setPasswordInput2] = useState<string>('');
+  const [secureInputMode, setSecureInputMode] = useState<boolean>(true);
+  const [imageUrlInput, setImageUrlInput] = useState<string>('');
+  const [isCreatingProfile, setIsCreatingProfile] = useState<boolean>(false);
+
+  function postNewUser(passwordInput: string, emailInput: string, displayNameInput: string, imageUrlInput: string) {
+    return api.post('/profile', {
+      password: passwordInput,
+      email: emailInput,
+      display_name: displayNameInput,
+      picture_url: imageUrlInput
+    })
+  }
 
   const onSignUp = () => {
-    // not implemented yet
-    navigation.navigate("BrowseTools")
+    setIsCreatingProfile(true);
+    postNewUser(passwordInput, emailInput, displayNameInput, imageUrlInput)
+    .then(() => {
+      navigation.navigate('Profile');
+    })
   }
 
   return (
@@ -25,17 +41,10 @@ const SignUpScreen:React.FC = () => {
       <AppTitle />
       <Text variant="displaySmall" style={{ marginBottom: 20 }}>Sign Up</Text>
       <TextInput
-        label="Name"
-        value={name}
-        onChangeText={value => setName(value)}
-        style={styles.inputStyle}
-        mode="outlined"
-      />
-      <TextInput
         label="Email"
-        value={email}
+        value={emailInput}
         onChangeText={value => {
-          setEmail(value)
+          setEmailInput(value)
           if (!emailValidation(value)) {
             setEmailError('Email address is invalid!');
           } else {
@@ -50,11 +59,11 @@ const SignUpScreen:React.FC = () => {
       </HelperText>
       <TextInput
         label="Password"
-        value={password}
+        value={passwordInput}
         onChangeText={value => {
-          setPassword(value)
-          if (!passwordValidation(password, password2).isValid) {
-            setPasswordError(passwordValidation(password, password2).error);
+          setPasswordInput(value)
+          if (!passwordValidation(passwordInput, passwordInput2).isValid) {
+            setPasswordError(passwordValidation(passwordInput, passwordInput2).error);
           } else {
             setPasswordError(null);
           }
@@ -66,11 +75,11 @@ const SignUpScreen:React.FC = () => {
       />
       <TextInput
         label="Confirm Password"
-        value={password2}
+        value={passwordInput2}
         onChangeText={value => {
-          setPassword2(value)
-          if (!passwordValidation(password, password2).isValid) {
-            setPasswordError(passwordValidation(password, password2).error);
+          setPasswordInput2(value)
+          if (!passwordValidation(passwordInput, passwordInput2).isValid) {
+            setPasswordError(passwordValidation(passwordInput, passwordInput2).error);
           } else {
             setPasswordError(null);
           }
@@ -83,6 +92,14 @@ const SignUpScreen:React.FC = () => {
       <HelperText type="error" visible={passwordError !== null}>
         { passwordValidation(password, password2).error }
       </HelperText>
+      <TextInput
+        label="Display Name"
+        value={displayNameInput}
+        onChangeText={value => setDisplayNameInput(value)}
+        style={styles.inputStyle}
+        mode="outlined"
+      />
+      <TextInput label="Profile picture" textContentType={'URL'} placeholder='Insert image url here...' value={imageUrlInput} onChangeText={(value) => setImageUrlInput(value)}/>
       <Button icon="account-plus" mode="contained" onPress={() => onSignUp()} style={{ marginVertical: 20 }}>
         Sign Up
       </Button>
@@ -92,6 +109,7 @@ const SignUpScreen:React.FC = () => {
       } style={{ marginVertical: 10 }}>
         Log In
       </Button>
+      { isCreatingProfile ? <Text>Creating profile for {displayNameInput}...</Text> : null}
     </View>
   );
 }
