@@ -24,12 +24,3 @@ export const GreenTheme = {
     lightText: '#FFFFFF', // Light text color for use on dark backgrounds or elements
   },
 };
-
-export const GreenDrawerTheme = {
-  primary: '#4CAF50', // Primary color for your theme
-  secondary: '#6c757d', // Secondary color for your theme
-  background: '#ffffff', // Background color
-  text: '#FFFFFF', // Text color
-  activeTintColor: '#8BC34A', // Color for the active item
-  inactiveTintColor: '#6c757d', // Color for the inactive item
-};
