@@ -1,11 +1,19 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { View, StyleSheet, } from "react-native";
 import { Button } from 'react-native-paper'
 import AppTitle from '../Components/AppTitle'
 import Alert from '../Components/Alert'
+import GlobalStateContext from '../Contexts/GlobalStateContext'
+import { useNavigation } from '@react-navigation/native'
 
 const LogOutScreen:React.FC = () => {
-  const onLogOut = () => {}
+  const navigation = useNavigation();
+  const { setUser } = useContext(GlobalStateContext)
+
+  const onLogOut = () => {
+    setUser(null)
+    navigation.navigate('LogIn')
+  }
 
   return (
     <View style={styles.container}>
