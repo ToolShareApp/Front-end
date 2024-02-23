@@ -7,10 +7,10 @@ import BrowseToolsScreen from "../Screens/BrowseToolsScreen";
 import MyToolsScreen from "../Screens/MyToolsScreen";
 import ProfileScreen from "../Screens/ProfileScreen";
 import MessagesScreen from "../Screens/MessagesScreen";
-import React from "react";
+import React, { useContext } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import ToolDetailsScreen from "../Screens/ToolDetailsScreen";
-import { Icon } from "react-native-paper";
+import { Icon, Text } from "react-native-paper";
 import LogOutScreen from "../Screens/LogOutScreen";
 import SignUpScreen from "../Screens/SignUpScreen";
 import LogInScreen from "../Screens/LogInScreen";
@@ -18,11 +18,14 @@ import { GreenDrawerTheme } from "../Themes/GreenTheme";
 import Logo from "./Logo";
 import { StyleSheet, View } from "react-native";
 import Map from "./Map";
+import GlobalStateContext from "../Contexts/GlobalStateContext";
 
 const Drawer = createDrawerNavigator();
 const ToolsStack = createStackNavigator();
 
 const DrawerNavigator: React.FC = () => {
+	const { user } = useContext(GlobalStateContext);
+
 	return (
 		<Drawer.Navigator
 			screenOptions={{
@@ -39,106 +42,115 @@ const DrawerNavigator: React.FC = () => {
 					<View style={styles.drawerLogo}>
 						<Logo size={80} />
 					</View>
-					<DrawerItem
-						label={"Map"}
-						onPress={() => {
-							props.navigation.navigate("Map");
-						}}
-						icon={({ focused, size }) => (
-							<Icon
-								source="map-search"
-								color={focused ? "#08480a" : "#0c600f"}
-								size={size}
+					{!user ? (
+						<>
+							<DrawerItem
+								label={"Log In"}
+								onPress={() => {
+									props.navigation.navigate("LogIn");
+								}}
+								icon={({ focused, size }) => (
+									<Icon
+										source="login"
+										color={focused ? "#08480a" : "#0c600f"}
+										size={size}
+									/>
+								)}
 							/>
-						)}
-					/>
-					<DrawerItem
-						label={"Browse Tools"}
-						onPress={() => {
-							props.navigation.navigate("BrowseTools");
-						}}
-						icon={({ focused, size }) => (
-							<Icon
-								source="map-search"
-								color={focused ? "#08480a" : "#0c600f"}
-								size={size}
+							<DrawerItem
+								label={"Sign Up"}
+								onPress={() => {
+									props.navigation.navigate("SignUp");
+								}}
+								icon={({ focused, size }) => (
+									<Icon
+										source="account-plus"
+										color={focused ? "#08480a" : "#0c600f"}
+										size={size}
+									/>
+								)}
 							/>
-						)}
-					/>
-					<DrawerItem
-						label={"My Tools"}
-						onPress={() => {
-							props.navigation.navigate("MyTools");
-						}}
-						icon={({ focused, size }) => (
-							<Icon
-								source="hammer-wrench"
-								color={focused ? "#08480a" : "#0c600f"}
-								size={size}
+						</>
+					) : (
+						<>
+							<DrawerItem
+								label={"Map"}
+								onPress={() => {
+									props.navigation.navigate("Map");
+								}}
+								icon={({ focused, size }) => (
+									<Icon
+										source="map-search"
+										color={focused ? "#08480a" : "#0c600f"}
+										size={size}
+									/>
+								)}
 							/>
-						)}
-					/>
-					<DrawerItem
-						label={"Profile"}
-						onPress={() => {
-							props.navigation.navigate("Profile");
-						}}
-						icon={({ focused, size }) => (
-							<Icon
-								source="account"
-								color={focused ? "#08480a" : "#0c600f"}
-								size={size}
+
+							<DrawerItem
+								label={"Browse Tools"}
+								onPress={() => {
+									props.navigation.navigate("BrowseTools");
+								}}
+								icon={({ focused, size }) => (
+									<Icon
+										source="map-search"
+										color={focused ? "#08480a" : "#0c600f"}
+										size={size}
+									/>
+								)}
 							/>
-						)}
-					/>
-					<DrawerItem
-						label={"Messages"}
-						onPress={() => {
-							props.navigation.navigate("Messages");
-						}}
-						icon={({ focused, size }) => (
-							<Icon
-								source="forum-outline"
-								color={focused ? "#08480a" : "#0c600f"}
-								size={size}
+							<DrawerItem
+								label={"My Tools"}
+								onPress={() => {
+									props.navigation.navigate("MyTools");
+								}}
+								icon={({ focused, size }) => (
+									<Icon
+										source="hammer-wrench"
+										color={focused ? "#08480a" : "#0c600f"}
+										size={size}
+									/>
+								)}
 							/>
-						)}
-					/>
-					<DrawerItem
-						label={"Log In"}
-						onPress={() => {
-							props.navigation.navigate("LogIn");
-						}}
-						icon={({ focused, size }) => (
-							<Icon
-								source="login"
-								color={focused ? "#08480a" : "#0c600f"}
-								size={size}
+							<DrawerItem
+								label={"Profile"}
+								onPress={() => {
+									props.navigation.navigate("Profile");
+								}}
+								icon={({ focused, size }) => (
+									<Icon
+										source="account"
+										color={focused ? "#08480a" : "#0c600f"}
+										size={size}
+									/>
+								)}
 							/>
-						)}
-					/>
-					<DrawerItem
-						label={"Sign Up"}
-						onPress={() => {
-							props.navigation.navigate("SignUp");
-						}}
-						icon={({ focused, size }) => (
-							<Icon
-								source="account-plus"
-								color={focused ? "#08480a" : "#0c600f"}
-								size={size}
+							<DrawerItem
+								label={"Messages"}
+								onPress={() => {
+									props.navigation.navigate("Messages");
+								}}
+								icon={({ focused, size }) => (
+									<Icon
+										source="forum-outline"
+										color={focused ? "#08480a" : "#0c600f"}
+										size={size}
+									/>
+								)}
 							/>
-						)}
-					/>
-					<DrawerItem
-						label={"Log Out"}
-						onPress={() => {
-							props.navigation.navigate("LogOut");
-						}}
-						icon={({ focused, size }) => (
-							<Icon source="logout" color="red" size={size} />
-						)}
-					/>
+
+							<DrawerItem
+								label={"Log Out"}
+								onPress={() => {
+									props.navigation.navigate("LogOut");
+								}}
+								icon={({ focused, size }) => (
+									<Icon source="logout" color="red" size={size} />
+								)}
+							/>
+						</>
+					)}
 				</DrawerContentScrollView>
 			)}>
 			<Drawer.Screen name="Map" component={Map} options={{ title: "Map" }} />
