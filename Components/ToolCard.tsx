@@ -9,8 +9,6 @@ interface ToolCardProps {
   subcategory: string;
   name: string;
   photo: string;
-  description: string;
-
   listing_id: number;
 }
 
@@ -19,8 +17,6 @@ const ToolCard: React.FC<ToolCardProps> = ({
   photo,
   subcategory,
   name,
-  description,
-
   listing_id,
 }) => {
   const navigation: any = useNavigation();
@@ -30,7 +26,7 @@ const ToolCard: React.FC<ToolCardProps> = ({
       onPress={() =>
         navigation.navigate('BrowseTools', {
         screen: 'ToolDetailsScreen',
-        params: { listing_id: 1, },
+        params: { listing_id: listing_id, },
       })
      }
     >

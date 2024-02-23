@@ -37,7 +37,6 @@ export default function ToolsList() {
             name={listing.tool}
             subcategory={listing.subcategory}
             photo={listing.photo_url}
-            description={listing.description}
           />
         );
       })}
