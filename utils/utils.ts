@@ -4,12 +4,13 @@ export const emailValidation = (email: string) => {
 };
 
 export const passwordValidation = (password1: string, password2: string = 'none') => {
-  let isValid = false;
+  let isValid: boolean | null = null;
   const defaultError = 'The passwords do not match. Please ensure both entered passwords are identical.';
-  let error = defaultError;
+  let error: string | null = defaultError;
 
   if (!password1 || !password2) {
     error = 'Both passwords must be provided.';
+    isValid = false;
     return {isValid, error};
   }
 
@@ -17,8 +18,10 @@ export const passwordValidation = (password1: string, password2: string = 'none'
     error = 'The password must be at least 8 characters long.';
   } else if (password1 !== password2 && password2 !== 'none') {
     error = defaultError;
+    isValid = false;
   } else {
     isValid = true;
+    error = null;
   }
 
   return {isValid, error};

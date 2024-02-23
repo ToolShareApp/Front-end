@@ -8,11 +8,12 @@ import { ScrollView } from "react-native-gesture-handler";
 import { GreenTheme } from '../Themes/GreenTheme'
 
 const MyToolsList: React.FC = () => {
-  const { api } = useContext(GlobalStateContext);
+  const { api, user } = useContext(GlobalStateContext);
   const [toolsList, setToolsList] = useState<object[]>();
 
   function getToolsByOwnerId() {
-    return api.get(`/listing/owner/501`).then((apiResponse: any) => {
+    const profile_id = user?.profile_id
+    return api.get(`/listing/owner/${profile_id}`).then((apiResponse: any) => {
       const {
         data: { data },
       } = apiResponse;
