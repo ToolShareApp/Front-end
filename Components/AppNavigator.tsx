@@ -27,7 +27,8 @@ const DrawerNavigator: React.FC = () => {
 	const { user } = useContext(GlobalStateContext);
 
 	return (
-		<Drawer.Navigator
+    <Drawer.Navigator
+      initialRouteName="LogIn"
 			screenOptions={{
 				headerStyle: {
 					backgroundColor: GreenDrawerTheme.primary, // Apply background color to the header
