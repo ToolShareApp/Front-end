@@ -17,6 +17,7 @@ import LogInScreen from "../Screens/LogInScreen";
 import { GreenDrawerTheme } from "../Themes/GreenTheme";
 import Logo from "./Logo";
 import { StyleSheet, View } from "react-native";
+import Map from "./Map";
 
 const Drawer = createDrawerNavigator();
 const ToolsStack = createStackNavigator();
@@ -38,6 +39,19 @@ const DrawerNavigator: React.FC = () => {
 					<View style={styles.drawerLogo}>
 						<Logo size={80} />
 					</View>
+					<DrawerItem
+						label={"Map"}
+						onPress={() => {
+							props.navigation.navigate("Map");
+						}}
+						icon={({ focused, size }) => (
+							<Icon
+								source="map-search"
+								color={focused ? "#08480a" : "#0c600f"}
+								size={size}
+							/>
+						)}
+					/>
 					<DrawerItem
 						label={"Browse Tools"}
 						onPress={() => {
@@ -127,6 +141,7 @@ const DrawerNavigator: React.FC = () => {
 					/>
 				</DrawerContentScrollView>
 			)}>
+			<Drawer.Screen name="Map" component={Map} options={{ title: "Map" }} />
 			<Drawer.Screen
 				name="BrowseTools"
 				component={ToolsStackNavigator}
