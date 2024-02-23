@@ -11,8 +11,10 @@ const LogInScreen:React.FC = () => {
   const [emailInput, setEmailInput] = useState<string>("")
   const [passwordInput, setPasswordInput] = useState<string>("")
   const [secureInputMode, setSecureInputMode] = useState<boolean>(true)
-  const [noAccountRecord, setNoAccountRecord] = useState<boolean>(false);
-  const { api, setUser, user } = useContext(GlobalStateContext)
+  const [noAccountRecord, setNoAccountRecord] = useState<boolean>(false)
+  const [noCorrectPassword, setNoCorrectPassword] = useState<boolean>(false)
+  const [error, setError] = useState<boolean>(false)
+  const { api, setUser } = useContext(GlobalStateContext)
 
   function checkForExistingUser(email: string) {
     return api.get(`/profile/email/${email}`)
@@ -22,8 +24,17 @@ const LogInScreen:React.FC = () => {
       return userExists
       });
   }
-  // Sarah@domain.com test email
-  // password test password
+
+  function checkCorrectPassword(email:string, password: string) {
+    return api.get(`/profile/email/${email}`)
+    .then((apiResponse) => {
+      const { data : { data } } = apiResponse
+      const userObj = data[0]
+      const passwordCorrect = userObj.password === password
+      return passwordCorrect
+    })
+  }
+
   function getUserByEmail(email: string) {
     return api.get(`/profile/email/${email}`)
     .then((apiResponse) => {
@@ -33,20 +44,29 @@ const LogInScreen:React.FC = () => {
     })
   }
 
-  const onLogIn = () => {
-    checkForExistingUser(emailInput)
-    .then((response) => {
-      if (response) {
-        getUserByEmail(emailInput) 
-        .then((response) => {
-          setUser(response)
-          navigation.navigate('BrowseTools')
-        })
-        } else {
-          setNoAccountRecord(true)
-        }
-    })
-  };
+  const onLogIn = async () => {
+    try {
+      setNoAccountRecord(false)
+      setNoCorrectPassword(false)
+      const userExists = await checkForExistingUser(emailInput)
+      if (userExists) {
+      const correctPassword = await checkCorrectPassword(emailInput, passwordInput)
+      if (correctPassword) {
+        const user = await getUserByEmail(emailInput)
+        setUser(user)
+        navigation.navigate('BrowseTools')
+      } else {
+        setNoCorrectPassword(true)
+        setPasswordInput('')
+      }
+    } else {
+      setNoAccountRecord(true);
+      setPasswordInput('')
+    }
+  } catch (err) {
+    setError(true)
+  }
+  }
 
   return (
     <View style={styles.container}>
@@ -69,6 +89,7 @@ const LogInScreen:React.FC = () => {
         mode="outlined"
       />
       { noAccountRecord ? <Alert text={'Sorry, we do not have a record of this account!'}/> : null}
+      { noCorrectPassword ? <Alert text={'Password incorrect'}/> : null}
       <Button icon="login" mode="contained" onPress={() => onLogIn()} style={{ marginVertical: 20 }}>
         Log In
       </Button>
