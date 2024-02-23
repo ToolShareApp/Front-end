@@ -22,7 +22,8 @@ const LogInScreen:React.FC = () => {
       return userExists
       });
   }
-
+  // Sarah@domain.com test email
+  // password test password
   function getUserByEmail(email: string) {
     return api.get(`/profile/email/${email}`)
     .then((apiResponse) => {
@@ -67,7 +68,7 @@ const LogInScreen:React.FC = () => {
         style={styles.inputStyle}
         mode="outlined"
       />
-      { !noAccountRecord ? <Alert text={'Sorry, we do not have a record of this account!'}/> : null}
+      { noAccountRecord ? <Alert text={'Sorry, we do not have a record of this account!'}/> : null}
       <Button icon="login" mode="contained" onPress={() => onLogIn()} style={{ marginVertical: 20 }}>
         Log In
       </Button>
