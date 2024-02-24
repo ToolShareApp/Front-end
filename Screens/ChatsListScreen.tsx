@@ -66,8 +66,8 @@ const ChatsListScreen = () => {
 				title={item.name}
 				description={item?.lastMessage}
 				descriptionNumberOfLines={1}
-				left={props => <Avatar.Icon {...props} icon="forum" />}
-				right={props => <List.Icon {...props} icon="chevron-right" />}
+				left={() => <Avatar.Text style={{marginLeft: 20}}  size={46} label={item.name.substring(0,2)} />}
+				right={() => <List.Icon icon="chevron-right" />}
 			/>
 		</TouchableOpacity>
 	);

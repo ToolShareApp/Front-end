@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     margin: 20,
+    alignItems: 'center'
   },
   warningError: {
     backgroundColor: GreenTheme.colors.error,

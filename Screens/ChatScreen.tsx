@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { TextInput, Card, Avatar, Paragraph } from 'react-native-paper';
+import GlobalStateContext from '../Contexts/GlobalStateContext'
+import GlobalState from '../Contexts/GlobalState'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 interface Message {
   id: number;
@@ -12,6 +15,7 @@ interface Message {
 }
 
 const ChatScreen = () => {
+  const { user } = useContext(GlobalStateContext)
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
@@ -23,18 +27,16 @@ const ChatScreen = () => {
     }
   ]);
   const [text, setText] = useState('');
-  const currentUser = 1;
-  const currentUserName = 'Sam';
 
   const sendMessage = () => {
     if (text) {
       const newMessage: Message = {
         id: messages.length + 1,
-        userId: currentUser,
+        userId: user.profile_id,
         text: text,
         date: new Date().toLocaleTimeString(),
         userAvatar: '',
-        username: currentUserName,
+        username: user.display_name,
       };
       setMessages([...messages, newMessage]);
       setText('');
@@ -42,33 +44,50 @@ const ChatScreen = () => {
   };
 
   return (
-    <>
-      <ScrollView style={styles.container}>
+    <KeyboardAwareScrollView
+      contentContainerStyle={styles.container}
+      keyboardShouldPersistTaps="handled"
+      extraScrollHeight={80}
+    >
+      <View style={styles.container}>
         {messages.map((message) => (
           <View key={message.id} style={[
             styles.message,
-            message.userId === currentUser ? styles.messageRight : styles.messageLeft,
+            message.userId === user.profile_id ? styles.messageRight : styles.messageLeft,
           ]}>
-            {message.userId !== currentUser && (
-              <Avatar.Text size={46} label="U" style={styles.avatar} />
+            {message.userId !== user.profile_id && (
+              message.userAvatar && message.userAvatar !== '' ? (
+                <Avatar.Image size={46} source={{
+                  uri: message.userAvatar,
+                }} />
+                ) : (
+                <Avatar.Text size={46} label={message.username.substring(0,2)} style={styles.avatar} />
+              )
             )}
             <Card style={styles.card} elevation={0}>
-              <Card.Content style={[
-                styles.cartContent,
-                message.userId === currentUser ? styles.cardMessageRight : styles.cardMessageLeft,
-              ]}>
+              <Card.Content
+                style={[
+                  styles.cartContent,
+                  message.userId === user.profile_id ? styles.cardMessageRight : styles.cardMessageLeft,
+                  ]}
+              >
                 <Paragraph style={styles.username}>{message.username}</Paragraph>
                 <Paragraph>{message.text}</Paragraph>
                 <Paragraph style={styles.dateText}>{message.date}</Paragraph>
               </Card.Content>
             </Card>
-            {message.userId === currentUser && (
-              <Avatar.Text size={46} label="U" style={styles.avatar} />
+            {message.userId === user.profile_id && (
+              user.picture_url && user.picture_url !== '' ? (
+                  <Avatar.Image size={46} source={{
+                    uri: user.picture_url,
+                  }} />
+                ) : (
+                <Avatar.Text size={46} label={user.display_name.substring(0,2)} style={styles.avatar} />
+                )
             )}
-
           </View>
         ))}
-      </ScrollView>
+      </View>
       <TextInput
         label="Type a message..."
         value={text}
@@ -77,7 +96,7 @@ const ChatScreen = () => {
         style={styles.input}
         right={<TextInput.Icon name="send" onPress={sendMessage}  icon={'send'}/>}
       />
-    </>
+    </KeyboardAwareScrollView>
   );
 };
 

@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native'
 import { emailValidation, passwordValidation } from '../utils/utils'
 import GlobalStateContext from '../Contexts/GlobalStateContext';
 import Alert from '../Components/Alert'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 const SignUpScreen:React.FC = () => {
   const navigation = useNavigation();
@@ -56,7 +57,11 @@ const SignUpScreen:React.FC = () => {
   }
 
   return (
-    <ScrollView>
+    <KeyboardAwareScrollView
+      contentContainerStyle={styles.container}
+      keyboardShouldPersistTaps="handled"
+      extraScrollHeight={80}
+    >
       <View style={styles.container}>
       <AppTitle />
       <Text variant="displaySmall" style={{ marginBottom: 20 }}>Sign Up</Text>
@@ -134,7 +139,7 @@ const SignUpScreen:React.FC = () => {
       { isCreatingProfile ? <Text>Creating profile for {displayNameInput}...</Text> : null}
       { createProfileError !== '' ? <Alert error text={'Unfortunately, an error occurred while trying to create a new profile. Please try again.'}/> : null}
         </View>
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 }
 

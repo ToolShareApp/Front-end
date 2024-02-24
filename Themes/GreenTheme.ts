@@ -22,5 +22,6 @@ export const GreenTheme = {
     lightBackground: '#F5F5F5', // Light background for sections or selected states
     darkText: '#212121', // Dark text color for use on light backgrounds for high readability
     lightText: '#FFFFFF', // Light text color for use on dark backgrounds or elements
+    lightEcoBackground: '#e0f2f1', // Light Eco Background color uses on WelcomeScreen
   },
 };

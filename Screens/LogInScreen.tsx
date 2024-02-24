@@ -5,6 +5,7 @@ import AppTitle from '../Components/AppTitle'
 import { useNavigation } from '@react-navigation/native'
 import GlobalStateContext from '../Contexts/GlobalStateContext';
 import Alert from '../Components/Alert'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 const LogInScreen:React.FC = () => {
   const navigation = useNavigation();
@@ -54,7 +55,11 @@ const LogInScreen:React.FC = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <KeyboardAwareScrollView
+      contentContainerStyle={styles.container}
+      keyboardShouldPersistTaps="handled"
+      extraScrollHeight={80}
+    >
       <AppTitle />
       <Text variant="displaySmall" style={{ marginBottom: 20, textAlign: "center", }}>Log In</Text>
       <TextInput
@@ -84,7 +89,7 @@ const LogInScreen:React.FC = () => {
       } style={{ marginVertical: 20 }}>
         Sign Up
       </Button>
-    </View>
+    </KeyboardAwareScrollView>
   );
 }
 
