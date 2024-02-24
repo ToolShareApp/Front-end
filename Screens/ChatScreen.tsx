@@ -1,9 +1,8 @@
-import React, { useContext, useState } from 'react'
-import { ScrollView, StyleSheet, View } from 'react-native';
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import { FlatList, KeyboardAvoidingView, StyleSheet, View, Platform } from 'react-native'
 import { TextInput, Card, Avatar, Paragraph } from 'react-native-paper';
 import GlobalStateContext from '../Contexts/GlobalStateContext'
-import GlobalState from '../Contexts/GlobalState'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { GreenTheme } from '../Themes/GreenTheme'
 
 interface Message {
   id: number;
@@ -27,6 +26,11 @@ const ChatScreen = () => {
     }
   ]);
   const [text, setText] = useState('');
+  const flatListRef = useRef<FlatList>();
+
+  useEffect(() => {
+    flatListRef.current?.scrollToEnd({ animated: true });
+  }, [messages]);
 
   const sendMessage = () => {
     if (text) {
@@ -44,50 +48,47 @@ const ChatScreen = () => {
   };
 
   return (
-    <KeyboardAwareScrollView
-      contentContainerStyle={styles.container}
-      keyboardShouldPersistTaps="handled"
-      extraScrollHeight={80}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 136 : 0}
     >
-      <View style={styles.container}>
-        {messages.map((message) => (
-          <View key={message.id} style={[
+      <FlatList
+        ref={flatListRef}
+        data={messages}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={[
             styles.message,
-            message.userId === user.profile_id ? styles.messageRight : styles.messageLeft,
+            item.userId === user.profile_id ? styles.messageRight : styles.messageLeft,
           ]}>
-            {message.userId !== user.profile_id && (
-              message.userAvatar && message.userAvatar !== '' ? (
-                <Avatar.Image size={46} source={{
-                  uri: message.userAvatar,
-                }} />
-                ) : (
-                <Avatar.Text size={46} label={message.username.substring(0,2)} style={styles.avatar} />
+            {item.userId !== user.profile_id && (
+              item.userAvatar ? (
+                <Avatar.Image size={46} source={{ uri: item.userAvatar }} />
+              ) : (
+                <Avatar.Text size={46} label={item.username.substring(0, 2)} />
               )
             )}
-            <Card style={styles.card} elevation={0}>
-              <Card.Content
-                style={[
-                  styles.cartContent,
-                  message.userId === user.profile_id ? styles.cardMessageRight : styles.cardMessageLeft,
-                  ]}
-              >
-                <Paragraph style={styles.username}>{message.username}</Paragraph>
-                <Paragraph>{message.text}</Paragraph>
-                <Paragraph style={styles.dateText}>{message.date}</Paragraph>
+            <Card style={styles.card}>
+              <Card.Content style={[
+                styles.cartContent,
+                item.userId === user.profile_id ? styles.cardMessageRight : styles.cardMessageLeft,
+              ]}>
+                <Paragraph style={styles.username}>{item.username}</Paragraph>
+                <Paragraph>{item.text}</Paragraph>
+                <Paragraph style={styles.dateText}>{item.date}</Paragraph>
               </Card.Content>
             </Card>
-            {message.userId === user.profile_id && (
-              user.picture_url && user.picture_url !== '' ? (
-                  <Avatar.Image size={46} source={{
-                    uri: user.picture_url,
-                  }} />
-                ) : (
-                <Avatar.Text size={46} label={user.display_name.substring(0,2)} style={styles.avatar} />
-                )
+            {item.userId === user.profile_id && (
+              user.picture_url ? (
+                <Avatar.Image size={46} source={{ uri: user.picture_url }} />
+              ) : (
+                <Avatar.Text size={46} label={user.display_name.substring(0, 2)} />
+              )
             )}
           </View>
-        ))}
-      </View>
+        )}
+      />
       <TextInput
         label="Type a message..."
         value={text}
@@ -96,7 +97,7 @@ const ChatScreen = () => {
         style={styles.input}
         right={<TextInput.Icon name="send" onPress={sendMessage}  icon={'send'}/>}
       />
-    </KeyboardAwareScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -106,7 +107,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   input: {
-    marginVertical: 40,
+    marginVertical: 0,
+    minHeight: 80,
+    backgroundColor: GreenTheme.colors.lightEcoBackground,
   },
   message: {
     flexDirection: 'row',
@@ -127,7 +130,8 @@ const styles = StyleSheet.create({
   cartContent: {
     backgroundColor: '#fff',
     borderRadius: 30,
-    minWidth: 100,
+    width: 'auto',
+    minWidth: 120,
     maxWidth: '92%',
     padding: 0,
     Margin: 0,

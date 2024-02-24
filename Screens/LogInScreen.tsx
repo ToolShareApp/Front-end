@@ -58,7 +58,7 @@ const LogInScreen:React.FC = () => {
     <KeyboardAwareScrollView
       contentContainerStyle={styles.container}
       keyboardShouldPersistTaps="handled"
-      extraScrollHeight={80}
+      extraScrollHeight={20}
     >
       <AppTitle />
       <Text variant="displaySmall" style={{ marginBottom: 20, textAlign: "center", }}>Log In</Text>

@@ -60,7 +60,7 @@ const SignUpScreen:React.FC = () => {
     <KeyboardAwareScrollView
       contentContainerStyle={styles.container}
       keyboardShouldPersistTaps="handled"
-      extraScrollHeight={80}
+      extraScrollHeight={20}
     >
       <View style={styles.container}>
       <AppTitle />
