@@ -12,4 +12,3 @@ const BrowseToolsScreen: React.FC = () => {
 };
 
 export default BrowseToolsScreen;
-

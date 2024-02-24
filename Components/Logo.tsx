@@ -1,11 +1,11 @@
-import React from 'react'
-import { Image } from 'expo-image';
+import React from "react";
+import { Image } from "expo-image";
 
-const icon = require('.././assets/icon.png');
+const icon = require(".././assets/icon.png");
 interface LogoProps {
   size?: number;
 }
-const Logo:React.FC<LogoProps> = ({size = 100}) => {
+const Logo: React.FC<LogoProps> = ({ size = 100 }) => {
   return (
     <Image
       style={{
@@ -14,12 +14,11 @@ const Logo:React.FC<LogoProps> = ({size = 100}) => {
         margin: 20,
       }}
       source={icon}
-      placeholder='ToolShareApp'
+      placeholder="ToolShareApp"
       contentFit="cover"
       transition={1000}
     />
   );
-}
-
+};
 
 export default Logo;
