@@ -188,7 +188,7 @@ const ToolsStackNavigator: React.FC = () => {
 			<ToolsStack.Screen
 				name="ToolsList"
 				component={BrowseToolsScreen}
-				options={{ title: "Tools List" }}
+				options={{ title: "Available Tools" }}
 			/>
 			<ToolsStack.Screen
 				name="ToolDetailsScreen"

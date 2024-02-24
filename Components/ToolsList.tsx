@@ -27,7 +27,7 @@ export default function ToolsList() {
   }, []);
 
   return (
-    <ScrollView style={{backgroundColor: GreenTheme.colors.surface}}>
+    <ScrollView>
       {listings?.map((listing: object) => {
         return (
           <ToolCard

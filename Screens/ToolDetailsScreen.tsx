@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet, Image } from "react-native";
-import { Avatar, Card, Text } from "react-native-paper";
+import { Button, Avatar, Card, Text } from "react-native-paper";
 import { useContext, useEffect, useState } from "react";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 import { useRoute } from '@react-navigation/native'
@@ -31,22 +31,21 @@ const ToolDetailsScreen: React.FC = () => {
       return ownerDetails
     })
   }
-
-  const image_url: string = toolDetails?.photo_url
-  const toolName: string = toolDetails?.tool
-  const description: string = toolDetails?.description
-  const profile_id: number = toolDetails?.owner_id
-
+  
   useEffect(() => {
     (async () => {
       const { listing_id } = route.params;
       const toolDetails = await getToolByToolId(listing_id)
       setToolDetails(toolDetails);
+      const profile_id: number = toolDetails?.owner_id
       const ownerDetails = await getOwnerDetails(profile_id)
       setOwnerDetails(ownerDetails)
     })()
-  }, [route.params, profile_id]);
+  }, []);
 
+  const image_url: string = toolDetails?.photo_url
+  const toolName: string = toolDetails?.tool
+  const description: string = toolDetails?.description
   const picture_url: string = ownerDetails?.picture_url
   const ownerName: string = ownerDetails?.display_name
 
@@ -57,13 +56,19 @@ const ToolDetailsScreen: React.FC = () => {
           uri: image_url
         }} style={styles.image}
         />
-        <View style={styles.description}>
-      <Text variant="bodyMedium">{description}</Text>
+          <Text variant="titleMedium">About the Tool:</Text>
+          <Text variant="bodyMedium">{description}</Text>
+        <View style={styles.location}>
+        <Button
+        icon={() => (
+          <Icon name="location-pin" size={40} color="green"/>
+        )}> Get location
+        </Button>
         </View>
       <Card style={styles.ownerCard}>
         <Card.Content style={styles.cardContent}>
           <View style={styles.cardText}>
-          <Text variant="bodyMedium">Owner:</Text>
+          <Text variant="titleMedium">Lender:</Text>
           <Text variant="bodyMedium">{ownerName}</Text>
           </View>
           <Avatar.Image source={{
@@ -71,7 +76,9 @@ const ToolDetailsScreen: React.FC = () => {
         }} style={styles.ownerAvatar}/>
         </Card.Content>
       </Card>
-      <Icon name="chat" size={40} color="green" style={styles.chatIcon}/>
+      <Button icon="chat" mode="contained" style={{ marginVertical: 20 }}>
+       Start Chat
+      </Button>
     </View>
   );
 };
@@ -89,9 +96,9 @@ const styles = StyleSheet.create({
     height: 225,
     borderRadius: 20
   },
-  description: {
-    width: "95%",
-    textAlign: 'center',
+  location: {
+    marginTop: 20,
+    marginBottom: 20,
   },
   ownerCard: {
     marginTop: 20,
@@ -101,13 +108,15 @@ const styles = StyleSheet.create({
   },
   cardContent: {
     flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   cardText: {
     flex: 1,
-    color: GreenTheme.colors.text,
+    color: GreenTheme.colors.darkText,
   },
   ownerAvatar: {
-    marginLeft: 10,
+    marginLeft: 8,
   },
   chatIcon: {
     marginRight: 30,
