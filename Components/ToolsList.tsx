@@ -5,7 +5,7 @@ import { useState } from "react";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 import ToolCard from "./ToolCard";
 import { ScrollView } from "react-native-gesture-handler";
-import { GreenTheme } from '../Themes/GreenTheme'
+import { GreenTheme } from "../Themes/GreenTheme";
 
 export default function ToolsList() {
   const { api } = useContext(GlobalStateContext);
@@ -27,7 +27,7 @@ export default function ToolsList() {
   }, []);
 
   return (
-    <ScrollView style={{backgroundColor: GreenTheme.colors.surface}}>
+    <ScrollView style={{ backgroundColor: GreenTheme.colors.surface }}>
       {listings?.map((listing: object) => {
         return (
           <ToolCard
