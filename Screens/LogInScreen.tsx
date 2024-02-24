@@ -18,7 +18,7 @@ const LogInScreen:React.FC = () => {
 
   async function fetchUserData (email: string, password: string) {
     try {
-      const apiResponse = await api.get(`/profile/email/${email}`)
+      const apiResponse = await api.get(`/profile/email/${email.toLowerCase()}`)
       const { data: { data } } = apiResponse
 
       // Check if the user exists.

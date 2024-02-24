@@ -6,6 +6,7 @@ import AppTitle from '../Components/AppTitle'
 import { useNavigation } from '@react-navigation/native'
 import { emailValidation, passwordValidation } from '../utils/utils'
 import GlobalStateContext from '../Contexts/GlobalStateContext';
+import Alert from '../Components/Alert'
 
 const SignUpScreen:React.FC = () => {
   const navigation = useNavigation();
@@ -19,11 +20,12 @@ const SignUpScreen:React.FC = () => {
   const [secureInputMode, setSecureInputMode] = useState<boolean>(true);
   const [imageUrlInput, setImageUrlInput] = useState<string>('');
   const [isCreatingProfile, setIsCreatingProfile] = useState<boolean>(false);
+  const [createProfileError, setCreateProfileError] = useState<any>('');
 
   function postNewUser(passwordInput: string, emailInput: string, displayNameInput: string, imageUrlInput: string) {
     return api.post('/profile', {
       password: passwordInput,
-      email: emailInput,
+      email: emailInput.toLowerCase(),
       display_name: displayNameInput,
       picture_url: imageUrlInput
     })
@@ -39,11 +41,18 @@ const SignUpScreen:React.FC = () => {
   }
 
   const onSignUp = async () => {
-    setIsCreatingProfile(true);
-    await postNewUser(passwordInput, emailInput, displayNameInput, imageUrlInput)
-    const newUser = await getUserByEmail(emailInput)
-    setUser(newUser);
-    navigation.navigate('Profile');
+    try{
+      setIsCreatingProfile(true);
+      await postNewUser(passwordInput, emailInput, displayNameInput, imageUrlInput)
+      const newUser = await getUserByEmail(emailInput)
+      setUser(newUser);
+      navigation.navigate('Profile');
+    }  catch (error) {
+      setCreateProfileError(error)
+    }
+    finally {
+      setIsCreatingProfile(false);
+    }
   }
 
   return (
@@ -123,6 +132,7 @@ const SignUpScreen:React.FC = () => {
         Log In
       </Button>
       { isCreatingProfile ? <Text>Creating profile for {displayNameInput}...</Text> : null}
+      { createProfileError !== '' ? <Alert error text={'Unfortunately, an error occurred while trying to create a new profile. Please try again.'}/> : null}
         </View>
     </ScrollView>
   );

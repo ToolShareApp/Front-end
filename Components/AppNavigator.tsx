@@ -15,6 +15,7 @@ import ChatScreen from '../Screens/ChatScreen'
 import ChatsListScreen from '../Screens/ChatsListScreen'
 import { GreenTheme } from '../Themes/GreenTheme'
 import GlobalStateContext from '../Contexts/GlobalStateContext'
+import WelcomeScreen from '../Screens/WelcomeScreen'
 
 const Drawer = createDrawerNavigator()
 const ToolsStack = createStackNavigator()
@@ -25,6 +26,7 @@ const DrawerNavigator: React.FC = () => {
 
   return (
     <Drawer.Navigator
+      initialRouteName={user ? 'BrowseTools' : 'Welcome'}
       screenOptions={{
         headerStyle: {
           backgroundColor: GreenTheme.colors.primary, // Apply background color to the header
@@ -42,6 +44,19 @@ const DrawerNavigator: React.FC = () => {
 
           { !user ? (
               <>
+                <DrawerItem
+                  label={'Welcome'}
+                  onPress={() => {
+                    props.navigation.navigate('Welcome');
+                  }}
+                  icon={({ focused, size }) => (
+                    <Icon
+                      source="leaf"
+                      color={focused ? GreenTheme.colors.accent : GreenTheme.colors.primary}
+                      size={size}
+                    />
+                  )}
+                />
                 <DrawerItem
                   label={'Log In'}
                   onPress={() => {
@@ -177,6 +192,11 @@ const DrawerNavigator: React.FC = () => {
         name="LogOut"
         component={LogOutScreen}
         options={{title: 'Log Out' }}
+      />
+      <Drawer.Screen
+        name="Welcome"
+        component={WelcomeScreen}
+        options={{title: 'Tools for Earth\'s Care' }}
       />
     </Drawer.Navigator>
   )

@@ -12,7 +12,7 @@ const LogOutScreen:React.FC = () => {
 
   const onLogOut = () => {
     setUser(null)
-    navigation.navigate('LogIn')
+    navigation.navigate('Welcome')
   }
 
   return (
