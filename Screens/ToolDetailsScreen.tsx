@@ -56,6 +56,18 @@ const ToolDetailsScreen: React.FC = () => {
     })
   }
 
+  function deleteInterest(listing_id: number, currentUser_id: number) {
+    return api.delete('/interest', {
+      data: {
+        listingId: listing_id,
+        userId: currentUser_id,
+      }
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  }
+
   function getInterestedByUserID(currentUser_id: number, listing_id: number) {
     return api.get(`/interest/lendee/${currentUser_id}`)
     .then((apiResponse) => {
@@ -84,7 +96,11 @@ const ToolDetailsScreen: React.FC = () => {
   }, []);
   
   function startChat() {
-    navigation.navigate('ChatScreen')
+    const owner_id: number = toolDetails.owner_id
+    navigation.navigate('Messages', {
+      screen: "ChatScreen",
+      params: { user_id: owner_id }
+    })
   }
 
  async function addToInterested() {
@@ -96,9 +112,13 @@ const ToolDetailsScreen: React.FC = () => {
   }
   }
 
-  function removeFromInterested() {
-    setInterested(false)
-    // insert function to remove from interested list
+  async function removeFromInterested() {
+    try {
+      setInterested(false)
+      await deleteInterest(listing_id, user.profile_id)
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   const image_url: string = toolDetails?.photo_url;
