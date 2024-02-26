@@ -25,20 +25,20 @@ export default function ToolsList() {
 		});
 	}, []);
 
-	return (
-		<ScrollView style={{ backgroundColor: GreenTheme.colors.surface }}>
-			{listings?.map((listing: object) => {
-				return (
-					<ToolCard
-						key={listing.listing_id}
-						listing_id={listing.listing_id}
-						category={listing.category}
-						name={listing.tool}
-						subcategory={listing.subcategory}
-						photo={listing.photo_url}
-					/>
-				);
-			})}
-		</ScrollView>
-	);
+  return (
+    <ScrollView style={{ backgroundColor: GreenTheme.colors.surface }}>
+      {listings?.map((listing: object) => {
+        return (
+          <ToolCard
+            key={listing.listing_id}
+            listing_id={listing.listing_id}
+            category={listing.category}
+            name={listing.tool}
+            subcategory={listing.subcategory}
+            photo={listing.photo_url}
+          />
+        );
+      })}
+    </ScrollView>
+  );
 }

@@ -6,15 +6,15 @@ import GlobalState from "./Contexts/GlobalState";
 import { GreenTheme } from "./Themes/GreenTheme";
 
 const App: React.FC = () => {
-	return (
-		<GlobalState apiUrl={"https://nc-toolshare.onrender.com/api/"}>
-			<PaperProvider theme={GreenTheme}>
-				<NavigationContainer>
-					<DrawerNavigator />
-				</NavigationContainer>
-			</PaperProvider>
-		</GlobalState>
-	);
+  return (
+    <GlobalState apiUrl={"https://nc-toolshare.onrender.com/api/"}>
+      <PaperProvider theme={GreenTheme}>
+        <NavigationContainer>
+          <DrawerNavigator />
+        </NavigationContainer>
+      </PaperProvider>
+    </GlobalState>
+  );
 };
 
 export default App;

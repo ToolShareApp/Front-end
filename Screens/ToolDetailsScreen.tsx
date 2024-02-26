@@ -9,22 +9,14 @@ const ToolDetailsScreen: React.FC = () => {
 	const [toolDetails, setToolDetails] = useState<object>();
 	const route = useRoute();
 
-	function getToolByToolId(listing_id: number) {
-		return api.get(`/listing/${listing_id}`).then((apiResponse: any) => {
-			const {
-				data: { data },
-			} = apiResponse;
-			return data;
-		});
-	}
-
-	useEffect(() => {
-		const { listing_id } = route.params;
-		getToolByToolId(listing_id).then((response: any) => {
-			const tool = response[0];
-			setToolDetails(tool);
-		});
-	}, []);
+  function getToolByToolId(listing_id: number) {
+    return api.get(`/listing/${listing_id}`).then((apiResponse: any) => {
+      const {
+        data: { data },
+      } = apiResponse;
+      return data;
+    });
+  }
 
 	return (
 		<View style={styles.toolDetails}>
