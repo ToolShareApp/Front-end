@@ -10,18 +10,21 @@ import {
 } from "react-native-paper";
 import { useContext, useEffect, useState } from "react";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { GreenTheme } from "../Themes/GreenTheme";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { ScrollView } from "react-native-gesture-handler";
 
 const ToolDetailsScreen: React.FC = () => {
-  const { api } = useContext(GlobalStateContext);
+  const { api, user } = useContext(GlobalStateContext);
   const [toolDetails, setToolDetails] = useState<object>();
   const [ownerDetails, setOwnerDetails] = useState<object>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [descriptionOpen, setDescriptionOpen] = useState<boolean>(false);
+  const [interested, setInterested] = useState<boolean>();
+  const navigation = useNavigation();
   const route = useRoute();
+  const { listing_id } = route.params;
 
   function getToolByToolId(listing_id: number) {
     return api.get(`/listing/${listing_id}`).then((apiResponse) => {
@@ -43,17 +46,80 @@ const ToolDetailsScreen: React.FC = () => {
     });
   }
 
+  function postInterest(listing_id: number, currentUser_id: number) {
+    return api.post('/interest', {
+      listingId: listing_id,
+      userId: currentUser_id,
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  }
+
+  function deleteInterest(listing_id: number, currentUser_id: number) {
+    return api.delete('/interest', {
+      data: {
+        listingId: listing_id,
+        userId: currentUser_id,
+      }
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  }
+
+  function getInterestedByUserID(currentUser_id: number, listing_id: number) {
+    return api.get(`/interest/lendee/${currentUser_id}`)
+    .then((apiResponse) => {
+      const {
+        data: { data },
+      } = apiResponse;
+      const userInterested: boolean = data.some((tool: object) => {
+        return listing_id === tool?.listing_id
+      })
+      return userInterested
+    })
+  }
+  
+
   useEffect(() => {
     (async () => {
-      const { listing_id } = route.params;
       const toolDetails = await getToolByToolId(listing_id);
       setToolDetails(toolDetails);
       setIsLoading(false);
       const profile_id: number = toolDetails?.owner_id;
       const ownerDetails = await getOwnerDetails(profile_id);
       setOwnerDetails(ownerDetails);
+      const userInterested = await getInterestedByUserID(user.profile_id, listing_id)
+      setInterested(userInterested)
     })();
   }, []);
+  
+  function startChat() {
+    const owner_id: number = toolDetails.owner_id
+    navigation.navigate('Messages', {
+      screen: "ChatScreen",
+      params: { user_id: owner_id }
+    })
+  }
+
+ async function addToInterested() {
+  try {
+    setInterested(true)
+    await postInterest(listing_id, user.profile_id)
+  } catch (err) {
+    console.log(err)
+  }
+  }
+
+  async function removeFromInterested() {
+    try {
+      setInterested(false)
+      await deleteInterest(listing_id, user.profile_id)
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   const image_url: string = toolDetails?.photo_url;
   const toolName: string = toolDetails?.tool;
@@ -88,15 +154,18 @@ const ToolDetailsScreen: React.FC = () => {
               </Chip>
             </View>
             <View style={styles.about}>
-              <Icon name="info-outline" size={20} />
               <TouchableRipple
                 onPress={() => {
                   setDescriptionOpen(!descriptionOpen);
                 }}
               >
-                <Text variant="titleMedium" style={styles.aboutTitle}>
-                  Learn more about this tool
-                </Text>
+                <View style={styles.about}>
+                  <Icon name="info-outline" size={20} />
+                  <Text variant="titleMedium" style={styles.aboutTitle}>
+                    Learn more about this tool
+                  </Text>
+                  <Icon name="expand-more" size={30} color="black" />
+                </View>
               </TouchableRipple>
             </View>
             {descriptionOpen ? (
@@ -138,21 +207,24 @@ const ToolDetailsScreen: React.FC = () => {
                 />
               </Card.Content>
             </Card>
+            <Button
+              style={styles.location}
+              icon={() => <Icon name="location-pin" size={30} color="green" />}
+            >
+              {" "}
+              Get location
+            </Button>
             <View style={styles.buttons}>
-              <Button
-                style={styles.location}
-                icon={() => (
-                  <Icon name="location-pin" size={30} color="green" />
-                )}
-              >
-                {" "}
-                Get location
+              { !interested ?
+              <Button icon="star" mode="contained" style={styles.button} onPress={() => addToInterested()}>
+                Add to Interested
               </Button>
-              <Button
-                icon="chat"
-                mode="contained"
-                style={{ marginVertical: 20 }}
-              >
+              :  
+              <Button icon="star" mode="contained" style={styles.button} onPress={() => removeFromInterested()}>
+              Remove from Interested
+            </Button>
+              }
+              <Button icon="chat" mode="contained" style={styles.button} onPress={() => startChat()}>
                 Start Chat
               </Button>
             </View>
@@ -186,7 +258,6 @@ const styles = StyleSheet.create({
     backgroundColor: GreenTheme.colors.surface,
   },
   about: {
-    marginTop: 15,
     marginBottom: 15,
     flexDirection: "row",
   },
@@ -196,6 +267,7 @@ const styles = StyleSheet.create({
   description: {
     width: "95%",
     textAlign: "center",
+    marginBottom: 15,
   },
   deposit: {
     flexDirection: "row",
@@ -205,8 +277,8 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   location: {
-    marginTop: 20,
-    marginBottom: 20,
+    marginTop: 15,
+    marginBottom: 15,
     marginRight: 10,
     borderWidth: 1,
     borderColor: GreenTheme.colors.primary,
@@ -214,7 +286,7 @@ const styles = StyleSheet.create({
   },
   ownerCard: {
     marginTop: 20,
-    marginBottom: 20,
+    marginBottom: 15,
     width: "95%",
     backgroundColor: GreenTheme.colors.surface,
   },
@@ -236,6 +308,9 @@ const styles = StyleSheet.create({
   },
   buttons: {
     flexDirection: "row",
+  },
+  button: {
+    margin: 15,
   },
 });
 
