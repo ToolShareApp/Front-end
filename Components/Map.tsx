@@ -1,4 +1,4 @@
-import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps"; // remove PROVIDER_GOOGLE import if not using Google Maps
+import MapView, { PROVIDER_GOOGLE, Marker, Callout } from "react-native-maps"; // remove PROVIDER_GOOGLE import if not using Google Maps
 import React, { useState, useEffect, useContext } from "react";
 import { Text, View, StyleSheet, Image } from "react-native";
 import * as Location from "expo-location";
@@ -61,15 +61,17 @@ export default function Map() {
 						{users.map(
 							(
 								marker: {
+									profile_id: number;
+									display_name: string | undefined;
 									latitude: any;
 									longitude: any;
-									profile_id: string | undefined;
 								},
 								i: React.Key | null | undefined
 							) => {
 								return (
-									<>
+									<Callout tooltip>
 										<Marker
+											title={marker.display_name}
 											key={i}
 											identifier={`id${i}`}
 											icon={require("../assets/hammer-and-wrench.png")}
@@ -82,7 +84,7 @@ export default function Map() {
 												console.log(marker.profile_id);
 											}}
 										/>
-									</>
+									</Callout>
 								);
 							}
 						)}
@@ -103,18 +105,22 @@ export default function Map() {
 							setAddress(value);
 						}}
 						onSubmitEditing={() => {
-							reverseGeocoding.findAddress(address).then(({ data }: any) => {
-								setReverseLocation(data.results[0].formatted_address);
-								setPlaceId(data.results[0].place_id);
-								return reverseGeocoding.findPlace(placeId).then(({ data }) => {
-									console.log(data.result.geometry.location);
-									setUser({
-										...user,
-										latitude: data.result.geometry.location.lat,
-										longitude: data.result.geometry.location.lng,
+							reverseGeocoding
+								.findAddress(address)
+								.then(({ data }: any) => {
+									setReverseLocation(data.results[0].formatted_address);
+									setPlaceId(data.results[0].place_id);
+								})
+								.then(() => {
+									reverseGeocoding.findPlace(placeId).then(({ data }) => {
+										console.log(data.result.geometry.location);
+										setUser({
+											...user,
+											latitude: data.result.geometry.location.lat,
+											longitude: data.result.geometry.location.lng,
+										});
 									});
 								});
-							});
 						}}
 					/>
 				</View>
