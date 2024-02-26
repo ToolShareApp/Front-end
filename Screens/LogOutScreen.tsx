@@ -1,29 +1,38 @@
-import React from 'react'
-import { View, StyleSheet, } from "react-native";
-import { Button } from 'react-native-paper'
-import AppTitle from '../Components/AppTitle'
-import Alert from '../Components/Alert'
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import { Button } from "react-native-paper";
+import AppTitle from "../Components/AppTitle";
+import Alert from "../Components/Alert";
 
-const LogOutScreen:React.FC = () => {
-  const onLogOut = () => {}
+const LogOutScreen: React.FC = () => {
+  const onLogOut = () => {};
 
   return (
     <View style={styles.container}>
       <AppTitle />
-      <Alert text={'Are you sure you want to log out? You will need to sign in again to access your account.'} />
-      <Button icon="logout" mode="contained" onPress={() => onLogOut()} style={{ marginVertical: 20 }}>
+      <Alert
+        text={
+          "Are you sure you want to log out? You will need to sign in again to access your account."
+        }
+      />
+      <Button
+        icon="logout"
+        mode="contained"
+        onPress={() => onLogOut()}
+        style={{ marginVertical: 20 }}
+      >
         Log Out
       </Button>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "flex-start",
     padding: 20,
   },
 });

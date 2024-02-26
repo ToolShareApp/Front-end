@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import GlobalStateContext from './GlobalStateContext'
-import axios from 'axios'
-const GlobalState:any = ({ children, apiUrl }) => {
+import React, { useEffect, useState } from "react";
+import GlobalStateContext from "./GlobalStateContext";
+import axios from "axios";
+const GlobalState: any = ({ children, apiUrl }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
 
@@ -18,10 +18,12 @@ const GlobalState:any = ({ children, apiUrl }) => {
   // });
 
   return (
-    <GlobalStateContext.Provider value={{user, setUser, api, token, setToken}}>
+    <GlobalStateContext.Provider
+      value={{ user, setUser, api, token, setToken }}
+    >
       {children}
     </GlobalStateContext.Provider>
   );
-}
+};
 
 export default GlobalState;

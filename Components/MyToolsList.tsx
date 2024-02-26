@@ -5,14 +5,14 @@ import { useState } from "react";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 import ToolCard from "./ToolCard";
 import { ScrollView } from "react-native-gesture-handler";
-import { GreenTheme } from '../Themes/GreenTheme'
+import { GreenTheme } from "../Themes/GreenTheme";
 
 const MyToolsList: React.FC = () => {
   const { api, user } = useContext(GlobalStateContext);
   const [toolsList, setToolsList] = useState<object[]>();
 
   function getToolsByOwnerId() {
-    const profile_id = user?.profile_id
+    const profile_id = user?.profile_id;
     return api.get(`/listing/owner/${profile_id}`).then((apiResponse: any) => {
       const {
         data: { data },
@@ -28,7 +28,7 @@ const MyToolsList: React.FC = () => {
   }, []);
 
   return (
-    <ScrollView style={{backgroundColor: GreenTheme.colors.surface}}>
+    <ScrollView style={{ backgroundColor: GreenTheme.colors.surface }}>
       {toolsList?.map((listing: object) => {
         return (
           <ToolCard
