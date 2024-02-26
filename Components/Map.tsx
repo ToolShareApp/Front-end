@@ -73,7 +73,7 @@ export default function Map() {
 										<Marker
 											title={marker.display_name}
 											key={i}
-											identifier={`id${i}`}
+											identifier={`id ${i}`}
 											icon={require("../assets/hammer-and-wrench.png")}
 											coordinate={{
 												latitude: marker.latitude,
@@ -112,14 +112,15 @@ export default function Map() {
 									setPlaceId(data.results[0].place_id);
 								})
 								.then(() => {
-									reverseGeocoding.findPlace(placeId).then(({ data }) => {
-										console.log(data.result.geometry.location);
-										setUser({
-											...user,
-											latitude: data.result.geometry.location.lat,
-											longitude: data.result.geometry.location.lng,
+									return reverseGeocoding
+										.findPlace(placeId)
+										.then(({ data }) => {
+											setUser({
+												...user,
+												latitude: data.result.geometry.location.lat,
+												longitude: data.result.geometry.location.lng,
+											});
 										});
-									});
 								});
 						}}
 					/>
