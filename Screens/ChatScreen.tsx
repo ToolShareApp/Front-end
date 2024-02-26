@@ -5,11 +5,15 @@ import {
   StyleSheet,
   View,
   Platform,
+  Dimensions
 } from "react-native";
-import { TextInput, Card, Avatar, Paragraph } from "react-native-paper";
+import { TextInput, Avatar, Paragraph } from "react-native-paper";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 import { GreenTheme } from "../Themes/GreenTheme";
+import { useRoute } from '@react-navigation/native'
 
+const screenWidth = Dimensions.get('window').width;
+const maxMessageWidth = screenWidth * 0.8;
 interface Message {
   id: number;
   username: string;
@@ -19,7 +23,7 @@ interface Message {
   date: string;
 }
 
-const ChatScreen = () => {
+const ChatScreen: React.FC = () => {
   const { user } = useContext(GlobalStateContext);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -73,9 +77,13 @@ const ChatScreen = () => {
   ]);
   const [text, setText] = useState("");
   const flatListRef = useRef<FlatList>();
+  const route = useRoute();
+  const { user_id } = route.params;
 
   useEffect(() => {
     flatListRef.current?.scrollToEnd({ animated: true });
+    console.log('route.params')
+    console.log(route.params)
   }, [messages]);
 
   const sendMessage = () => {
@@ -114,31 +122,32 @@ const ChatScreen = () => {
           >
             {item.userId !== user.profile_id &&
               (item.userAvatar ? (
-                <Avatar.Image size={46} source={{ uri: item.userAvatar }} />
+                <Avatar.Image size={46} source={{ uri: item.userAvatar }} style={styles.avatar} />
               ) : (
-                <Avatar.Text size={46} label={item.username.substring(0, 2)} />
+                <Avatar.Text size={46} label={item.username.substring(0, 1)} style={styles.avatar} />
               ))}
-            <Card style={styles.card}>
-              <Card.Content
+            <View style={styles.messageContainer}>
+              <View
                 style={[
-                  styles.cartContent,
+                  styles.messageBody,
                   item.userId === user.profile_id
-                    ? styles.cardMessageRight
-                    : styles.cardMessageLeft,
+                    ? styles.alightMessageRight
+                    : styles.alightMessageLeft,
                 ]}
               >
                 <Paragraph style={styles.username}>{item.username}</Paragraph>
                 <Paragraph>{item.text}</Paragraph>
                 <Paragraph style={styles.dateText}>{item.date}</Paragraph>
-              </Card.Content>
-            </Card>
+              </View>
+            </View>
             {item.userId === user.profile_id &&
               (user.picture_url ? (
-                <Avatar.Image size={46} source={{ uri: user.picture_url }} />
+                <Avatar.Image size={46} source={{ uri: user.picture_url }} style={styles.avatar} />
               ) : (
                 <Avatar.Text
                   size={46}
-                  label={user.display_name.substring(0, 2)}
+                  label={user.display_name.substring(0, 1)}
+                  style={styles.avatar}
                 />
               ))}
           </View>
@@ -167,6 +176,16 @@ const styles = StyleSheet.create({
     marginVertical: 0,
     minHeight: 80,
     backgroundColor: GreenTheme.colors.lightEcoBackground,
+    // Shadows for iOS
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    // Shadows for Android
+    elevation: 4,
   },
   message: {
     flexDirection: "row",
@@ -175,36 +194,58 @@ const styles = StyleSheet.create({
   },
   messageRight: {
     justifyContent: "flex-end",
+    paddingVertical: 20,
+    maxWidth: '100%',
+    marginEnd: 20,
   },
   messageLeft: {
     justifyContent: "flex-start",
+    marginStart: 20,
   },
-  card: {
-    padding: 6,
-    elevation: 0,
+  messageContainer: {
     backgroundColor: "transparent",
+    marginHorizontal: 8,
   },
-  cartContent: {
+  messageBody: {
     backgroundColor: "#fff",
     borderRadius: 30,
-    width: "auto",
-    minWidth: 120,
-    maxWidth: "92%",
-    padding: 0,
-    margin: 0,
+    padding: 15,
+    maxWidth: maxMessageWidth,
+    // Shadows for iOS
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    // Shadows for Android
+    elevation: 4,
   },
-  cardMessageRight: {
+  alightMessageRight: {
     borderBottomRightRadius: 0,
     alignItems: "flex-end",
+    backgroundColor: GreenTheme.colors.lightEcoBackground,
   },
-  cardMessageLeft: {
+  alightMessageLeft: {
     borderBottomLeftRadius: 0,
+    alignItems: "flex-start",
+    backgroundColor: GreenTheme.colors.background,
   },
   username: {
     fontWeight: "bold",
   },
   avatar: {
-    marginHorizontal: 4,
+    // Shadows for iOS
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    // Shadows for Android
+    elevation: 4,
   },
   dateText: {
     fontSize: 10,

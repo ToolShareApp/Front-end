@@ -96,10 +96,11 @@ const ToolDetailsScreen: React.FC = () => {
   }, []);
   
   function startChat() {
-    const owner_id: number = toolDetails.owner_id
+    const owner_id: number = toolDetails?.owner_id;
+    // @ts-ignore
     navigation.navigate('Messages', {
       screen: "ChatScreen",
-      params: { user_id: owner_id }
+      params: { user_id: owner_id, title: ownerName }
     })
   }
 
@@ -199,12 +200,20 @@ const ToolDetailsScreen: React.FC = () => {
                   <Text variant="bodyLarge">Lender: </Text>
                   <Text variant="bodyLarge">{ownerName}</Text>
                 </View>
-                <Avatar.Image
-                  source={{
-                    uri: profilePicture_url,
-                  }}
-                  style={styles.ownerAvatar}
-                />
+
+                {profilePicture_url ? (
+                    <Avatar.Image
+                      source={{
+                        uri: profilePicture_url,
+                      }}
+                      style={styles.ownerAvatar}
+                    />
+                  ) : (
+                    <Avatar.Text
+                      label={ownerName?.substring(0, 1)}
+                      style={styles.ownerAvatar}
+                    />
+                  )}
               </Card.Content>
             </Card>
             <Button

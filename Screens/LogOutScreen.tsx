@@ -18,7 +18,7 @@ const LogOutScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <AppTitle />
-      <Alert
+      <Alert error={false}
         text={
           "Are you sure you want to log out? You will need to sign in again to access your account."
         }
