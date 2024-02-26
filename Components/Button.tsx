@@ -1,6 +1,6 @@
-import React from 'react';
-import { StyleSheet } from 'react-native';
-import { Button as PaperButton } from 'react-native-paper';
+import React from "react";
+import { StyleSheet } from "react-native";
+import { Button as PaperButton } from "react-native-paper";
 
 interface ButtonProps {
   onPress: () => void;
@@ -17,10 +17,10 @@ const Button: React.FC<ButtonProps> = ({ onPress, label }) => {
 
 const styles = StyleSheet.create({
   button: {
-		margin: 15,
-		padding: 3,
-		borderRadius: 10,
-	}
-})
+    margin: 15,
+    padding: 3,
+    borderRadius: 10,
+  },
+});
 
 export default Button;
