@@ -25,8 +25,10 @@ const Drawer = createDrawerNavigator();
 const ToolsStack = createStackNavigator();
 const ChatStack = createStackNavigator();
 
-const DrawerNavigator: React.FC = (location) => {
+const DrawerNavigator: React.FC = () => {
+
 	const { user } = useContext(GlobalStateContext);
+
 	return (
 		<Drawer.Navigator
 			initialRouteName={user ? "BrowseTools" : "Welcome"}

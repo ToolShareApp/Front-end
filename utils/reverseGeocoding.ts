@@ -20,4 +20,24 @@ async function findAddress(address: string) {
 	return userAddress
 }
 
-export default {reverseGeocode, findAddress}
+async function findPlace(place: string) {
+
+	let userPlace: any = await axios
+		.get(
+			`https://maps.googleapis.com/maps/api/place/details/json?place_id=${place}&key=${YOUR_API_KEY}`
+			
+	)
+	return userPlace
+}
+
+async function getUsers() {
+
+	let users: any = await axios
+		.get(
+			`https://nc-toolshare.onrender.com/api/profile`
+			
+	)
+	return users.data.data
+}
+
+export default {reverseGeocode, findAddress, findPlace, getUsers}
