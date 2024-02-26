@@ -1,36 +1,72 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { View, Image, StyleSheet } from "react-native";
+import { Button, Text } from "react-native-paper";
+import AppTitle from "../Components/AppTitle";
+import { GreenTheme } from "../Themes/GreenTheme";
+import { useNavigation } from "@react-navigation/native";
+const welcomeScreenImage = require(".././assets/welcome-screen-image.webp");
 
-const WelcomeScreen: React.FC = () => {
+const WelcomeScreen = () => {
+  const navigation = useNavigation();
+
   return (
-    <View style={styles.root}>
-      <Text style={styles.header}>Welcome to ToolShare! 🛠️</Text>
-      <Text style={styles.about}>
-        ToolShare is a community-based application where we encourage people to
-        share any tools they have lying around with people in their local
-        community, and in return, they can borrow tools from others. Sharing is
-        caring!
+    <View style={styles.container}>
+      <Text style={styles.text}>WELCOME</Text>
+      <Image source={welcomeScreenImage} style={styles.image} />
+      <AppTitle />
+      <Text style={styles.description}>
+        Borrow, lend, and save with just a tap. Join our community to make DIY
+        and repairs easy and eco-friendly. Let's build a greener world together!
       </Text>
+      <View style={styles.buttonContainer}>
+        <Button mode="contained" onPress={() => navigation.navigate("LogIn")}>
+          Log In
+        </Button>
+        <Button
+          mode="outlined"
+          onPress={() => navigation.navigate("SignUp")}
+          style={styles.signUpButton}
+        >
+          Sign Up
+        </Button>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  root: {
+  container: {
+    flex: 1,
     alignItems: "center",
-    alignSelf: "center",
+    justifyContent: "center",
+    backgroundColor: GreenTheme.colors.lightEcoBackground,
   },
-  header: {
-    fontSize: 40,
+  image: {
+    width: 300,
+    height: 240,
+    marginBottom: 20,
+  },
+  text: {
+    fontSize: 32,
+    marginBottom: 10,
+    color: GreenTheme.colors.primary,
+  },
+  description: {
+    fontSize: 16,
+    lineHeight: 26,
     textAlign: "center",
+    marginHorizontal: 20,
+    marginBottom: 20,
+    color: GreenTheme.colors.secondaryText,
   },
-  about: {
-    margin: 20,
-    paddingVertical: 15,
-    paddingHorizontal: 15,
-    borderColor: "black",
-    borderWidth: 2,
-    borderRadius: 15,
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
+    paddingHorizontal: 50,
+  },
+  signUpButton: {
+    marginLeft: 10,
   },
 });
 

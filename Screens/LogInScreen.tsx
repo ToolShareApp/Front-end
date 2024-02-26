@@ -5,6 +5,7 @@ import AppTitle from "../Components/AppTitle";
 import { useNavigation } from "@react-navigation/native";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 import Alert from "../Components/Alert";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const LogInScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -16,66 +17,53 @@ const LogInScreen: React.FC = () => {
   const [error, setError] = useState<boolean>(false);
   const { api, setUser } = useContext(GlobalStateContext);
 
-  function checkForExistingUser(email: string) {
-    return api.get(`/profile/email/${email}`).then((apiResponse) => {
-      const {
-        data: { data },
-      } = apiResponse;
-      const userExists = data.length !== 0;
-      return userExists;
-    });
-  }
-
-  function checkCorrectPassword(email: string, password: string) {
-    return api.get(`/profile/email/${email}`).then((apiResponse) => {
-      const {
-        data: { data },
-      } = apiResponse;
-      const userObj = data[0];
-      const passwordCorrect = userObj.password === password;
-      return passwordCorrect;
-    });
-  }
-
-  function getUserByEmail(email: string) {
-    return api.get(`/profile/email/${email}`).then((apiResponse) => {
-      const {
-        data: { data },
-      } = apiResponse;
-      const userObj: object = data[0];
-      return userObj;
-    });
-  }
-
-  const onLogIn = async () => {
+  async function fetchUserData(email: string, password: string) {
     try {
-      setNoAccountRecord(false);
-      setNoCorrectPassword(false);
-      const userExists = await checkForExistingUser(emailInput);
-      if (userExists) {
-        const correctPassword = await checkCorrectPassword(
-          emailInput,
-          passwordInput,
-        );
-        if (correctPassword) {
-          const user = await getUserByEmail(emailInput);
-          setUser(user);
-          navigation.navigate("BrowseTools");
-        } else {
-          setNoCorrectPassword(true);
-          setPasswordInput("");
-        }
-      } else {
+      const apiResponse = await api.get(
+        `/profile/email/${email.toLowerCase()}`,
+      );
+      const {
+        data: { data },
+      } = apiResponse;
+
+      // Check if the user exists.
+      // !! It should be implemented on the backend !!
+      if (data.length === 0) {
         setNoAccountRecord(true);
         setPasswordInput("");
+        return;
       }
+
+      // Check if the password is correct.
+      // !! Never do this on the frontend, it should be implemented on the backend !!
+      const userObj = data[0];
+      if (userObj.password !== password) {
+        setNoCorrectPassword(true);
+        setPasswordInput("");
+        return;
+      }
+
+      // If user is exist and the password is correct, set the user and navigate to 'BrowseTools'.
+      setUser(userObj);
+      navigation.navigate("BrowseTools");
     } catch (err) {
       setError(true);
     }
+  }
+
+  const onLogIn = async () => {
+    setNoAccountRecord(false);
+    setNoCorrectPassword(false);
+
+    await fetchUserData(emailInput, passwordInput);
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAwareScrollView
+      contentContainerStyle={styles.container}
+      keyboardShouldPersistTaps="handled"
+      extraScrollHeight={20}
+    >
       <AppTitle />
       <Text
         variant="displaySmall"
@@ -129,7 +117,7 @@ const LogInScreen: React.FC = () => {
       >
         Sign Up
       </Button>
-    </View>
+    </KeyboardAwareScrollView>
   );
 };
 

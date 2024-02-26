@@ -6,35 +6,38 @@ import {
 import BrowseToolsScreen from "../Screens/BrowseToolsScreen";
 import MyToolsScreen from "../Screens/MyToolsScreen";
 import ProfileScreen from "../Screens/ProfileScreen";
-import MessagesScreen from "../Screens/MessagesScreen";
 import React, { useContext } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import ToolDetailsScreen from "../Screens/ToolDetailsScreen";
-import { Icon, Text } from "react-native-paper";
+import { Icon } from "react-native-paper";
 import LogOutScreen from "../Screens/LogOutScreen";
 import SignUpScreen from "../Screens/SignUpScreen";
 import LogInScreen from "../Screens/LogInScreen";
-import { GreenDrawerTheme } from "../Themes/GreenTheme";
 import Logo from "./Logo";
 import { StyleSheet, View } from "react-native";
+import ChatScreen from "../Screens/ChatScreen";
+import ChatsListScreen from "../Screens/ChatsListScreen";
+import { GreenTheme } from "../Themes/GreenTheme";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
+import WelcomeScreen from "../Screens/WelcomeScreen";
 
 const Drawer = createDrawerNavigator();
 const ToolsStack = createStackNavigator();
+const ChatStack = createStackNavigator();
 
 const DrawerNavigator: React.FC = () => {
   const { user } = useContext(GlobalStateContext);
 
   return (
     <Drawer.Navigator
-      initialRouteName="LogIn"
+      initialRouteName={user ? "BrowseTools" : "Welcome"}
       screenOptions={{
         headerStyle: {
-          backgroundColor: GreenDrawerTheme.primary, // Apply background color to the header
+          backgroundColor: GreenTheme.colors.primary, // Apply background color to the header
         },
-        headerTintColor: GreenDrawerTheme.background, // Apply color to the header items (title, back button)
+        headerTintColor: GreenTheme.colors.background, // Apply color to the header items (title, back button)
         drawerStyle: {
-          backgroundColor: GreenDrawerTheme.background, // Apply background color to the drawer
+          backgroundColor: GreenTheme.colors.background, // Apply background color to the drawer
         },
       }}
       drawerContent={(props) => (
@@ -42,8 +45,26 @@ const DrawerNavigator: React.FC = () => {
           <View style={styles.drawerLogo}>
             <Logo size={80} />
           </View>
+
           {!user ? (
             <>
+              <DrawerItem
+                label={"Welcome"}
+                onPress={() => {
+                  props.navigation.navigate("Welcome");
+                }}
+                icon={({ focused, size }) => (
+                  <Icon
+                    source="leaf"
+                    color={
+                      focused
+                        ? GreenTheme.colors.accent
+                        : GreenTheme.colors.primary
+                    }
+                    size={size}
+                  />
+                )}
+              />
               <DrawerItem
                 label={"Log In"}
                 onPress={() => {
@@ -52,7 +73,11 @@ const DrawerNavigator: React.FC = () => {
                 icon={({ focused, size }) => (
                   <Icon
                     source="login"
-                    color={focused ? "#08480a" : "#0c600f"}
+                    color={
+                      focused
+                        ? GreenTheme.colors.accent
+                        : GreenTheme.colors.primary
+                    }
                     size={size}
                   />
                 )}
@@ -65,7 +90,11 @@ const DrawerNavigator: React.FC = () => {
                 icon={({ focused, size }) => (
                   <Icon
                     source="account-plus"
-                    color={focused ? "#08480a" : "#0c600f"}
+                    color={
+                      focused
+                        ? GreenTheme.colors.accent
+                        : GreenTheme.colors.primary
+                    }
                     size={size}
                   />
                 )}
@@ -81,7 +110,11 @@ const DrawerNavigator: React.FC = () => {
                 icon={({ focused, size }) => (
                   <Icon
                     source="map-search"
-                    color={focused ? "#08480a" : "#0c600f"}
+                    color={
+                      focused
+                        ? GreenTheme.colors.accent
+                        : GreenTheme.colors.primary
+                    }
                     size={size}
                   />
                 )}
@@ -94,7 +127,11 @@ const DrawerNavigator: React.FC = () => {
                 icon={({ focused, size }) => (
                   <Icon
                     source="hammer-wrench"
-                    color={focused ? "#08480a" : "#0c600f"}
+                    color={
+                      focused
+                        ? GreenTheme.colors.accent
+                        : GreenTheme.colors.primary
+                    }
                     size={size}
                   />
                 )}
@@ -107,7 +144,11 @@ const DrawerNavigator: React.FC = () => {
                 icon={({ focused, size }) => (
                   <Icon
                     source="account"
-                    color={focused ? "#08480a" : "#0c600f"}
+                    color={
+                      focused
+                        ? GreenTheme.colors.accent
+                        : GreenTheme.colors.primary
+                    }
                     size={size}
                   />
                 )}
@@ -120,19 +161,30 @@ const DrawerNavigator: React.FC = () => {
                 icon={({ focused, size }) => (
                   <Icon
                     source="forum-outline"
-                    color={focused ? "#08480a" : "#0c600f"}
+                    color={
+                      focused
+                        ? GreenTheme.colors.accent
+                        : GreenTheme.colors.primary
+                    }
                     size={size}
                   />
                 )}
               />
-
               <DrawerItem
                 label={"Log Out"}
                 onPress={() => {
                   props.navigation.navigate("LogOut");
                 }}
                 icon={({ focused, size }) => (
-                  <Icon source="logout" color="red" size={size} />
+                  <Icon
+                    source="logout"
+                    color={
+                      focused
+                        ? GreenTheme.colors.warning
+                        : GreenTheme.colors.error
+                    }
+                    size={size}
+                  />
                 )}
               />
             </>
@@ -157,7 +209,7 @@ const DrawerNavigator: React.FC = () => {
       />
       <Drawer.Screen
         name="Messages"
-        component={MessagesScreen}
+        component={ChatStackNavigator}
         options={{ title: "Messages" }}
       />
       <Drawer.Screen
@@ -176,6 +228,11 @@ const DrawerNavigator: React.FC = () => {
         component={LogOutScreen}
         options={{ title: "Log Out" }}
       />
+      <Drawer.Screen
+        name="Welcome"
+        component={WelcomeScreen}
+        options={{ title: "Tools for Earth's Care" }}
+      />
     </Drawer.Navigator>
   );
 };
@@ -184,13 +241,13 @@ const ToolsStackNavigator: React.FC = () => {
   return (
     <ToolsStack.Navigator
       screenOptions={{
-        headerTintColor: GreenDrawerTheme.primary, // Apply color to the header items (title, back button)
+        headerTintColor: GreenTheme.colors.primary, // Apply color to the header items (title, back button)
       }}
     >
       <ToolsStack.Screen
         name="ToolsList"
         component={BrowseToolsScreen}
-        options={{ title: "Available Tools" }}
+        options={{ title: "Tools List" }}
       />
       <ToolsStack.Screen
         name="ToolDetailsScreen"
@@ -198,6 +255,27 @@ const ToolsStackNavigator: React.FC = () => {
         options={{ title: "Details" }}
       />
     </ToolsStack.Navigator>
+  );
+};
+
+const ChatStackNavigator: React.FC = () => {
+  return (
+    <ChatStack.Navigator
+      screenOptions={{
+        headerTintColor: GreenTheme.colors.primary, // Apply color to the header items (title, back button)
+      }}
+    >
+      <ChatStack.Screen
+        name="ChatsList"
+        component={ChatsListScreen}
+        options={{ title: "Chats" }}
+      />
+      <ChatStack.Screen
+        name="ChatScreen"
+        component={ChatScreen}
+        options={({ route }) => ({ title: route.params.title })}
+      />
+    </ChatStack.Navigator>
   );
 };
 

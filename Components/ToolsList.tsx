@@ -5,7 +5,6 @@ import { useState } from "react";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 import ToolCard from "./ToolCard";
 import { ScrollView } from "react-native-gesture-handler";
-import { GreenTheme } from "../Themes/GreenTheme";
 
 export default function ToolsList() {
   const { api } = useContext(GlobalStateContext);
