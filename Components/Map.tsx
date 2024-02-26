@@ -7,65 +7,52 @@ import reverseGeocoding from "../utils/reverseGeocoding";
 import { TextInput } from "react-native-paper";
 
 export default function Map() {
-	const [location, setLocation] = useState<any>(null);
 	const [errorMsg, setErrorMsg] = useState<string>("");
 	const [reversedLocation, setReverseLocation] = useState<string>("");
 	const [address, setAddress] = useState<string>("");
 	//const locationArray = [location, "latitude: 35, longitude: -120,"];
-
-	async function getLocation() {
-		// if (Platform.OS === "android" && !Device.isDevice) {
-		// 	setErrorMsg(
-		// 		"Oops, this will not work on Snack in an Android Emulator. Try it on your device!"
-		// 	);
-		// 	return;
-		// }
-		let { status } = await Location.requestForegroundPermissionsAsync();
-		if (status !== "granted") {
-			setErrorMsg("Permission to access location was denied");
-			return;
-		}
-		//if permission is denied. alert to ask to change. send user to settings
-
-		let location: any = await Location.getCurrentPositionAsync({});
-		setLocation(location);
-		let reversedLocation: any = await reverseGeocoding.reverseGeocode(
-			location?.coords.latitude,
-			location?.coords.longitude
-		);
-		setReverseLocation(reversedLocation.data.results[0].formatted_address);
-	}
-
-	useEffect(() => {
-		getLocation();
-	}, []);
-
-	let text = "Waiting..";
-	if (errorMsg) {
-		text = errorMsg;
-	} else if (location) {
-		text = JSON.stringify(location);
-	}
+	//console.log(location);
+	//console.log(reversedLocation);
 
 	return (
 		<>
-			{!location ? (
-				<Text>Loading</Text>
+			{!reversedLocation ? (
+				//<Text>Loading</Text>
+				<TextInput
+					label="Enter your postcode"
+					value={address}
+					maxLength={8}
+					style={styles.inputStyle}
+					mode="outlined"
+					onChangeText={(value) => {
+						setAddress(value);
+					}}
+					onSubmitEditing={() => {
+						reverseGeocoding.findAddress(address).then(({ data }: any) => {
+							setReverseLocation(data.results[0].formatted_address);
+							//console.log(data);
+						});
+					}}
+				/>
 			) : (
 				<View style={styles.container}>
 					<MapView
 						provider={PROVIDER_GOOGLE} // remove if not using Google Maps
 						style={styles.map}
 						region={{
-							latitude: location.coords.latitude,
-							longitude: location.coords.longitude,
+							// latitude: location.coords.latitude,
+							// longitude: location.coords.longitude,
+							latitude: 52.584235174582595,
+							longitude: -0.23529274510057102,
 							latitudeDelta: 0.015,
 							longitudeDelta: 0.0121,
 						}}>
 						<Marker
 							coordinate={{
-								latitude: location.coords.latitude,
-								longitude: location.coords.longitude,
+								// latitude: location.coords.latitude,
+								// longitude: location.coords.longitude,
+								latitude: 52.584235174582595,
+								longitude: -0.23529274510057102,
 							}}
 						/>
 						<Marker
@@ -97,6 +84,7 @@ export default function Map() {
 						onSubmitEditing={() => {
 							reverseGeocoding.findAddress(address).then(({ data }: any) => {
 								setReverseLocation(data.results[0].formatted_address);
+								console.log(data);
 							});
 						}}
 					/>

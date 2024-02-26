@@ -4,7 +4,8 @@ import { View } from "react-native";
 import ToolsList from "../Components/ToolsList";
 import Map from "../Components/Map";
 
-const BrowseToolsScreen: React.FC = () => {
+const BrowseToolsScreen: React.FC = (location) => {
+	console.log(location);
 	return (
 		<>
 			<View style={{ height: "50%" }}>
