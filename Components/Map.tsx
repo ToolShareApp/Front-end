@@ -1,6 +1,6 @@
 import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps"; // remove PROVIDER_GOOGLE import if not using Google Maps
 import React, { useState, useEffect, useContext } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, Image } from "react-native";
 import * as Location from "expo-location";
 import reverseGeocoding from "../utils/reverseGeocoding";
 //import Button from "./Button";
@@ -55,23 +55,34 @@ export default function Map() {
 						region={{
 							latitude: user.latitude,
 							longitude: user.longitude,
-							latitudeDelta: 0.015,
-							longitudeDelta: 0.0121,
+							latitudeDelta: 0.75,
+							longitudeDelta: 0.75,
 						}}>
 						{users.map(
 							(
-								marker: { latitude: any; longitude: any },
+								marker: {
+									latitude: any;
+									longitude: any;
+									profile_id: string | undefined;
+								},
 								i: React.Key | null | undefined
 							) => {
 								return (
-									<Marker
-										key={i}
-										identifier={`id${i}`}
-										coordinate={{
-											latitude: marker.latitude,
-											longitude: marker.longitude,
-										}}
-									/>
+									<>
+										<Marker
+											key={i}
+											identifier={`id${i}`}
+											icon={require("../assets/hammer-and-wrench.png")}
+											coordinate={{
+												latitude: marker.latitude,
+												longitude: marker.longitude,
+											}}
+											tappable
+											onPress={() => {
+												console.log(marker.profile_id);
+											}}
+										/>
+									</>
 								);
 							}
 						)}
