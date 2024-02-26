@@ -20,6 +20,7 @@ import ChatsListScreen from "../Screens/ChatsListScreen";
 import { GreenTheme } from "../Themes/GreenTheme";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 import WelcomeScreen from "../Screens/WelcomeScreen";
+import AddListingScreen from "../Screens/AddListingScreen";
 
 const Drawer = createDrawerNavigator();
 const ToolsStack = createStackNavigator();
@@ -194,12 +195,12 @@ const DrawerNavigator: React.FC = () => {
     >
       <Drawer.Screen
         name="BrowseTools"
-        component={ToolsStackNavigator}
+        component={BrowseToolsStackNavigator}
         options={{ title: "Browse Tools" }}
       />
       <Drawer.Screen
         name="MyTools"
-        component={MyToolsScreen}
+        component={MyToolsStackNavigator}
         options={{ title: "My Tools" }}
       />
       <Drawer.Screen
@@ -237,7 +238,7 @@ const DrawerNavigator: React.FC = () => {
   );
 };
 
-const ToolsStackNavigator: React.FC = () => {
+const BrowseToolsStackNavigator: React.FC = () => {
   return (
     <ToolsStack.Navigator
       screenOptions={{
@@ -247,13 +248,38 @@ const ToolsStackNavigator: React.FC = () => {
       <ToolsStack.Screen
         name="ToolsList"
         component={BrowseToolsScreen}
-        options={{ title: "Tools List" }}
+        options={{ title: "Available Tools" }}
       />
       <ToolsStack.Screen
         name="ToolDetailsScreen"
         component={ToolDetailsScreen}
         options={{ title: "Details" }}
       />
+    </ToolsStack.Navigator>
+  );
+};
+
+const MyToolsStackNavigator: React.FC = () => {
+  return (
+    <ToolsStack.Navigator
+      screenOptions={{
+        headerTintColor: GreenTheme.colors.primary, // Apply color to the header items (title, back button)
+      }}
+    >
+      <ToolsStack.Screen
+        name="ToolsList"
+        component={MyToolsScreen}
+        options={{ title: "Your Tools" }}
+      />
+      <ToolsStack.Screen
+        name="ToolDetailsScreen"
+        component={ToolDetailsScreen}
+        options={{ title: "Details" }}
+      />
+      <ToolsStack.Screen
+      name="AddListingScreen"
+      component={AddListingScreen}
+      options={{ title: "+ Add A Listing"}}/>
     </ToolsStack.Navigator>
   );
 };
