@@ -30,7 +30,7 @@ const DrawerNavigator: React.FC = () => {
 
   return (
     <Drawer.Navigator
-      initialRouteName={user ? "BrowseTools" : "Welcome"}
+      initialRouteName={"Welcome"}
       screenOptions={{
         headerStyle: {
           backgroundColor: GreenTheme.colors.primary, // Apply background color to the header

@@ -7,6 +7,7 @@ import {
   Text,
   Chip,
   TouchableRipple,
+  Snackbar
 } from "react-native-paper";
 import { useContext, useEffect, useState } from "react";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
@@ -22,9 +23,15 @@ const ToolDetailsScreen: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [descriptionOpen, setDescriptionOpen] = useState<boolean>(false);
   const [interested, setInterested] = useState<boolean>();
+  const [toast, setToast] = useState<boolean>(false);
+
   const navigation = useNavigation();
   const route = useRoute();
   const { listing_id } = route.params;
+
+  const onToggleSnackBar = () => setToast(!toast);
+
+  const onDismissSnackBar = () => setToast(false);
 
   function getToolByToolId(listing_id: number) {
     return api.get(`/listing/${listing_id}`).then((apiResponse) => {
@@ -94,14 +101,31 @@ const ToolDetailsScreen: React.FC = () => {
       setInterested(userInterested)
     })();
   }, []);
+
+  const createNewChat = () => {
+    return api.post('/chat/', {
+      listingId: listing_id,
+      userId: toolDetails?.owner_id
+    })
+  }
   
   function startChat() {
     const owner_id: number = toolDetails?.owner_id;
-    // @ts-ignore
-    navigation.navigate('Messages', {
-      screen: "ChatScreen",
-      params: { user_id: owner_id, title: ownerName }
+    createNewChat().then((response) => {
+      if(response?.data?.recordId){
+        // @ts-ignore
+        navigation.navigate('Messages', {
+          screen: "ChatScreen",
+          params: {  user_id: owner_id, title: ownerName, tool_name: toolName, listing_id }
+        })
+        // navigation.navigate("ChatScreen", { user_id: owner_id, title: ownerName, tool_name: toolName, listing_id })
+
+      }
+    }).catch((error) => {
+      setToast(true)
+      console.error(error)
     })
+
   }
 
  async function addToInterested() {
@@ -237,6 +261,12 @@ const ToolDetailsScreen: React.FC = () => {
                 Start Chat
               </Button>
             </View>
+            <Snackbar
+              visible={toast}
+              onDismiss={onDismissSnackBar}
+            >
+              Error!
+            </Snackbar>
           </>
         )}
       </View>
