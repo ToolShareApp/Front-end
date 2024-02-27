@@ -58,7 +58,7 @@ const ChatScreen: React.FC = () => {
   const postNewMessage = async () => {
     if(chatId || recordId){
       try {
-       await api.post(`/message/chat/${chatId ? chatId : recordId}`, {
+       await api.post(`/message/${chatId ? chatId : recordId}`, {
           userId: user.profile_id,
           text: text,
         });
