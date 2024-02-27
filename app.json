@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Front-end",
-    "slug": "Front-end",
+    "name": "Tool-Share",
+    "slug": "Tool-Share",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

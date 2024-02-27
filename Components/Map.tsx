@@ -1,4 +1,8 @@
-import MapView, { PROVIDER_GOOGLE, Marker, Callout } from "react-native-maps"; // remove PROVIDER_GOOGLE import if not using Google Maps
+import MapView, {
+	PROVIDER_GOOGLE,
+	Marker,
+	MapMarkerProps,
+} from "react-native-maps"; // remove PROVIDER_GOOGLE import if not using Google Maps
 import React, { useState, useEffect, useContext } from "react";
 import { Text, View, StyleSheet, Image } from "react-native";
 import * as Location from "expo-location";
@@ -7,6 +11,18 @@ import reverseGeocoding from "../utils/reverseGeocoding";
 import { TextInput } from "react-native-paper";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 import Button from "./Button";
+import CustomCallout from "./customCallout";
+
+export type MarkerWithMetadata = {
+	display_name: string;
+	bio: string;
+	profile_id: number;
+	latitude: any;
+	longitude: any;
+	title?: MapMarkerProps["title"];
+	description?: MapMarkerProps["description"];
+	picture_url?: string;
+};
 
 export default function Map() {
 	const [errorMsg, setErrorMsg] = useState<string>("");
@@ -39,10 +55,38 @@ export default function Map() {
 	};
 	useEffect(() => {
 		getLocation();
-		reverseGeocoding.getUsers().then((res) => {
-			setUsers(res);
-		});
+		(async () => {
+			const userArray = await reverseGeocoding.getUsers();
+			setUsers(userArray);
+		})();
 	}, []);
+
+	const renderMarkers = () => {
+		return users.map(
+			(
+				marker: {
+					latitude: any;
+					longitude: any;
+					display_name?: any;
+					description: any;
+					title?: string | undefined;
+					picture_url?: any;
+				},
+				index: React.Key | null | undefined
+			) => (
+				<Marker
+					key={index}
+					coordinate={{
+						latitude: marker.latitude,
+						longitude: marker.longitude,
+					}}
+					icon={require("../assets/hammer-and-wrench.png")}>
+					<CustomCallout marker={marker}></CustomCallout>
+				</Marker>
+			)
+		);
+	};
+
 	return (
 		<>
 			{errorMsg ? (
@@ -58,36 +102,7 @@ export default function Map() {
 							latitudeDelta: 0.75,
 							longitudeDelta: 0.75,
 						}}>
-						{users.map(
-							(
-								marker: {
-									profile_id: number;
-									display_name: string | undefined;
-									latitude: any;
-									longitude: any;
-								},
-								i: React.Key | null | undefined
-							) => {
-								return (
-									<Callout tooltip>
-										<Marker
-											title={marker.display_name}
-											key={i}
-											identifier={`id ${i}`}
-											icon={require("../assets/hammer-and-wrench.png")}
-											coordinate={{
-												latitude: marker.latitude,
-												longitude: marker.longitude,
-											}}
-											tappable
-											onPress={() => {
-												console.log(marker.profile_id);
-											}}
-										/>
-									</Callout>
-								);
-							}
-						)}
+						{renderMarkers()}
 					</MapView>
 					<Button
 						label="Device Location"
@@ -112,15 +127,17 @@ export default function Map() {
 									setPlaceId(data.results[0].place_id);
 								})
 								.then(() => {
-									return reverseGeocoding
-										.findPlace(placeId)
-										.then(({ data }) => {
-											setUser({
-												...user,
-												latitude: data.result.geometry.location.lat,
-												longitude: data.result.geometry.location.lng,
-											});
-										});
+									return reverseGeocoding.findPlace(placeId);
+								})
+								.then(({ data }: any) => {
+									setUser({
+										...user,
+										latitude: data.result.geometry?.location.lat,
+										longitude: data.result.geometry?.location.lng,
+									});
+								})
+								.catch(() => {
+									console.log("please provide a full postcode");
 								});
 						}}
 					/>
