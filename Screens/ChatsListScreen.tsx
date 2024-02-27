@@ -6,7 +6,7 @@ import GlobalStateContext from '../Contexts/GlobalStateContext'
 
 interface Chat {
   chat_id: string;
-  otherName: string;
+  otherUserName: string;
   otherUserAvatar: string;
   lastMessage: string;
   lastMessageDate: string;
@@ -36,18 +36,18 @@ const ChatsListScreen: React.FC = () => {
   const renderItem = ({ item }: { item: Chat }) => (
     <TouchableOpacity
       onPress={() =>
-        navigation.navigate("ChatScreen", { chatId: item.chat_id, title: item.otherName })
+        navigation.navigate("ChatScreen", { chatId: item.chat_id, title: item.otherUserName })
       }
     >
       <List.Item
-        title={item.otherName}
+        title={item.otherUserName}
         description={item?.lastMessage}
         descriptionNumberOfLines={1}
         left={() => (
           <Avatar.Text
             style={styles.avatar}
             size={46}
-            label={item.otherName.substring(0, 1)}
+            label={item.otherUserName?.substring(0, 1)}
           />
         )}
         right={() => <List.Icon icon="chevron-right" />}
@@ -59,7 +59,7 @@ const ChatsListScreen: React.FC = () => {
     <FlatList
       data={chats}
       renderItem={renderItem}
-      keyExtractor={(item) => item.chat_id}
+      keyExtractor={(item) => item.chat_id + Math.random()}
       style={styles.container}
     />
   );
