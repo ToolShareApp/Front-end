@@ -40,4 +40,22 @@ async function getUsers() {
 	return users.data.data
 }
 
-export default {reverseGeocode, findAddress, findPlace, getUsers}
+async function getListingById(owner_id: number) {
+	let listing: any = await axios
+		.get(
+			`https://nc-toolshare.onrender.com/api/listing/owner/${owner_id}`
+			
+	)
+	return listing.data.data
+}
+
+async function getListings() {
+	let listings: any = await axios
+		.get(
+			`https://nc-toolshare.onrender.com/api/listing`
+			
+	)
+	return listings.data.data
+}
+
+export default {reverseGeocode, findAddress, findPlace, getUsers, getListingById, getListings}

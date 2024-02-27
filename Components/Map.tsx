@@ -33,7 +33,7 @@ export default function Map() {
 	const [longitudeInput, setLongitudeInput] = useState<number>(0);
 	const [placeId, setPlaceId] = useState<string>("");
 	const [users, setUsers] = useState<any>([]);
-
+	const [listingArray, setListingArray] = useState<any>([]);
 	const { user, setUser } = useContext(GlobalStateContext);
 
 	const getLocation = async () => {
@@ -58,13 +58,18 @@ export default function Map() {
 		(async () => {
 			const userArray = await reverseGeocoding.getUsers();
 			setUsers(userArray);
+			const listings = await reverseGeocoding.getListings();
+			return setListingArray(listings);
 		})();
 	}, []);
+
+	// if owner id === marker id display listings
 
 	const renderMarkers = () => {
 		return users.map(
 			(
 				marker: {
+					profile_id: number;
 					latitude: any;
 					longitude: any;
 					display_name?: any;
@@ -81,7 +86,9 @@ export default function Map() {
 						longitude: marker.longitude,
 					}}
 					icon={require("../assets/hammer-and-wrench.png")}>
-					<CustomCallout marker={marker}></CustomCallout>
+					<CustomCallout
+						marker={marker}
+						listingArray={listingArray}></CustomCallout>
 				</Marker>
 			)
 		);

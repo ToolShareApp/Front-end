@@ -7,7 +7,10 @@ const screenWidth = Dimensions.get("window").width;
 
 const CustomCallout: React.FC<{
 	marker: MarkerWithMetadata;
-}> = ({ marker }) => {
+	listingArray: any;
+}> = ({ marker, listingArray }) => {
+	//console.log(listingArray);
+	let count = 0;
 	return (
 		<Callout tooltip>
 			<View>
@@ -26,8 +29,17 @@ const CustomCallout: React.FC<{
 							}}>
 							{marker.display_name}
 						</Text>
-
-						{/* <Text>{marker.bio}</Text> */}
+						<Text
+							style={{
+								fontWeight: "bold",
+								fontSize: 18,
+							}}>
+							{
+								listingArray.filter((listing: { owner_id: number }) => {
+									return listing.owner_id === marker.profile_id;
+								}).length
+							}
+						</Text>
 					</View>
 				</View>
 				<View style={styles.triangle}></View>
