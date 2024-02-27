@@ -11,6 +11,7 @@ import { TextInput, Avatar, Paragraph } from "react-native-paper";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 import { GreenTheme } from "../Themes/GreenTheme";
 import { useRoute } from '@react-navigation/native'
+import { io, Socket } from 'socket.io-client'
 
 const screenWidth = Dimensions.get('window').width;
 const maxMessageWidth = screenWidth * 0.8;
@@ -30,6 +31,35 @@ const ChatScreen: React.FC = () => {
   const flatListRef = useRef<FlatList>();
   const route = useRoute();
   const { user_id, tool_name, listing_id, title, recordId, chatId } = route.params;
+  let socket: Socket;
+
+  useEffect(() => {
+    socket = io("ws://localhost:8001", { // @TODO wss://nc-toolshare.onrender.com
+      auth: {
+        userId: user.profile_id,
+        token: "secretToken"
+      },
+      query: {
+        "chatId": chatId
+      }
+    });
+
+    socket.on('connect', () => {
+      console.log('connected');
+
+      // @TODO Load messages
+
+      setTimeout(() => {
+        socket.emit('message', {
+          text: 'Hi'
+        })
+      }, 1000);
+    })
+
+    socket.on('message', (message:Message) => {
+      console.log('received: ', message);
+    })
+  }, []);
 
   useEffect(() => {
     flatListRef.current?.scrollToEnd({ animated: true });
@@ -93,7 +123,7 @@ const ChatScreen: React.FC = () => {
       <FlatList
         ref={flatListRef}
         data={messages}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.id?.toString()}
         renderItem={({ item }) => (
           <View
             style={[

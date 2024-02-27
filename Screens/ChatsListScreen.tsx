@@ -47,7 +47,7 @@ const ChatsListScreen: React.FC = () => {
           <Avatar.Text
             style={styles.avatar}
             size={46}
-            label={item.otherName.substring(0, 1)}
+            label={item.otherName?.substring(0, 1)}
           />
         )}
         right={() => <List.Icon icon="chevron-right" />}
