@@ -215,7 +215,10 @@ const AddListingScreen: React.FC = () => {
       <Snackbar visible={successVisible} onDismiss={() => setSuccessVisible(false)} action={{
           label: 'Back to My Tools',
           onPress: () => {
-            navigation.navigate('MyTools')
+            // @ts-ignore
+            navigation.navigate('MyTools', {
+              screen: "ToolsList",
+            })
           },
         }}>
         Your listing has been succesfully added!
