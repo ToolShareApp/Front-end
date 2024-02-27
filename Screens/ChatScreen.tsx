@@ -16,7 +16,7 @@ import { io, Socket } from 'socket.io-client'
 const screenWidth = Dimensions.get('window').width;
 const maxMessageWidth = screenWidth * 0.8;
 interface Message {
-  id: number;
+  messageId: number;
   username: string;
   userId: number;
   userAvatar: string | null;
@@ -51,9 +51,9 @@ const ChatScreen: React.FC = () => {
     })
 
     socket.on('message', (message:Message) => {
-      console.log('received: ', message);
-      setMessages([...messages, message]);
-    })
+      console.log('received: ', message, messages);
+      setMessages(prevMessages => [...prevMessages, message]);
+  })
 
     return () => {
       socket.close();
@@ -71,7 +71,7 @@ const ChatScreen: React.FC = () => {
         setMessages(response.data.data);
       } catch (error) {
         console.log(error);
-        alert('Error', error);
+        alert(error);
       }
     } else {
       alert('ChatId or RecordId is missing');
@@ -104,7 +104,7 @@ const ChatScreen: React.FC = () => {
       <FlatList
         ref={flatListRef}
         data={messages}
-        keyExtractor={(item) => item.id?.toString()}
+        keyExtractor={(item) => item.messageId.toString()}
         renderItem={({ item }) => (
           <View
             style={[
