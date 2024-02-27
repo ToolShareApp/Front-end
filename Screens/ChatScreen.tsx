@@ -56,6 +56,21 @@ const ChatScreen: React.FC = () => {
 
   };
 
+  const postNewMessage = async () => {
+    if(chatId || recordId){
+      try {
+       await api.post(`/message/chat/${chatId ? chatId : recordId}`, {
+          userId: user.profile_id,
+          text: text,
+        });
+        sendMessage()
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      Alert.alert('Error', 'ChatId or RecordId is missing');
+    }
+  };
   const sendMessage = () => {
     if (text) {
       const newMessage: Message = {
@@ -130,7 +145,7 @@ const ChatScreen: React.FC = () => {
         onChangeText={(text) => setText(text)}
         style={styles.input}
         right={
-          <TextInput.Icon name="send" onPress={sendMessage} icon={"send"} />
+          <TextInput.Icon name="send" onPress={postNewMessage} icon={"send"} />
         }
       />
     </KeyboardAvoidingView>

@@ -113,13 +113,12 @@ const ToolDetailsScreen: React.FC = () => {
     const owner_id: number = toolDetails?.owner_id;
     createNewChat().then((response) => {
       if(response?.data?.recordId){
+        const recordId = response?.data?.recordId;
         // @ts-ignore
         navigation.navigate('Messages', {
           screen: "ChatScreen",
-          params: {  user_id: owner_id, title: ownerName, tool_name: toolName, listing_id }
+          params: {  user_id: owner_id, title: ownerName, tool_name: toolName, listing_id, recordId }
         })
-        // navigation.navigate("ChatScreen", { user_id: owner_id, title: ownerName, tool_name: toolName, listing_id })
-
       }
     }).catch((error) => {
       setToast(true)
