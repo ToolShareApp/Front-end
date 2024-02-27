@@ -11,8 +11,6 @@ import { TextInput, Avatar, Paragraph } from "react-native-paper";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 import { GreenTheme } from "../Themes/GreenTheme";
 import { useRoute } from '@react-navigation/native'
-import { Alert } from 'react-native';
-
 
 const screenWidth = Dimensions.get('window').width;
 const maxMessageWidth = screenWidth * 0.8;
@@ -49,9 +47,10 @@ const ChatScreen: React.FC = () => {
         setMessages(response.data.data);
       } catch (error) {
         console.log(error);
+        alert('Error', error);
       }
     } else {
-      Alert.alert('Error', 'ChatId or RecordId is missing');
+      alert('ChatId or RecordId is missing');
     }
 
   };
@@ -63,15 +62,16 @@ const ChatScreen: React.FC = () => {
           userId: user.profile_id,
           text: text,
         });
-        sendMessage()
+        insertMessage()
       } catch (error) {
-        console.log(error);
+        alert('Error', error);
+        console.error(error)
       }
     } else {
-      Alert.alert('Error', 'ChatId or RecordId is missing');
+      alert('Error', 'ChatId or RecordId is missing');
     }
   };
-  const sendMessage = () => {
+  const insertMessage = () => {
     if (text) {
       const newMessage: Message = {
         id: messages.length + 1,
