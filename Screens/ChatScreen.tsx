@@ -33,8 +33,6 @@ const ChatScreen: React.FC = () => {
 
   useEffect(() => {
     flatListRef.current?.scrollToEnd({ animated: true });
-    console.log('route.params')
-    console.log(route.params)
   }, [messages]);
 
   useEffect(() => {
@@ -58,7 +56,7 @@ const ChatScreen: React.FC = () => {
   const postNewMessage = async () => {
     if(chatId || recordId){
       try {
-       await api.post(`/message/chat/${chatId ? chatId : recordId}`, {
+       await api.post(`/message/${chatId ? chatId : recordId}`, {
           userId: user.profile_id,
           text: text,
         });

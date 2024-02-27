@@ -87,6 +87,7 @@ const ProfileScreen = () => {
       <TextInput
         label="Avatar URL"
         value={avatarUrl}
+        multiline
         onChangeText={setAvatarUrl}
         mode="outlined"
         style={styles.input}
