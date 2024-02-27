@@ -23,7 +23,7 @@ interface Message {
   text: string;
   date: string;
 }
-
+let socket: Socket;
 const ChatScreen: React.FC = () => {
   const { user, api } = useContext(GlobalStateContext);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -31,10 +31,10 @@ const ChatScreen: React.FC = () => {
   const flatListRef = useRef<FlatList>();
   const route = useRoute();
   const { user_id, tool_name, listing_id, title, recordId, chatId } = route.params;
-  let socket: Socket;
+
 
   useEffect(() => {
-    socket = io("ws://localhost:8001", { // @TODO wss://nc-toolshare.onrender.com
+    socket = io("wss://nc-toolshare.onrender.com", { // @TODO wss://nc-toolshare.onrender.com
       auth: {
         userId: user.profile_id,
         token: "secretToken"
@@ -46,28 +46,24 @@ const ChatScreen: React.FC = () => {
 
     socket.on('connect', () => {
       console.log('connected');
-
-      // @TODO Load messages
-
-      setTimeout(() => {
-        socket.emit('message', {
-          text: 'Hi'
-        })
-      }, 1000);
+      // Load messages
+      getMessagesByChatId();
     })
 
     socket.on('message', (message:Message) => {
       console.log('received: ', message);
+      setMessages([...messages, message]);
     })
+
+    return () => {
+      socket.close();
+    }
   }, []);
 
   useEffect(() => {
     flatListRef.current?.scrollToEnd({ animated: true });
   }, [messages]);
 
-  useEffect(() => {
-    getMessagesByChatId();
-  }, []);
   const getMessagesByChatId = async () => {
     if(chatId || recordId){
       try {
@@ -86,31 +82,16 @@ const ChatScreen: React.FC = () => {
   const postNewMessage = async () => {
     if(chatId || recordId){
       try {
-       await api.post(`/message/${chatId ? chatId : recordId}`, {
-          userId: user.profile_id,
-          text: text,
-        });
-        insertMessage()
+        socket.emit('message', {
+          text
+        })
+        setText("");
       } catch (error) {
-        alert('Error', error);
+        alert(error);
         console.error(error)
       }
     } else {
-      alert('Error', 'ChatId or RecordId is missing');
-    }
-  };
-  const insertMessage = () => {
-    if (text) {
-      const newMessage: Message = {
-        id: messages.length + 1,
-        userId: user.profile_id,
-        text: text,
-        date: new Date().toLocaleTimeString(),
-        userAvatar: "",
-        username: user.display_name,
-      };
-      setMessages([...messages, newMessage]);
-      setText("");
+      alert('Error ChatId or RecordId is missing');
     }
   };
 
