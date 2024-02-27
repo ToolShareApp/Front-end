@@ -269,7 +269,7 @@ const MyToolsStackNavigator: React.FC = () => {
       <ToolsStack.Screen
         name="ToolsList"
         component={MyToolsScreen}
-        options={{ title: "Your Tools" }}
+        options={{ title: "Your Tools Available for Rent" }}
       />
       <ToolsStack.Screen
         name="ToolDetailsScreen"
