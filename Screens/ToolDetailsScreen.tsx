@@ -13,6 +13,7 @@ import { useContext, useEffect, useState } from "react";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { GreenTheme } from "../Themes/GreenTheme";
+// @ts-ignore
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -27,6 +28,7 @@ const ToolDetailsScreen: React.FC = () => {
 
   const navigation = useNavigation();
   const route = useRoute();
+  // @ts-ignore
   const { listing_id } = route.params;
 
   const onToggleSnackBar = () => setToast(!toast);
@@ -130,6 +132,7 @@ const ToolDetailsScreen: React.FC = () => {
  async function addToInterested() {
   try {
     setInterested(true)
+    // @ts-ignore
     await postInterest(listing_id, user.profile_id)
   } catch (err) {
     console.log(err)
@@ -139,6 +142,7 @@ const ToolDetailsScreen: React.FC = () => {
   async function removeFromInterested() {
     try {
       setInterested(false)
+      // @ts-ignore
       await deleteInterest(listing_id, user.profile_id)
     } catch (err) {
       console.log(err)

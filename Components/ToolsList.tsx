@@ -5,7 +5,7 @@ import { useState } from 'react'
 import GlobalStateContext from '../Contexts/GlobalStateContext'
 import ToolCard from './ToolCard'
 import { ScrollView } from 'react-native-gesture-handler'
-import { Searchbar, Menu, Divider, Button, PaperProvider } from 'react-native-paper'
+import { Searchbar, Menu, Divider, Button, PaperProvider, Text } from 'react-native-paper'
 import { GreenTheme } from '../Themes/GreenTheme'
 
 export default function ToolsList () {
@@ -82,18 +82,18 @@ export default function ToolsList () {
           }} title={category}/>
         ))}
       </Menu>
-      <Divider theme={GreenTheme} />
+      <Divider theme={GreenTheme}/>
       <ScrollView>
-        {filterListings().map(listing => (
-          <ToolCard
-            key={listing.listing_id}
-            listing_id={listing.listing_id}
-            category={listing.category}
-            name={listing.tool}
-            subcategory={listing.subcategory}
-            photo={listing.photo_url}
-          />
-        ))}
+        { filterListings().map(listing => (
+        <ToolCard
+          key={listing.listing_id}
+          listing_id={listing.listing_id}
+          category={listing.category}
+          name={listing.tool}
+          subcategory={listing.subcategory}
+          photo={listing.photo_url}
+        />
+        )) }
       </ScrollView>
     </View>
   )
@@ -108,4 +108,4 @@ const styles = StyleSheet.create({
   squareButtonContent: {
     height: 50,
   },
-});
+})

@@ -12,6 +12,7 @@ const LogOutScreen: React.FC = () => {
 
   const onLogOut = () => {
     setUser(null);
+    // @ts-ignore
     navigation.navigate("Welcome");
   };
 
