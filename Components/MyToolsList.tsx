@@ -8,7 +8,7 @@ import { useNavigation } from "@react-navigation/native";
 
 const MyToolsList: React.FC = () => {
   const { api, user } = useContext(GlobalStateContext)
-  const [tools, setTools] = useState([])
+  const [tools, setTools] = useState<object[]>([])
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [visible, setVisible] = useState<boolean>(false)
   const [selectedCategory, setSelectedCategory] = useState<string>('All')
@@ -27,7 +27,7 @@ const MyToolsList: React.FC = () => {
 
   useEffect(() => {
     fetchUserTools()
-  }, [])
+  }, [tools])
 
   const onChangeSearch = (query: string) => setSearchQuery(query)
 
@@ -92,11 +92,13 @@ const MyToolsList: React.FC = () => {
         {filterListings().map(listing => (
           <MyToolCard
             key={listing.listing_id}
+            listing={listing}
             listing_id={listing.listing_id}
             category={listing.category}
             name={listing.tool}
             subcategory={listing.subcategory}
             photo={listing.photo_url}
+            setTools={setTools}
           />
         ))}
       </ScrollView>
@@ -124,7 +126,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     width: "40%",
     margin: 15,
-  }
+  },
 })
 
 export default MyToolsList

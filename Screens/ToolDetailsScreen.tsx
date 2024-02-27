@@ -167,15 +167,12 @@ const ToolDetailsScreen: React.FC = () => {
         ) : (
           <>
             <Text variant="headlineMedium">{toolName}</Text>
-            {image_url && (
-              <Image
-                source={{
-                  uri: image_url,
-                }}
-                style={styles.image}
-              />
-            )}
-
+            <Image
+              source={{
+                uri: image_url,
+              }}
+              style={styles.image}
+            />
             <View style={styles.category}>
               <Chip icon="toolbox" style={styles.chip}>
                 {category}
@@ -184,6 +181,7 @@ const ToolDetailsScreen: React.FC = () => {
                 {subcategory}
               </Chip>
             </View>
+            { description !== '' ?
             <View style={styles.about}>
               <TouchableRipple
                 onPress={() => {
@@ -199,6 +197,7 @@ const ToolDetailsScreen: React.FC = () => {
                 </View>
               </TouchableRipple>
             </View>
+            : null}
             {descriptionOpen ? (
               <Text variant="bodyMedium" style={styles.description}>
                 {description}
@@ -303,7 +302,7 @@ const styles = StyleSheet.create({
     backgroundColor: GreenTheme.colors.surface,
   },
   about: {
-    marginBottom: 15,
+    marginBottom: 10,
     flexDirection: "row",
   },
   aboutTitle: {
@@ -312,7 +311,7 @@ const styles = StyleSheet.create({
   description: {
     width: "95%",
     textAlign: "center",
-    marginBottom: 15,
+    marginBottom: 20,
   },
   deposit: {
     flexDirection: "row",
