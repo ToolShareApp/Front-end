@@ -9,7 +9,6 @@ const CustomCallout: React.FC<{
 	marker: MarkerWithMetadata;
 	listingArray: any;
 }> = ({ marker, listingArray }) => {
-	//console.log(listingArray);
 	let count = 0;
 	return (
 		<Callout tooltip>
@@ -31,9 +30,10 @@ const CustomCallout: React.FC<{
 						</Text>
 						<Text
 							style={{
-								fontWeight: "bold",
+								fontWeight: "normal",
 								fontSize: 18,
 							}}>
+							Listings:
 							{
 								listingArray.filter((listing: { owner_id: number }) => {
 									return listing.owner_id === marker.profile_id;

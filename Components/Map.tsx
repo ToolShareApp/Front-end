@@ -4,7 +4,13 @@ import MapView, {
 	MapMarkerProps,
 } from "react-native-maps"; // remove PROVIDER_GOOGLE import if not using Google Maps
 import React, { useState, useEffect, useContext } from "react";
-import { Text, View, StyleSheet, Image } from "react-native";
+import {
+	Text,
+	View,
+	StyleSheet,
+	Image,
+	KeyboardAvoidingView,
+} from "react-native";
 import * as Location from "expo-location";
 import reverseGeocoding from "../utils/reverseGeocoding";
 //import Button from "./Button";
@@ -17,8 +23,8 @@ export type MarkerWithMetadata = {
 	display_name: string;
 	bio: string;
 	profile_id: number;
-	latitude: any;
-	longitude: any;
+	latitude?: number;
+	longitude?: number;
 	title?: MapMarkerProps["title"];
 	description?: MapMarkerProps["description"];
 	picture_url?: string;
@@ -34,7 +40,7 @@ export default function Map() {
 	const [placeId, setPlaceId] = useState<string>("");
 	const [users, setUsers] = useState<any>([]);
 	const [listingArray, setListingArray] = useState<any>([]);
-	const { user, setUser } = useContext(GlobalStateContext);
+	const { user, setUser, api } = useContext(GlobalStateContext);
 
 	const getLocation = async () => {
 		let { status } = await Location.requestForegroundPermissionsAsync();
@@ -53,25 +59,43 @@ export default function Map() {
 			longitude: longitudeInput,
 		});
 	};
+
+	const updateLocation = async () => {
+		await api.patch(`/profile/${user.profile_id}`, {
+			...user,
+			latitude: latitudeInput,
+			longitude: longitudeInput,
+		});
+	};
+
 	useEffect(() => {
-		getLocation();
 		(async () => {
 			const userArray = await reverseGeocoding.getUsers();
 			setUsers(userArray);
 			const listings = await reverseGeocoding.getListings();
 			return setListingArray(listings);
 		})();
-	}, []);
+	}, [user]);
+
+	useEffect(() => {
+		reverseGeocoding.findPlace(placeId).then(({ data }) => {
+			setUser({
+				...user,
+				latitude: data.result.geometry.location.lat,
+				longitude: data.result.geometry.location.lng,
+			});
+		});
+		updateLocation();
+	}, [placeId]);
 
 	// if owner id === marker id display listings
-
 	const renderMarkers = () => {
 		return users.map(
 			(
 				marker: {
 					profile_id: number;
-					latitude: any;
-					longitude: any;
+					latitude?: any;
+					longitude?: any;
 					display_name?: any;
 					description: any;
 					title?: string | undefined;
@@ -111,43 +135,38 @@ export default function Map() {
 						}}>
 						{renderMarkers()}
 					</MapView>
-					<Button
-						label="Device Location"
-						onPress={() => {
-							getLocation();
-						}}
-					/>
-					<TextInput
-						label="Enter your postcode"
-						value={address}
-						maxLength={8}
-						style={styles.inputStyle}
-						mode="outlined"
-						onChangeText={(value) => {
-							setAddress(value);
-						}}
-						onSubmitEditing={() => {
-							reverseGeocoding
-								.findAddress(address)
-								.then(({ data }: any) => {
-									setReverseLocation(data.results[0].formatted_address);
-									setPlaceId(data.results[0].place_id);
-								})
-								.then(() => {
-									return reverseGeocoding.findPlace(placeId);
-								})
-								.then(({ data }: any) => {
-									setUser({
-										...user,
-										latitude: data.result.geometry?.location.lat,
-										longitude: data.result.geometry?.location.lng,
+					<View style={styles.inputs}>
+						<TextInput
+							label="Enter postcode..."
+							value={address}
+							maxLength={8}
+							style={styles.inputStyle}
+							mode="outlined"
+							onChangeText={(value) => {
+								setAddress(value);
+							}}
+							onSubmitEditing={() => {
+								reverseGeocoding
+									.findAddress(address)
+									.then((result) => {
+										console.log(result.data);
+										setReverseLocation(
+											result.data.results[0].formatted_address
+										);
+										setPlaceId(result.data.results[0].place_id);
+									})
+									.catch((err) => {
+										console.log(err);
 									});
-								})
-								.catch(() => {
-									console.log("please provide a full postcode");
-								});
-						}}
-					/>
+							}}
+						/>
+						<Button
+							label="Device Location"
+							onPress={() => {
+								getLocation();
+							}}
+						/>
+					</View>
 				</View>
 			)}
 		</>
@@ -164,11 +183,14 @@ const styles = StyleSheet.create({
 	},
 	inputStyle: {
 		alignSelf: "center",
-		width: "90%",
+		width: "40%",
 		backgroundColor: "#E0F2F1",
 	},
 	map: {
 		width: "95%",
 		height: "75%",
+	},
+	inputs: {
+		flexDirection: "row",
 	},
 });
