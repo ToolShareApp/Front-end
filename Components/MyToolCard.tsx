@@ -3,21 +3,26 @@ import { StyleSheet, View } from "react-native";
 import { Text, Card, TouchableRipple, Avatar } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { GreenTheme } from "../Themes/GreenTheme";
+import DeleteListing from "./DeleteListing";
 
 interface MyToolCardProps {
+  listing_id: number;
+  listing: object;
   category: string;
   subcategory: string;
   name: string;
   photo: string;
-  listing_id: number;
+  setTools: any;
 }
 
 const MyToolCard: React.FC<MyToolCardProps> = ({
+  listing_id,
+  listing,
   category,
   photo,
   subcategory,
   name,
-  listing_id,
+  setTools,
 }) => {
   const navigation: any = useNavigation();
 
@@ -37,6 +42,11 @@ const MyToolCard: React.FC<MyToolCardProps> = ({
             <Text variant="bodyMedium">{category}</Text>
             <Text variant="bodyMedium">{subcategory}</Text>
           </View>
+          <DeleteListing
+            listing={listing}
+            listing_id={listing_id}
+            setTools={setTools}
+          />
           <View style={styles.image}>
             {photo && <Avatar.Image source={{ uri: photo }} />}
           </View>
