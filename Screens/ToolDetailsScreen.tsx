@@ -7,11 +7,13 @@ import {
   Text,
   Chip,
   TouchableRipple,
+  Snackbar
 } from "react-native-paper";
 import { useContext, useEffect, useState } from "react";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { GreenTheme } from "../Themes/GreenTheme";
+// @ts-ignore
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -22,9 +24,16 @@ const ToolDetailsScreen: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [descriptionOpen, setDescriptionOpen] = useState<boolean>(false);
   const [interested, setInterested] = useState<boolean>();
+  const [toast, setToast] = useState<boolean>(false);
+
   const navigation = useNavigation();
   const route = useRoute();
+  // @ts-ignore
   const { listing_id } = route.params;
+
+  const onToggleSnackBar = () => setToast(!toast);
+
+  const onDismissSnackBar = () => setToast(false);
 
   function getToolByToolId(listing_id: number) {
     return api.get(`/listing/${listing_id}`).then((apiResponse) => {
@@ -94,18 +103,36 @@ const ToolDetailsScreen: React.FC = () => {
       setInterested(userInterested)
     })();
   }, []);
+
+  const createNewChat = () => {
+    return api.post('/chat/', {
+      listingId: listing_id,
+      userId: toolDetails?.owner_id
+    })
+  }
   
   function startChat() {
-    const owner_id: number = toolDetails.owner_id
-    navigation.navigate('Messages', {
-      screen: "ChatScreen",
-      params: { user_id: owner_id }
+    const owner_id: number = toolDetails?.owner_id;
+    createNewChat().then((response) => {
+      if(response?.data?.recordId){
+        const recordId = response?.data?.recordId;
+        // @ts-ignore
+        navigation.navigate('Messages', {
+          screen: "ChatScreen",
+          params: {  user_id: owner_id, title: ownerName, tool_name: toolName, listing_id, recordId }
+        })
+      }
+    }).catch((error) => {
+      setToast(true)
+      console.error(error)
     })
+
   }
 
  async function addToInterested() {
   try {
     setInterested(true)
+    // @ts-ignore
     await postInterest(listing_id, user.profile_id)
   } catch (err) {
     console.log(err)
@@ -115,6 +142,7 @@ const ToolDetailsScreen: React.FC = () => {
   async function removeFromInterested() {
     try {
       setInterested(false)
+      // @ts-ignore
       await deleteInterest(listing_id, user.profile_id)
     } catch (err) {
       console.log(err)
@@ -199,12 +227,20 @@ const ToolDetailsScreen: React.FC = () => {
                   <Text variant="bodyLarge">Lender: </Text>
                   <Text variant="bodyLarge">{ownerName}</Text>
                 </View>
-                <Avatar.Image
-                  source={{
-                    uri: profilePicture_url,
-                  }}
-                  style={styles.ownerAvatar}
-                />
+
+                {profilePicture_url ? (
+                    <Avatar.Image
+                      source={{
+                        uri: profilePicture_url,
+                      }}
+                      style={styles.ownerAvatar}
+                    />
+                  ) : (
+                    <Avatar.Text
+                      label={ownerName?.substring(0, 1)}
+                      style={styles.ownerAvatar}
+                    />
+                  )}
               </Card.Content>
             </Card>
             <Button
@@ -228,6 +264,12 @@ const ToolDetailsScreen: React.FC = () => {
                 Start Chat
               </Button>
             </View>
+            <Snackbar
+              visible={toast}
+              onDismiss={onDismissSnackBar}
+            >
+              Error!
+            </Snackbar>
           </>
         )}
       </View>
