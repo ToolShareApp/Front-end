@@ -33,8 +33,6 @@ const ChatScreen: React.FC = () => {
 
   useEffect(() => {
     flatListRef.current?.scrollToEnd({ animated: true });
-    console.log('route.params')
-    console.log(route.params)
   }, [messages]);
 
   useEffect(() => {
