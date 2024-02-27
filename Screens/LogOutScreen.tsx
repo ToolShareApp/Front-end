@@ -12,13 +12,14 @@ const LogOutScreen: React.FC = () => {
 
   const onLogOut = () => {
     setUser(null);
+    // @ts-ignore
     navigation.navigate("Welcome");
   };
 
   return (
     <View style={styles.container}>
       <AppTitle />
-      <Alert
+      <Alert error={false}
         text={
           "Are you sure you want to log out? You will need to sign in again to access your account."
         }

@@ -6,7 +6,7 @@ import {
 import BrowseToolsScreen from "../Screens/BrowseToolsScreen";
 import MyToolsScreen from "../Screens/MyToolsScreen";
 import ProfileScreen from "../Screens/ProfileScreen";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from 'react'
 import { createStackNavigator } from "@react-navigation/stack";
 import ToolDetailsScreen from "../Screens/ToolDetailsScreen";
 import { Icon } from "react-native-paper";
@@ -27,7 +27,23 @@ const ChatStack = createStackNavigator();
 
 const DrawerNavigator: React.FC = () => {
 
-	const { user } = useContext(GlobalStateContext);
+  return (
+    <Drawer.Navigator
+      initialRouteName={"Welcome"}
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: GreenTheme.colors.primary, // Apply background color to the header
+        },
+        headerTintColor: GreenTheme.colors.background, // Apply color to the header items (title, back button)
+        drawerStyle: {
+          backgroundColor: GreenTheme.colors.background, // Apply background color to the drawer
+        },
+      }}
+      drawerContent={(props) => (
+        <DrawerContentScrollView>
+          <View style={styles.drawerLogo}>
+            <Logo size={80} />
+          </View>
 
 	return (
 		<Drawer.Navigator
@@ -258,23 +274,24 @@ const ToolsStackNavigator: React.FC = () => {
 };
 
 const ChatStackNavigator: React.FC = () => {
-	return (
-		<ChatStack.Navigator
-			screenOptions={{
-				headerTintColor: GreenTheme.colors.primary, // Apply color to the header items (title, back button)
-			}}>
-			<ChatStack.Screen
-				name="ChatsList"
-				component={ChatsListScreen}
-				options={{ title: "Chats" }}
-			/>
-			<ChatStack.Screen
-				name="ChatScreen"
-				component={ChatScreen}
-				options={({ route }) => ({ title: route.params.title })}
-			/>
-		</ChatStack.Navigator>
-	);
+  return (
+    <ChatStack.Navigator
+      screenOptions={{
+        headerTintColor: GreenTheme.colors.primary, // Apply color to the header items (title, back button)
+      }}
+    >
+      <ChatStack.Screen
+        name="ChatsList"
+        component={ChatsListScreen}
+        options={{ title: "Chats" }}
+      />
+      <ChatStack.Screen
+        name="ChatScreen"
+        component={ChatScreen}
+        options={({ route }) => ({ title: route.params ? route.params.title : 'Chat' })}
+      />
+    </ChatStack.Navigator>
+  );
 };
 
 export { DrawerNavigator };
