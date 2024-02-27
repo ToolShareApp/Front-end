@@ -11,6 +11,8 @@ import { TextInput, Avatar, Paragraph } from "react-native-paper";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 import { GreenTheme } from "../Themes/GreenTheme";
 import { useRoute } from '@react-navigation/native'
+import { Alert } from 'react-native';
+
 
 const screenWidth = Dimensions.get('window').width;
 const maxMessageWidth = screenWidth * 0.8;
@@ -29,13 +31,30 @@ const ChatScreen: React.FC = () => {
   const [text, setText] = useState("");
   const flatListRef = useRef<FlatList>();
   const route = useRoute();
-  const { user_id, tool_name, listing_id, title } = route.params;
+  const { user_id, tool_name, listing_id, title, recordId, chatId } = route.params;
 
   useEffect(() => {
     flatListRef.current?.scrollToEnd({ animated: true });
     console.log('route.params')
     console.log(route.params)
   }, [messages]);
+
+  useEffect(() => {
+    getMessagesByChatId();
+  }, []);
+  const getMessagesByChatId = async () => {
+    if(chatId || recordId){
+      try {
+        const response = await api.get(`/message/chat/${chatId ? chatId : recordId}`);
+        setMessages(response.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      Alert.alert('Error', 'ChatId or RecordId is missing');
+    }
+
+  };
 
   const sendMessage = () => {
     if (text) {
