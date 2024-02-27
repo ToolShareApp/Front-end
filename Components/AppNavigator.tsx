@@ -6,7 +6,7 @@ import {
 import BrowseToolsScreen from "../Screens/BrowseToolsScreen";
 import MyToolsScreen from "../Screens/MyToolsScreen";
 import ProfileScreen from "../Screens/ProfileScreen";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from 'react'
 import { createStackNavigator } from "@react-navigation/stack";
 import ToolDetailsScreen from "../Screens/ToolDetailsScreen";
 import { Icon } from "react-native-paper";
@@ -30,7 +30,7 @@ const DrawerNavigator: React.FC = () => {
 
   return (
     <Drawer.Navigator
-      initialRouteName={user ? "BrowseTools" : "Welcome"}
+      initialRouteName={"Welcome"}
       screenOptions={{
         headerStyle: {
           backgroundColor: GreenTheme.colors.primary, // Apply background color to the header
@@ -273,7 +273,7 @@ const ChatStackNavigator: React.FC = () => {
       <ChatStack.Screen
         name="ChatScreen"
         component={ChatScreen}
-        options={({ route }) => ({ title: route.params.title })}
+        options={({ route }) => ({ title: route.params ? route.params.title : 'Chat' })}
       />
     </ChatStack.Navigator>
   );

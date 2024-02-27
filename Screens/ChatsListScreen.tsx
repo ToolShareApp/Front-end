@@ -70,9 +70,9 @@ const ChatsListScreen = () => {
         descriptionNumberOfLines={1}
         left={() => (
           <Avatar.Text
-            style={{ marginLeft: 20 }}
+            style={styles.avatar}
             size={46}
-            label={item.name.substring(0, 2)}
+            label={item.name.substring(0, 1)}
           />
         )}
         right={() => <List.Icon icon="chevron-right" />}
@@ -94,6 +94,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  avatar: {
+    // Shadows for iOS
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    // Shadows for Android
+    elevation: 4,
+    marginLeft: 20,
+  }
 });
 
 export default ChatsListScreen;
