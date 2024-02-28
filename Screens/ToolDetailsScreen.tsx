@@ -167,12 +167,14 @@ const ToolDetailsScreen: React.FC = () => {
         ) : (
           <>
             <Text variant="headlineMedium">{toolName}</Text>
-            <Image
-              source={{
-                uri: image_url,
-              }}
-              style={styles.image}
-            />
+            { image_url && (
+              <Image
+                source={{
+                  uri: image_url,
+                }}
+                style={styles.image}
+              />
+            )}
             <View style={styles.category}>
               <Chip icon="toolbox" style={styles.chip}>
                 {category}
