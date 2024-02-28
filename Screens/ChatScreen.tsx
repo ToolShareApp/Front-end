@@ -12,6 +12,7 @@ import GlobalStateContext from "../Contexts/GlobalStateContext";
 import { GreenTheme } from "../Themes/GreenTheme";
 import { useRoute } from '@react-navigation/native'
 import { io, Socket } from 'socket.io-client'
+import FormatDate from '../Components/FormatDate'
 
 const screenWidth = Dimensions.get('window').width;
 const maxMessageWidth = screenWidth * 0.8;
@@ -132,7 +133,7 @@ const ChatScreen: React.FC = () => {
               >
                 <Paragraph style={styles.username}>{item.username}</Paragraph>
                 <Paragraph>{item.text}</Paragraph>
-                <Paragraph style={styles.dateText}>{item.date}</Paragraph>
+                <Paragraph style={styles.dateText}><FormatDate dateString={item.date} /></Paragraph>
               </View>
             </View>
             {item.userId === user.profile_id &&
