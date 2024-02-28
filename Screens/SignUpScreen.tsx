@@ -8,6 +8,7 @@ import { emailValidation, passwordValidation } from "../utils/utils";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 import Alert from "../Components/Alert";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Loader from '../Components/Loader'
 
 const SignUpScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -181,7 +182,7 @@ const SignUpScreen: React.FC = () => {
           Log In
         </Button>
         {isCreatingProfile ? (
-          <Text>Creating profile for {displayNameInput}...</Text>
+            <Loader visible={isCreatingProfile} message={`Creating profile for ${displayNameInput}...`}/>
         ) : null}
         {createProfileError !== "" ? (
           <Alert

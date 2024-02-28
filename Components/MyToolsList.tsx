@@ -5,12 +5,14 @@ import GlobalStateContext from '../Contexts/GlobalStateContext'
 import MyToolCard from './MyToolCard'
 import { GreenTheme } from '../Themes/GreenTheme'
 import { useNavigation } from "@react-navigation/native";
+import Loader from './Loader'
 
 const MyToolsList: React.FC = () => {
   const { api, user } = useContext(GlobalStateContext)
   const [tools, setTools] = useState<object[]>([])
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [visible, setVisible] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(true)
   const [selectedCategory, setSelectedCategory] = useState<string>('All')
   const navigation: any = useNavigation();
 
@@ -19,6 +21,7 @@ const MyToolsList: React.FC = () => {
       const response = await api.get(`/listing/owner/${user.profile_id}`)
       if (response.status && response.data) {
         setTools(response.data.data)
+        setLoading(false)
       }
     } catch (error) {
       console.error('Error when retrieving a list of user tools:', error)
@@ -89,18 +92,26 @@ const MyToolsList: React.FC = () => {
       </Menu>
       <Divider theme={GreenTheme}/>
       <ScrollView>
-        {filterListings().map(listing => (
-          <MyToolCard
-            key={listing.listing_id}
-            listing={listing}
-            listing_id={listing.listing_id}
-            category={listing.category}
-            name={listing.tool}
-            subcategory={listing.subcategory}
-            photo={listing.photo_url}
-            setTools={setTools}
-          />
-        ))}
+        {loading ?
+        (
+        <Loader visible={loading} message={'Loading My Tools...'} />
+        ) : (
+          <>
+            {filterListings().map(listing => (
+              <MyToolCard
+                key={listing.listing_id}
+                listing={listing}
+                listing_id={listing.listing_id}
+                category={listing.category}
+                name={listing.tool}
+                subcategory={listing.subcategory}
+                photo={listing.photo_url}
+                setTools={setTools}
+              />
+            ))}
+          </>
+          )}
+
       </ScrollView>
     </View>
   )
