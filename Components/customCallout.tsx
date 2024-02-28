@@ -2,6 +2,7 @@ import React from "react";
 import { View, StyleSheet, Dimensions, Image, Text } from "react-native";
 import { Callout } from "react-native-maps";
 import { MarkerWithMetadata } from "./Map";
+import { GreenTheme } from "../Themes/GreenTheme";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -9,22 +10,16 @@ const CustomCallout: React.FC<{
 	marker: MarkerWithMetadata;
 	listingArray: any;
 }> = ({ marker, listingArray }) => {
-	let count = 0;
 	return (
 		<Callout tooltip>
 			<View>
 				<View style={styles.container}>
-					<Image
-						source={{
-							uri: marker.picture_url,
-						}}
-						resizeMode="cover"
-						style={{ width: 10, height: 10 }}></Image>
 					<View style={{ paddingHorizontal: 16, paddingVertical: 8, flex: 1 }}>
 						<Text
 							style={{
 								fontWeight: "bold",
 								fontSize: 18,
+								textAlign: "center",
 							}}>
 							{marker.display_name}
 						</Text>
@@ -32,6 +27,7 @@ const CustomCallout: React.FC<{
 							style={{
 								fontWeight: "normal",
 								fontSize: 18,
+								textAlign: "center",
 							}}>
 							Listings:
 							{
@@ -50,15 +46,17 @@ const CustomCallout: React.FC<{
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: "white",
-		width: screenWidth * 0.8,
+		backgroundColor: GreenTheme.colors.surface,
+		width: screenWidth * 0.4,
 		flexDirection: "row",
 		borderWidth: 2,
 		borderRadius: 12,
 		overflow: "hidden",
+		color: GreenTheme.colors.darkText,
+		borderColor: GreenTheme.colors.darkText,
 	},
 	triangle: {
-		left: (screenWidth * 0.8) / 2 - 10,
+		left: (screenWidth * 0.4) / 2 - 10,
 		width: 0,
 		height: 0,
 		backgroundColor: "transparent",
@@ -67,7 +65,7 @@ const styles = StyleSheet.create({
 		borderRightWidth: 10,
 		borderBottomWidth: 0,
 		borderLeftWidth: 10,
-		borderTopColor: "black",
+		borderTopColor: GreenTheme.colors.darkText,
 		borderRightColor: "transparent",
 		borderBottomColor: "transparent",
 		borderLeftColor: "transparent",

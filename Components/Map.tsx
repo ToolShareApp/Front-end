@@ -1,7 +1,6 @@
 import MapView, {
 	PROVIDER_GOOGLE,
 	Marker,
-	Callout,
 	MapMarkerProps,
 } from "react-native-maps"; // remove PROVIDER_GOOGLE import if not using Google Maps
 import React, { useState, useEffect, useContext } from "react";
@@ -13,7 +12,7 @@ import { TextInput } from "react-native-paper";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 import Button from "./Button";
 import Loader from "./Loader";
-import CustomCallout from "./customCallout";
+import CustomCallout from "./CustomCallout";
 
 export type MarkerWithMetadata = {
 	display_name?: string;
@@ -94,6 +93,7 @@ export default function Map() {
 		});
 		updateLocation();
 	}, [placeId]);
+
 	const renderMarkers = () => {
 		return users.map(
 			(
@@ -122,6 +122,7 @@ export default function Map() {
 			)
 		);
 	};
+
 	return (
 		<>
 			{!user ? (
