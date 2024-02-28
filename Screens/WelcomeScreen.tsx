@@ -12,26 +12,26 @@ const welcomeScreenImage = require(".././assets/welcome-screen-image.webp");
 const WelcomeScreen = () => {
 	const navigation = useNavigation();
 	const { user } = useContext(GlobalStateContext);
-	const [location, setLocation] = useState<any>(null);
-	const [errorMsg, setErrorMsg] = useState<string>("");
-	const [latitudeInput, setLatitudeInput] = useState<number>(0);
-	const [longitudeInput, setLongitudeInput] = useState<number>(0);
+	// const [location, setLocation] = useState<any>(null);
+	// const [errorMsg, setErrorMsg] = useState<string>("");
+	// const [latitudeInput, setLatitudeInput] = useState<number>(0);
+	// const [longitudeInput, setLongitudeInput] = useState<number>(0);
 
 
-	useEffect(() => {
-		(async () => {
-			let { status } = await Location.requestForegroundPermissionsAsync();
-			if (status !== "granted") {
-				setErrorMsg("Permission to access location was denied");
-				return;
-			}
+	// useEffect(() => {
+	// 	(async () => {
+	// 		let { status } = await Location.requestForegroundPermissionsAsync();
+	// 		if (status !== "granted") {
+	// 			setErrorMsg("Permission to access location was denied");
+	// 			return;
+	// 		}
 
-			let location = await Location.getCurrentPositionAsync({});
-			setLocation(location);
-			setLatitudeInput(location.coords.latitude);
-			setLongitudeInput(location.coords.longitude);
-		})();
-	}, []);
+	// 		let location = await Location.getCurrentPositionAsync({});
+	// 		setLocation(location);
+	// 		setLatitudeInput(location.coords.latitude);
+	// 		setLongitudeInput(location.coords.longitude);
+	// 	})();
+	// }, []);
   useFocusEffect(
     React.useCallback(() => {
       if(user){
@@ -40,12 +40,12 @@ const WelcomeScreen = () => {
     }, [user]),
   );
 
-	let text = "Waiting..";
-	if (errorMsg) {
-		text = errorMsg;
-	} else if (location) {
-		text = JSON.stringify(location);
-	}
+	// let text = "Waiting..";
+	// if (errorMsg) {
+	// 	text = errorMsg;
+	// } else if (location) {
+	// 	text = JSON.stringify(location);
+	// }
 
 	return (
 		<View style={styles.container}>

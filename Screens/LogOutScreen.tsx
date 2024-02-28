@@ -8,10 +8,12 @@ import { useNavigation } from "@react-navigation/native";
 
 const LogOutScreen: React.FC = () => {
 	const navigation = useNavigation();
-	const { setUser } = useContext(GlobalStateContext);
+	const { user, setUser } = useContext(GlobalStateContext);
 
 	const onLogOut = () => {
+		console.log(user);
 		setUser(null);
+		console.log(user);
 		// @ts-ignore
 		navigation.navigate("Welcome");
 	};

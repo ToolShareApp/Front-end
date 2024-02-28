@@ -24,50 +24,50 @@ const SignUpScreen: React.FC = () => {
 	const [imageUrlInput, setImageUrlInput] = useState<string>("");
 	const [isCreatingProfile, setIsCreatingProfile] = useState<boolean>(false);
 	const [createProfileError, setCreateProfileError] = useState<any>("");
-	const [location, setLocation] = useState<any>(null);
-	const [errorMsg, setErrorMsg] = useState<string>("");
-	const [latitudeInput, setLatitudeInput] = useState<number>(0);
-	const [longitudeInput, setLongitudeInput] = useState<number>(0);
+	// const [location, setLocation] = useState<any>(null);
+	// const [errorMsg, setErrorMsg] = useState<string>("");
+	// const [latitudeInput, setLatitudeInput] = useState<number>(0);
+	// const [longitudeInput, setLongitudeInput] = useState<number>(0);
 
-	const getLocation = async () => {
-		let { status } = await Location.requestForegroundPermissionsAsync();
-		if (status !== "granted") {
-			setErrorMsg("Permission to access location was denied");
-			return;
-		}
+	// const getLocation = async () => {
+	// 	let { status } = await Location.requestForegroundPermissionsAsync();
+	// 	if (status !== "granted") {
+	// 		setErrorMsg("Permission to access location was denied");
+	// 		return;
+	// 	}
 
-		let location: any = await Location.getCurrentPositionAsync({});
-		setLocation(location);
-		setLatitudeInput(location.coords.latitude);
-		setLongitudeInput(location.coords.longitude);
-	};
+	// 	let location: any = await Location.getCurrentPositionAsync({});
+	// 	setLocation(location);
+	// 	setLatitudeInput(location.coords.latitude);
+	// 	setLongitudeInput(location.coords.longitude);
+	// };
 
-	useEffect(() => {
-		getLocation();
-	}, []);
+	// useEffect(() => {
+	// 	getLocation();
+	// }, []);
 
-	let text = "Waiting..";
-	if (errorMsg) {
-		text = errorMsg;
-	} else if (location) {
-		text = JSON.stringify(location);
-	}
+	// let text = "Waiting..";
+	// if (errorMsg) {
+	// 	text = errorMsg;
+	// } else if (location) {
+	// 	text = JSON.stringify(location);
+	// }
 
 	function postNewUser(
 		passwordInput: string,
 		emailInput: string,
 		displayNameInput: string,
 		imageUrlInput: string,
-		latitudeInput: number,
-		longitudeInput: number
+		// latitudeInput: number,
+		// longitudeInput: number
 	) {
 		return api.post("/profile", {
 			password: passwordInput,
 			email: emailInput.toLowerCase(),
 			display_name: displayNameInput,
 			picture_url: imageUrlInput,
-			latitude: latitudeInput,
-			longitude: longitudeInput,
+			// latitude: latitudeInput,
+			// longitude: longitudeInput,
 		});
 	}
 
@@ -89,8 +89,8 @@ const SignUpScreen: React.FC = () => {
 				emailInput,
 				displayNameInput,
 				imageUrlInput,
-				latitudeInput,
-				longitudeInput
+				// latitudeInput,
+				// longitudeInput
 			);
 			const newUser = await getUserByEmail(emailInput);
 			setUser(newUser);
