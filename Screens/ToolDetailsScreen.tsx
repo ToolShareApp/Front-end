@@ -17,8 +17,13 @@ import { GreenTheme } from '../Themes/GreenTheme'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { ScrollView } from 'react-native-gesture-handler'
 import Loader from '../Components/Loader'
+import DeleteListing from '../Components/DeleteListing'
 
-const ToolDetailsScreen: React.FC = () => {
+interface ToolDetailsScreenProps {
+  setTools: any;
+}
+
+const ToolDetailsScreen: React.FC<ToolDetailsScreenProps> = ({ setTools }) => {
   const { api, user } = useContext(GlobalStateContext)
   const [toolDetails, setToolDetails] = useState<object>()
   const [ownerDetails, setOwnerDetails] = useState<object>()
@@ -26,12 +31,11 @@ const ToolDetailsScreen: React.FC = () => {
   const [descriptionOpen, setDescriptionOpen] = useState<boolean>(false)
   const [interested, setInterested] = useState<boolean>()
   const [toast, setToast] = useState<boolean>(false)
-  const [loading, setLoading] = useState<boolean>(false)
 
   const navigation = useNavigation()
   const route = useRoute()
   // @ts-ignore
-  const { listing_id } = route.params
+  const { listing_id } = route.params 
 
   const onToggleSnackBar = () => setToast(!toast)
 
@@ -156,12 +160,13 @@ const ToolDetailsScreen: React.FC = () => {
   const category: string = toolDetails?.category
   const subcategory: string = toolDetails?.subcategory
   const depositRequired: boolean = toolDetails?.deposit_required
+  const owner_id: number = toolDetails?.owner_id
   const depositAmount: number = toolDetails?.deposit_amount
   const profilePicture_url: string = ownerDetails?.picture_url
   const ownerName: string = ownerDetails?.display_name
 
   return (
-    loading ? (<Loader visible={loading} message={'Loading'}/>) : (
+    isLoading ? (<Loader visible={isLoading} message={'Loading'}/>) : (
       <ScrollView>
         <View style={styles.toolDetails}>
           {isLoading ? (
@@ -256,6 +261,7 @@ const ToolDetailsScreen: React.FC = () => {
                 {' '}
                 Get location
               </Button>
+                { user.profile_id !== owner_id ?
               <View style={styles.buttons}>
                 {!interested ?
                   <Button icon="star" mode="contained" style={styles.button} onPress={() => addToInterested()}>
@@ -270,6 +276,9 @@ const ToolDetailsScreen: React.FC = () => {
                   Start Chat
                 </Button>
               </View>
+              : 
+              <DeleteListing listing={toolDetails} listing_id={listing_id} setTools={null}/>
+              }
               <Snackbar
                 visible={toast}
                 onDismiss={onDismissSnackBar}

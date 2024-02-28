@@ -1,19 +1,22 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { View, ScrollView, StyleSheet } from 'react-native'
-import { Searchbar, Menu, Button, Divider } from 'react-native-paper'
+import { Searchbar, Menu, Button, Divider, Snackbar, Text } from 'react-native-paper'
 import GlobalStateContext from '../Contexts/GlobalStateContext'
 import MyToolCard from './MyToolCard'
 import { GreenTheme } from '../Themes/GreenTheme'
 import { useNavigation } from "@react-navigation/native";
 import Loader from './Loader'
+import Alert from './Alert'
 
 const MyToolsList: React.FC = () => {
   const { api, user } = useContext(GlobalStateContext)
-  const [tools, setTools] = useState<object[]>([])
+  const [tools, setTools] = useState<object[]|[]>([])
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [visible, setVisible] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(true)
   const [selectedCategory, setSelectedCategory] = useState<string>('All')
+  const [deleteSuccess, setDeleteSuccess] = useState<boolean>(false)
+  const [deleteError, setDeleteError] = useState<boolean>(false);
   const navigation: any = useNavigation();
 
   const fetchUserTools = async () => {
@@ -30,7 +33,7 @@ const MyToolsList: React.FC = () => {
 
   useEffect(() => {
     fetchUserTools()
-  }, [])
+  }, [tools, deleteSuccess])
 
   const onChangeSearch = (query: string) => setSearchQuery(query)
 
@@ -91,13 +94,13 @@ const MyToolsList: React.FC = () => {
         ))}
       </Menu>
       <Divider theme={GreenTheme}/>
-      <ScrollView>
-        {loading ?
-        (
-        <Loader visible={loading} message={'Loading My Tools...'} />
-        ) : (
-          <>
-            {filterListings().map(listing => (
+      {loading ?
+      (
+      <Loader visible={loading} message={'Loading Your Tools...'} />
+      ) : (
+        <ScrollView>
+        { tools.length !== 0 ?
+            filterListings().map(listing => (
               <MyToolCard
                 key={listing.listing_id}
                 listing={listing}
@@ -107,12 +110,29 @@ const MyToolsList: React.FC = () => {
                 subcategory={listing.subcategory}
                 photo={listing.photo_url}
                 setTools={setTools}
+                setDeleteSuccess={setDeleteSuccess}
+                setDeleteError={setDeleteError}
               />
-            ))}
-          </>
+            ))
+            : (<Text variant="bodyLarge" style={styles.noToolsMessage}> No tools up for sharing yet...</Text> 
           )}
-
-      </ScrollView>
+      </ScrollView> 
+      )}
+      {deleteError ? (
+        <Alert
+          text={
+            "Sorry, we cannot delete your listing at this time. Please try again later."
+          }
+        />
+      ) : null}
+      <Snackbar visible={deleteSuccess} onDismiss={() => setDeleteSuccess(false)} action={{
+        label: 'Close',
+        onPress: () => {
+          setDeleteSuccess(false)
+        }
+      }}>
+        Your listing has been succesfully deleted!
+        </Snackbar>
     </View>
   )
 }
@@ -138,6 +158,10 @@ const styles = StyleSheet.create({
     width: "40%",
     margin: 15,
   },
+  noToolsMessage: {
+    marginTop: 20,
+    textAlign: "center"
+  }
 })
 
 export default MyToolsList
