@@ -6,6 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 import Alert from "../Components/Alert";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Loader from '../Components/Loader'
 
 const LogInScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -16,9 +17,11 @@ const LogInScreen: React.FC = () => {
   const [noCorrectPassword, setNoCorrectPassword] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const { api, setUser } = useContext(GlobalStateContext);
+  const [loading, setLoading] = useState<boolean>(false)
 
   async function fetchUserData(email: string, password: string) {
     try {
+      setLoading(true);
       const apiResponse = await api.get(
         `/profile/email/${email.toLowerCase()}`,
       );
@@ -29,6 +32,7 @@ const LogInScreen: React.FC = () => {
       // Check if the user exists.
       // !! It should be implemented on the backend !!
       if (data.length === 0) {
+        setLoading(false);
         setNoAccountRecord(true);
         setPasswordInput("");
         return;
@@ -38,6 +42,7 @@ const LogInScreen: React.FC = () => {
       // !! Never do this on the frontend, it should be implemented on the backend !!
       const userObj = data[0];
       if (userObj.password !== password) {
+        setLoading(false);
         setNoCorrectPassword(true);
         setPasswordInput("");
         return;
@@ -45,6 +50,7 @@ const LogInScreen: React.FC = () => {
 
       // If user is exist and the password is correct, set the user and navigate to 'BrowseTools'.
       setUser(userObj);
+      setLoading(false);
       navigation.navigate("BrowseTools");
     } catch (err) {
       setError(true);
@@ -117,6 +123,7 @@ const LogInScreen: React.FC = () => {
       >
         Sign Up
       </Button>
+      <Loader visible={loading} message={'Loading...'}/>
     </KeyboardAwareScrollView>
   );
 };

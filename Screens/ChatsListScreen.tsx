@@ -1,78 +1,56 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from 'react'
 import { FlatList, StyleSheet, TouchableOpacity } from "react-native";
 import { List, Avatar } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
+import GlobalStateContext from '../Contexts/GlobalStateContext'
+import Loader from '../Components/Loader'
 
 interface Chat {
-  id: string;
-  name: string;
-  userAvatar: string;
+  chat_id: string;
+  otherUserName: string;
+  otherUserAvatar: string;
   lastMessage: string;
   lastMessageDate: string;
-  createdByUserId: string;
+  chatCreatedByUserId: string;
 }
 
-const chatsData: Chat[] = [
-  {
-    id: "1",
-    name: "Sam",
-    userAvatar: "",
-    lastMessage: "Hey, I would like to get this tool",
-    lastMessageDate: "Today, 5:00 PM",
-    createdByUserId: "1",
-  },
-  {
-    id: "2",
-    name: "Olivia",
-    userAvatar: "",
-    lastMessage: "Meeting at 10 AM",
-    lastMessageDate: "Yesterday, 9:00 AM",
-    createdByUserId: "2",
-  },
-  {
-    id: "3",
-    name: "Cristina",
-    userAvatar: "",
-    lastMessage: "Meeting at 10 AM",
-    lastMessageDate: "Yesterday, 9:00 AM",
-    createdByUserId: "3",
-  },
-  {
-    id: "4",
-    name: "Viktoria",
-    userAvatar: "",
-    lastMessage: "Meeting at 10 AM",
-    lastMessageDate: "Yesterday, 9:00 AM",
-    createdByUserId: "4",
-  },
-  {
-    id: "5",
-    name: "Viktor",
-    userAvatar: "",
-    lastMessage: "Meeting at 10 AM",
-    lastMessageDate: "Yesterday, 9:00 AM",
-    createdByUserId: "5",
-  },
-];
-
-const ChatsListScreen = () => {
+const ChatsListScreen: React.FC = () => {
   const navigation = useNavigation();
+  const { user, api } = useContext(GlobalStateContext);
+  const [chats, setChats] = useState<Chat[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+
+  useEffect(() => {
+    getChatsByUserUd();
+  }, []);
+
+  const getChatsByUserUd = async () => {
+    try {
+      const response = await api.get(`/chat/user/${user.profile_id}`);
+      console.log(response.data.data)
+      setChats(response.data.data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      alert('Error', error);
+    }
+  };
 
   const renderItem = ({ item }: { item: Chat }) => (
     <TouchableOpacity
       onPress={() =>
-        navigation.navigate("ChatScreen", { chatId: item.id, title: item.name })
+        navigation.navigate("ChatScreen", { chatId: item.chat_id, title: item.otherUserName })
       }
     >
       <List.Item
-        title={item.name}
+        title={item.otherUserName}
         description={item?.lastMessage}
         descriptionNumberOfLines={1}
         left={() => (
           <Avatar.Text
             style={styles.avatar}
             size={46}
-            label={item.name.substring(0, 1)}
+            label={item.otherUserName?.substring(0, 1)}
           />
         )}
         right={() => <List.Icon icon="chevron-right" />}
@@ -81,12 +59,15 @@ const ChatsListScreen = () => {
   );
 
   return (
-    <FlatList
-      data={chatsData}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.id}
-      style={styles.container}
-    />
+    loading ? (<Loader visible={loading} message={'Loading Chats...'}/>) : (
+      <FlatList
+        data={chats}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.chat_id + Math.random()}
+        style={styles.container}
+      />
+    )
+
   );
 };
 

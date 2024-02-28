@@ -8,6 +8,7 @@ import { emailValidation, passwordValidation } from "../utils/utils";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 import Alert from "../Components/Alert";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Loader from '../Components/Loader'
 import * as Location from "expo-location";
 
 const SignUpScreen: React.FC = () => {
@@ -122,129 +123,134 @@ const SignUpScreen: React.FC = () => {
 		}
 	};
 
-	return (
-		<KeyboardAwareScrollView
-			contentContainerStyle={styles.container}
-			keyboardShouldPersistTaps="handled"
-			extraScrollHeight={20}>
-			<View style={styles.container}>
-				<AppTitle />
-				<Text variant="displaySmall" style={{ marginBottom: 20 }}>
-					Sign Up
-				</Text>
-				<TextInput
-					label="Email"
-					value={emailInput}
-					onChangeText={(value) => {
-						setEmailInput(value);
-						if (!emailValidation(value)) {
-							setEmailError("Email address is invalid!");
-						} else {
-							setEmailError(null);
-						}
-					}}
-					style={styles.inputStyle}
-					mode="outlined"
-				/>
-				<HelperText
-					style={styles.helperStyle}
-					type="error"
-					visible={emailInput !== "" && emailError}>
-					Email address is invalid!
-				</HelperText>
-				<TextInput
-					label="Password"
-					value={passwordInput}
-					onChangeText={(value) => {
-						setPasswordInput(value);
-						if (!passwordValidation(passwordInput, passwordInput2).isValid) {
-							setPasswordError(
-								passwordValidation(passwordInput, passwordInput2).error
-							);
-						} else {
-							setPasswordError(null);
-						}
-					}}
-					secureTextEntry={secureInputMode}
-					right={
-						<TextInput.Icon
-							icon={secureInputMode ? "eye-off" : "eye"}
-							onPress={() => setSecureInputMode(!secureInputMode)}
-						/>
-					}
-					style={styles.inputStyle}
-					mode="outlined"
-				/>
-				<HelperText style={styles.helperStyle} type="error" visible={false}>
-					Please repeat your password
-				</HelperText>
-				<TextInput
-					label="Confirm Password"
-					value={passwordInput2}
-					onChangeText={(value) => {
-						setPasswordInput2(value);
-						if (!passwordValidation(passwordInput, passwordInput2).isValid) {
-							setPasswordError(
-								passwordValidation(passwordInput, passwordInput2).error
-							);
-						} else {
-							setPasswordError(null);
-						}
-					}}
-					secureTextEntry={secureInputMode}
-					right={
-						<TextInput.Icon
-							icon={secureInputMode ? "eye-off" : "eye"}
-							onPress={() => setSecureInputMode(!secureInputMode)}
-						/>
-					}
-					style={styles.inputStyle}
-					mode="outlined"
-				/>
-				<HelperText
-					style={styles.helperStyle}
-					type="error"
-					visible={passwordInput !== "" && passwordError}>
-					{passwordError}
-				</HelperText>
-				<TextInput
-					label="Display Name"
-					value={displayNameInput}
-					onChangeText={(value) => setDisplayNameInput(value)}
-					style={styles.inputStyle}
-					mode="outlined"
-				/>
-				<Button
-					icon="account-plus"
-					mode="contained"
-					onPress={() => onSignUp()}
-					style={{ marginVertical: 20 }}>
-					Sign Up
-				</Button>
-				<Text variant="headlineSmall" style={{ marginBottom: 20 }}>
-					Already have an account?
-				</Text>
-				<Button
-					icon="login"
-					mode="contained"
-					onPress={() => navigation.navigate("LogIn")}
-					style={{ marginVertical: 10 }}>
-					Log In
-				</Button>
-				{isCreatingProfile ? (
-					<Text>Creating profile for {displayNameInput}...</Text>
-				) : null}
-				{createProfileError !== "" ? (
-					<Alert
-						error
-						text={
-							"Unfortunately, an error occurred while trying to create a new profile. Please try again."
-						}
-					/>
-				) : null}
-			</View>
-		</KeyboardAwareScrollView>
-	);
+  return (
+    <KeyboardAwareScrollView
+      contentContainerStyle={styles.container}
+      keyboardShouldPersistTaps="handled"
+      extraScrollHeight={20}
+    >
+      <View style={styles.container}>
+        <AppTitle />
+        <Text variant="displaySmall" style={{ marginBottom: 20 }}>
+          Sign Up
+        </Text>
+        <TextInput
+          label="Email"
+          value={emailInput}
+          onChangeText={(value) => {
+            setEmailInput(value);
+            if (!emailValidation(value)) {
+              setEmailError("Email address is invalid!");
+            } else {
+              setEmailError(null);
+            }
+          }}
+          style={styles.inputStyle}
+          mode="outlined"
+        />
+        <HelperText
+          style={styles.helperStyle}
+          type="error"
+          visible={emailInput !== "" && emailError}
+        >
+          Email address is invalid!
+        </HelperText>
+        <TextInput
+          label="Password"
+          value={passwordInput}
+          onChangeText={(value) => {
+            setPasswordInput(value);
+            if (!passwordValidation(passwordInput, passwordInput2).isValid) {
+              setPasswordError(
+                passwordValidation(passwordInput, passwordInput2).error,
+              );
+            } else {
+              setPasswordError(null);
+            }
+          }}
+          secureTextEntry={secureInputMode}
+          right={
+            <TextInput.Icon
+              icon={secureInputMode ? "eye-off" : "eye"}
+              onPress={() => setSecureInputMode(!secureInputMode)}
+            />
+          }
+          style={styles.inputStyle}
+          mode="outlined"
+        />
+        <HelperText style={styles.helperStyle} type="error" visible={false}>
+          Please repeat your password
+        </HelperText>
+        <TextInput
+          label="Confirm Password"
+          value={passwordInput2}
+          onChangeText={(value) => {
+            setPasswordInput2(value);
+            if (!passwordValidation(passwordInput, passwordInput2).isValid) {
+              setPasswordError(
+                passwordValidation(passwordInput, passwordInput2).error,
+              );
+            } else {
+              setPasswordError(null);
+            }
+          }}
+          secureTextEntry={secureInputMode}
+          right={
+            <TextInput.Icon
+              icon={secureInputMode ? "eye-off" : "eye"}
+              onPress={() => setSecureInputMode(!secureInputMode)}
+            />
+          }
+          style={styles.inputStyle}
+          mode="outlined"
+        />
+        <HelperText
+          style={styles.helperStyle}
+          type="error"
+          visible={passwordInput !== "" && passwordError}
+        >
+          {passwordError}
+        </HelperText>
+        <TextInput
+          label="Display Name"
+          value={displayNameInput}
+          onChangeText={(value) => setDisplayNameInput(value)}
+          style={styles.inputStyle}
+          mode="outlined"
+        />
+        <Button
+          icon="account-plus"
+          mode="contained"
+          onPress={() => onSignUp()}
+          style={{ marginVertical: 20 }}
+        >
+          Sign Up
+        </Button>
+        <Text variant="headlineSmall" style={{ marginBottom: 20 }}>
+          Already have an account?
+        </Text>
+        <Button
+          icon="login"
+          mode="contained"
+          onPress={() => navigation.navigate("LogIn")}
+          style={{ marginVertical: 10 }}
+        >
+          Log In
+        </Button>
+        {isCreatingProfile ? (
+            <Loader visible={isCreatingProfile} message={`Creating profile for ${displayNameInput}...`}/>
+        ) : null}
+        {createProfileError !== "" ? (
+          <Alert
+            error
+            text={
+              "Unfortunately, an error occurred while trying to create a new profile. Please try again."
+            }
+          />
+        ) : null}
+      </View>
+    </KeyboardAwareScrollView>
+  );
 };
 
 const styles = StyleSheet.create({
