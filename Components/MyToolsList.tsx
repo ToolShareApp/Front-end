@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import { View, ScrollView, StyleSheet } from 'react-native'
 import { Searchbar, Menu, Button, Divider, Snackbar, Text } from 'react-native-paper'
 import GlobalStateContext from '../Contexts/GlobalStateContext'
 import MyToolCard from './MyToolCard'
 import { GreenTheme } from '../Themes/GreenTheme'
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import Loader from './Loader'
 import Alert from './Alert'
 
@@ -31,9 +31,14 @@ const MyToolsList: React.FC = () => {
     }
   }
 
-  useEffect(() => {
-    fetchUserTools()
-  }, [deleteSuccess])
+  useFocusEffect(
+    React.useCallback(() => {
+
+      fetchUserTools()
+
+    },[deleteSuccess]),
+  )
+
 
   const onChangeSearch = (query: string) => setSearchQuery(query)
 

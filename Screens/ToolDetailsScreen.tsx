@@ -1,14 +1,14 @@
 import React from "react";
 import { View, StyleSheet, Image } from "react-native";
 import {
-	Button,
-	Avatar,
-	Card,
-	Text,
-	Chip,
-	TouchableRipple,
-	Snackbar,
-} from "react-native-paper";
+  Button,
+  Avatar,
+  Card,
+  Text,
+  Chip,
+  TouchableRipple,
+  Snackbar, Portal, Dialog,
+} from 'react-native-paper'
 import { useContext, useEffect, useState } from "react";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -18,7 +18,6 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { ScrollView } from "react-native-gesture-handler";
 import Loader from "../Components/Loader";
 import reverseGeocoding from "../utils/reverseGeocoding";
-import DeleteListing from '../Components/DeleteListing'
 
 const ToolDetailsScreen: React.FC = () => {
 	const { api, user } = useContext(GlobalStateContext);
@@ -30,11 +29,25 @@ const ToolDetailsScreen: React.FC = () => {
 	const [toast, setToast] = useState<boolean>(false);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [formattedAddress, setFormattedAddress] = useState<string>("");
-	const navigation = useNavigation();
-	const route = useRoute();
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
+  const navigation = useNavigation();
+  const route = useRoute();
 	// @ts-ignore
-	const { listing_id, setTools } = route.params;
-
+	const { listing_id } = route.params;
+  const deleteListing = async () => {
+    try {
+      return await api.delete(`/listing/${listing_id}`).then(() => {
+        // @ts-ignore
+        navigation.navigate('MyTools', {
+          screen: "ToolsList",
+        })
+      })
+    } catch (error) {
+      console.error('Delete Item ', error)
+      alert(error)
+    }
+  };
 	const onToggleSnackBar = () => setToast(!toast);
 
 	const onDismissSnackBar = () => setToast(false);
@@ -275,7 +288,7 @@ const ToolDetailsScreen: React.FC = () => {
 								)}
 							</Card.Content>
 						</Card>
-						<Text style={styles.depositRequired}>{formattedAddress}</Text>
+						<Text style={styles.location}>{formattedAddress}</Text>
                 { user.profile_id !== owner_id ?
               <View style={styles.buttons}>
                 {!interested ?(
@@ -300,7 +313,34 @@ const ToolDetailsScreen: React.FC = () => {
                 </Button>
               </View>
               :
-              <DeleteListing listing={{toolDetails}} listing_id={listing_id} setDeleteError={'error'} setDeleteSuccess={'Deleted'}/>
+                  (
+                    <>
+                      <Button icon="delete" onPress={deleteListing} style={styles.deleteButton}>
+                        Delete
+                      </Button>
+                      {openDialog ? (
+                        <Portal>
+                          <Dialog
+                            visible={openDialog}
+                            onDismiss={() => setOpenDialog(false)}
+                            theme={{ colors: { backdrop: "transparent" } }}
+                            style={styles.dialog}
+                          >
+                            <Dialog.Content>
+                              <Text variant="bodyMedium">
+                                Are you sure you want to delete this listing?
+                              </Text>
+                            </Dialog.Content>
+                            <Dialog.Actions>
+                              <Button onPress={() => setConfirmDelete(true)}>Confirm</Button>
+                              <Button onPress={() => setOpenDialog(false)}>Cancel</Button>
+                            </Dialog.Actions>
+                          </Dialog>
+                        </Portal>
+                      ) : null}
+
+                    </>
+                  )
               }
 						<Snackbar visible={toast} onDismiss={onDismissSnackBar}>
 							Error!
@@ -360,6 +400,7 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderColor: GreenTheme.colors.primary,
 		borderRadius: 15,
+		padding: 10,
 	},
 	ownerCard: {
 		marginTop: 20,
@@ -389,6 +430,15 @@ const styles = StyleSheet.create({
 	button: {
 		margin: 15,
 	},
+  deleteButton: {
+    borderWidth: 1,
+    borderColor: GreenTheme.colors.primary,
+    borderRadius: 15,
+    justifyContent: "center",
+  },
+  dialog: {
+    backgroundColor: GreenTheme.colors.surface,
+  },
 });
 
 export default ToolDetailsScreen;
