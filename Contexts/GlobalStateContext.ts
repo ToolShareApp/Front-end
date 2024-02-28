@@ -2,10 +2,10 @@ import { createContext } from "react";
 import axios from "axios";
 
 const GlobalStateContext = createContext({
-  user: null,
-  setUser: (user) => {},
+  user: Object,
+  setUser: (user: any) => {},
   token: null,
-  setToken: (user) => {},
+  setToken: (user: any) => {},
   api: axios.create(),
 });
 
