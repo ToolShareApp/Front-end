@@ -130,7 +130,7 @@ const AddListingScreen: React.FC = () => {
 
   return (
     <TouchableWithoutFeedback onPress={handleTapOutside}>
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <TextInput
         label="Name of tool*"
         mode="outlined"
@@ -223,7 +223,7 @@ const AddListingScreen: React.FC = () => {
         }}>
         Your listing has been succesfully added!
         </Snackbar>
-    </View>
+    </ScrollView>
     </TouchableWithoutFeedback>
   );
 };
@@ -259,6 +259,7 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     marginTop: 20,
+    marginBottom: 20,
   },
 });
 
