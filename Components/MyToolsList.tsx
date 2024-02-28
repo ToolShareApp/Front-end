@@ -33,7 +33,7 @@ const MyToolsList: React.FC = () => {
 
   useEffect(() => {
     fetchUserTools()
-  }, [tools, deleteSuccess])
+  }, [deleteSuccess])
 
   const onChangeSearch = (query: string) => setSearchQuery(query)
 

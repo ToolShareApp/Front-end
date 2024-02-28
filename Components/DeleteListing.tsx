@@ -8,7 +8,7 @@ import { GreenTheme } from "../Themes/GreenTheme";
 interface DeleteListingProps {
   listing: object;
   listing_id: number;
-  setTools: any;
+  setTools?: any;
   setDeleteSuccess: any;
   setDeleteError: any;
 }
@@ -58,7 +58,7 @@ const DeleteListing: React.FC<DeleteListingProps> = ({
         console.error("Error deleting tool:", error);
       }
     })();
-  }, [confirmDelete, route]);
+  }, [confirmDelete]);
 
   const clickDelete = () => {
     setOpenDialog(true);

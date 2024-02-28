@@ -33,7 +33,7 @@ const ToolDetailsScreen: React.FC = () => {
 	const navigation = useNavigation();
 	const route = useRoute();
 	// @ts-ignore
-	const { listing_id } = route.params;
+	const { listing_id, setTools } = route.params;
 
 	const onToggleSnackBar = () => setToast(!toast);
 
@@ -300,7 +300,7 @@ const ToolDetailsScreen: React.FC = () => {
                 </Button>
               </View>
               :
-              <DeleteListing listing={toolDetails} listing_id={listing_id} setTools={null}/>
+              <DeleteListing listing={{toolDetails}} listing_id={listing_id} setDeleteError={'error'} setDeleteSuccess={'Deleted'}/>
               }
 						<Snackbar visible={toast} onDismiss={onDismissSnackBar}>
 							Error!
