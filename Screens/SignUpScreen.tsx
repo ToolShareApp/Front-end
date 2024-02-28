@@ -88,7 +88,7 @@ const SignUpScreen: React.FC = () => {
 				passwordInput,
 				emailInput,
 				displayNameInput,
-				imageUrlInput
+				imageUrlInput,
 				latitudeInput,
 				longitudeInput
 			);
