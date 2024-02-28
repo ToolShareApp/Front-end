@@ -7,12 +7,14 @@ import ToolCard from './ToolCard'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Searchbar, Menu, Divider, Button, PaperProvider, Text } from 'react-native-paper'
 import { GreenTheme } from '../Themes/GreenTheme'
+import Loader from './Loader'
 
 export default function ToolsList () {
   const { api } = useContext(GlobalStateContext)
   const [listings, setListings] = useState<object[]>([])
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [visible, setVisible] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(true)
   const [selectedCategory, setSelectedCategory] = useState<string>('All')
 
   function getListings () {
@@ -27,6 +29,7 @@ export default function ToolsList () {
   useEffect(() => {
     getListings().then((response: any) => {
       setListings(response)
+      setLoading(false)
     })
   }, [])
 
@@ -83,17 +86,24 @@ export default function ToolsList () {
         ))}
       </Menu>
       <Divider theme={GreenTheme}/>
+
       <ScrollView>
-        { filterListings().map(listing => (
-        <ToolCard
-          key={listing.listing_id}
-          listing_id={listing.listing_id}
-          category={listing.category}
-          name={listing.tool}
-          subcategory={listing.subcategory}
-          photo={listing.photo_url}
-        />
-        )) }
+        {loading ? (
+            <Loader message={'Loading Tools...'} visible={loading} />
+        ) : (
+          <>
+            { filterListings().map(listing => (
+              <ToolCard
+                key={listing.listing_id}
+                listing_id={listing.listing_id}
+                category={listing.category}
+                name={listing.tool}
+                subcategory={listing.subcategory}
+                photo={listing.photo_url}
+              />
+            )) }
+          </>
+          )}
       </ScrollView>
     </View>
   )

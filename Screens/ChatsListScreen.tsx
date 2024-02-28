@@ -3,6 +3,7 @@ import { FlatList, StyleSheet, TouchableOpacity } from "react-native";
 import { List, Avatar } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import GlobalStateContext from '../Contexts/GlobalStateContext'
+import Loader from '../Components/Loader'
 
 interface Chat {
   chat_id: string;
@@ -17,6 +18,7 @@ const ChatsListScreen: React.FC = () => {
   const navigation = useNavigation();
   const { user, api } = useContext(GlobalStateContext);
   const [chats, setChats] = useState<Chat[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
     getChatsByUserUd();
@@ -27,6 +29,7 @@ const ChatsListScreen: React.FC = () => {
       const response = await api.get(`/chat/user/${user.profile_id}`);
       console.log(response.data.data)
       setChats(response.data.data);
+      setLoading(false);
     } catch (error) {
       console.log(error);
       alert('Error', error);
@@ -56,12 +59,15 @@ const ChatsListScreen: React.FC = () => {
   );
 
   return (
-    <FlatList
-      data={chats}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.chat_id + Math.random()}
-      style={styles.container}
-    />
+    loading ? (<Loader visible={loading} message={'Loading Chats...'}/>) : (
+      <FlatList
+        data={chats}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.chat_id + Math.random()}
+        style={styles.container}
+      />
+    )
+
   );
 };
 

@@ -1,19 +1,21 @@
-import React, { useState, useContext } from 'react';
-import { ScrollView, View, StyleSheet } from 'react-native';
-import { Avatar, Button, TextInput, Text } from 'react-native-paper';
-import GlobalStateContext from '../Contexts/GlobalStateContext';
-import { GreenTheme } from '../Themes/GreenTheme' // Убедитесь, что путь к контексту указан правильно
+import React, { useState, useContext } from 'react'
+import { ScrollView, View, StyleSheet } from 'react-native'
+import { Avatar, Button, TextInput, Text } from 'react-native-paper'
+import GlobalStateContext from '../Contexts/GlobalStateContext'
+import { GreenTheme } from '../Themes/GreenTheme'
+import Loader from '../Components/Loader'
 
 const ProfileScreen = () => {
-  const { api, user, setUser } = useContext(GlobalStateContext);
-  const [displayName, setDisplayName] = useState(user.display_name);
-  const [bio, setBio] = useState(user.bio || '');
-  const [email, setEmail] = useState(user.email);
-  const [avatarUrl, setAvatarUrl] = useState(user.picture_url || '');
-  const [password, setPassword] = useState(user.password || '');
-  const [latitude, setLatitude] = useState(String(user.latitude));
-  const [longitude, setLongitude] = useState(String(user.longitude));
-  const [searchRadius, setSearchRadius] = useState(String(user.search_radius));
+  const { api, user, setUser } = useContext(GlobalStateContext)
+  const [displayName, setDisplayName] = useState(user?.display_name)
+  const [bio, setBio] = useState(user?.bio || '')
+  const [email, setEmail] = useState(user?.email)
+  const [avatarUrl, setAvatarUrl] = useState(user?.picture_url || '')
+  const [password, setPassword] = useState(user?.password || '')
+  const [latitude, setLatitude] = useState(String(user?.latitude ? user?.latitude : 0))
+  const [longitude, setLongitude] = useState(String(user?.longitude ? user?.longitude : 0))
+  const [searchRadius, setSearchRadius] = useState(String(user?.search_radius ? user?.search_radius : 5))
+  const [loading, setLoading] = useState<boolean>(false)
 
   const updateProfile = async () => {
     try {
@@ -27,7 +29,7 @@ const ProfileScreen = () => {
         longitude: parseFloat(longitude),
         search_radius: parseInt(searchRadius, 10),
         picture_url: avatarUrl,
-      });
+      })
 
       const newUserData = {
         ...user,
@@ -41,18 +43,19 @@ const ProfileScreen = () => {
         search_radius: parseInt(searchRadius, 10),
         picture_url: avatarUrl,
       }
-      setUser(newUserData);
-      alert('Profile updated successfully');
+      setUser(newUserData)
+      alert('Profile updated successfully')
+      setLoading(false)
     } catch (error) {
-      console.error('Error updating profile:', error);
-      alert('Failed to update profile');
+      console.error('Error updating profile:', error)
+      alert('Failed to update profile')
     }
-  };
+  }
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.avatarContainer}>
-        <Avatar.Image size={100} source={{ uri: avatarUrl || 'https://example.com/default_avatar.png' }} />
+        <Avatar.Image size={100} source={{ uri: avatarUrl || 'https://example.com/default_avatar.png' }}/>
       </View>
       <TextInput
         label="Display Name"
@@ -119,9 +122,11 @@ const ProfileScreen = () => {
       <Button mode="contained" onPress={updateProfile} style={styles.button}>
         Update Profile
       </Button>
+      <Loader visible={loading} message={'Updating Profile...'}/>
     </ScrollView>
-  );
-};
+
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -139,6 +144,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     backgroundColor: GreenTheme.colors.primary,
   },
-});
+})
 
-export default ProfileScreen;
+export default ProfileScreen
