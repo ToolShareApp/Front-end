@@ -45,7 +45,7 @@ const ChatScreen: React.FC = () => {
         token: 'secretToken'
       },
       query: {
-        'chatId': chatId
+        'chatId': chatId ? chatId : recordId
       }
     })
 

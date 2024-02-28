@@ -108,15 +108,21 @@ const ToolDetailsScreen: React.FC = () => {
   const createNewChat = () => {
     return api.post('/chat/', {
       listingId: listing_id,
-      userId: toolDetails?.owner_id
+      userId: user?.profile_id
     })
   }
 
   function startChat () {
     const owner_id: number = toolDetails?.owner_id
+    if(toolDetails?.owner_id === user?.profile_id){
+      alert('Sorry, you can\'t create a chat with yourself')
+      return
+    }
     createNewChat().then((response) => {
       if (response?.data?.recordId) {
         const recordId = response?.data?.recordId
+
+        console.log({user_id: owner_id, title: ownerName, tool_name: toolName, listing_id, recordId})
         // @ts-ignore
         navigation.navigate('Messages', {
           screen: 'ChatScreen',

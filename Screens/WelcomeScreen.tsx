@@ -1,9 +1,9 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import { View, Image, StyleSheet } from "react-native";
 import { Button, Text } from "react-native-paper";
 import AppTitle from "../Components/AppTitle";
 import { GreenTheme } from "../Themes/GreenTheme";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import GlobalStateContext from '../Contexts/GlobalStateContext'
 const welcomeScreenImage = require(".././assets/welcome-screen-image.webp");
 
@@ -12,12 +12,14 @@ const WelcomeScreen = () => {
   const { user } = useContext(GlobalStateContext);
 
 
-  useEffect(() => {
-    if(user){
-      navigation.navigate("BrowseTools");
-    }
-  }, [user]);
+  useFocusEffect(
+    React.useCallback(() => {
+      if(user){
+        navigation.navigate("BrowseTools");
 
+      }
+    }, [user]),
+  );
 
   return (
     <View style={styles.container}>
