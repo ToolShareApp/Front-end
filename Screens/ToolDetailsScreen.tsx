@@ -274,13 +274,6 @@ const ToolDetailsScreen: React.FC = () => {
 								)}
 							</Card.Content>
 						</Card>
-						{/* <Button
-                style={styles.location}
-                icon={() => <Icon name="location-pin" size={30} color="green"/>}
-              >
-                {' '}
-                Get location
-              </Button> */}
 						<Text style={styles.depositRequired}>{formattedAddress}</Text>
 						<View style={styles.buttons}>
 							{!interested ? (

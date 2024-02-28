@@ -18,6 +18,7 @@ import { TextInput } from "react-native-paper";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 import Button from "./Button";
 import CustomCallout from "./customCallout";
+import { set } from "date-fns";
 
 export type MarkerWithMetadata = {
 	display_name: string;
@@ -128,8 +129,8 @@ export default function Map() {
 						provider={PROVIDER_GOOGLE} // remove if not using Google Maps
 						style={styles.map}
 						region={{
-							latitude: user.latitude,
-							longitude: user.longitude,
+							latitude: latitudeInput,
+							longitude: longitudeInput,
 							latitudeDelta: 0.75,
 							longitudeDelta: 0.75,
 						}}>
@@ -148,12 +149,13 @@ export default function Map() {
 							onSubmitEditing={() => {
 								reverseGeocoding
 									.findAddress(address)
-									.then((result) => {
-										console.log(result.data);
-										setReverseLocation(
-											result.data.results[0].formatted_address
-										);
-										setPlaceId(result.data.results[0].place_id);
+									.then(({ data }) => {
+										console.log(data.results[0].geometry);
+										setReverseLocation(data.results[0].formatted_address);
+										setLatitudeInput(data.results[0].geometry.location.lat);
+										setLongitudeInput(data.results[0].geometry.location.lng);
+
+										setPlaceId(data.results[0].place_id);
 									})
 									.catch((err) => {
 										console.log(err);
