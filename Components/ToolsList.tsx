@@ -101,21 +101,17 @@ export default function ToolsList() {
   const closeSubcategoryMenu = () => setVisibleSubcategory(false);
 
   const filterListings = () => {
-    return listings.filter((listing: object) => {
-      const matchCategory =
-        selectedCategory === "All" || listing.category === selectedCategory;
-      const matchSubcategory =
-        selectedSubcategory === "All" ||
-        selectedSubcategory === listing.subcategory;
-      const matchQuery =
-        listing.tool.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    return listings.filter((listing: {category: string, subcategory: string, tool: string, listing_id: string}) => {
+      const matchCategory = selectedCategory === "All" || listing.category === selectedCategory;
+      const matchSubcategory = selectedSubcategory === "All" || listing.subcategory === selectedSubcategory;
+      const matchQuery = listing.tool.toLowerCase().includes(searchQuery.toLowerCase()) ||
         listing.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
         listing.subcategory.toLowerCase().includes(searchQuery.toLowerCase());
       const matchInterested = interestedList.length === 0 || interestedList.some(
-          (interestedTool: object) => interestedTool.listing_id === listing.listing_id
-        );
-    
-      return matchCategory && matchSubcategory && matchQuery  && matchInterested
+        (interestedTool: {listing_id: string}) => interestedTool.listing_id === listing.listing_id
+      );
+
+      return matchCategory && matchSubcategory && matchQuery && matchInterested;
     });
   };
 
