@@ -4,26 +4,19 @@ import MapView, {
 	MapMarkerProps,
 } from "react-native-maps"; // remove PROVIDER_GOOGLE import if not using Google Maps
 import React, { useState, useEffect, useContext } from "react";
-import {
-	Text,
-	View,
-	StyleSheet,
-	Image,
-	KeyboardAvoidingView,
-} from "react-native";
+import { Text, View, StyleSheet, KeyboardAvoidingView } from "react-native";
 import * as Location from "expo-location";
 import reverseGeocoding from "../utils/reverseGeocoding";
 //import Button from "./Button";
 import { TextInput } from "react-native-paper";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 import Button from "./Button";
-import CustomCallout from "./customCallout";
-import { set } from "date-fns";
+import CustomCallout from "./CustomCallout";
 
 export type MarkerWithMetadata = {
-	display_name: string;
-	bio: string;
-	profile_id: number;
+	display_name?: string;
+	bio?: string;
+	profile_id?: number;
 	latitude?: number;
 	longitude?: number;
 	title?: MapMarkerProps["title"];
@@ -33,7 +26,6 @@ export type MarkerWithMetadata = {
 
 export default function Map() {
 	const [errorMsg, setErrorMsg] = useState<string>("");
-	const [reversedLocation, setReverseLocation] = useState<string>("");
 	const [address, setAddress] = useState<string>("");
 	const [location, setLocation] = useState<any>(null);
 	const [latitudeInput, setLatitudeInput] = useState<number>(0);
@@ -59,6 +51,7 @@ export default function Map() {
 			latitude: latitudeInput,
 			longitude: longitudeInput,
 		});
+		updateLocation();
 	};
 
 	const updateLocation = async () => {
@@ -88,15 +81,13 @@ export default function Map() {
 		});
 		updateLocation();
 	}, [placeId]);
-
-	// if owner id === marker id display listings
 	const renderMarkers = () => {
 		return users.map(
 			(
 				marker: {
 					profile_id: number;
-					latitude?: any;
-					longitude?: any;
+					latitude?: number;
+					longitude?: number;
 					display_name?: any;
 					description: any;
 					title?: string | undefined;
@@ -107,8 +98,8 @@ export default function Map() {
 				<Marker
 					key={index}
 					coordinate={{
-						latitude: marker.latitude,
-						longitude: marker.longitude,
+						latitude: marker.latitude ? marker.latitude : 0,
+						longitude: marker.longitude ? marker.longitude : 0,
 					}}
 					icon={require("../assets/hammer-and-wrench.png")}>
 					<CustomCallout
@@ -129,8 +120,8 @@ export default function Map() {
 						provider={PROVIDER_GOOGLE} // remove if not using Google Maps
 						style={styles.map}
 						region={{
-							latitude: latitudeInput,
-							longitude: longitudeInput,
+							latitude: user.latitude ? user.latitude : 0,
+							longitude: user.longitude ? user.longitude : 0,
 							latitudeDelta: 0.75,
 							longitudeDelta: 0.75,
 						}}>
@@ -151,11 +142,10 @@ export default function Map() {
 									.findAddress(address)
 									.then(({ data }) => {
 										console.log(data.results[0].geometry);
-										setReverseLocation(data.results[0].formatted_address);
 										setLatitudeInput(data.results[0].geometry.location.lat);
 										setLongitudeInput(data.results[0].geometry.location.lng);
-
 										setPlaceId(data.results[0].place_id);
+										setAddress("");
 									})
 									.catch((err) => {
 										console.log(err);

@@ -15,7 +15,11 @@ const ProfileScreen = () => {
 	const [password, setPassword] = useState(user?.password || "");
 	const [formattedAddress, setFormattedAddress] = useState<string>("");
 	const [loading, setLoading] = useState<boolean>(false);
-
+	const [address, setAddress] = useState<string>("");
+	const [placeId, setPlaceId] = useState<string>("");
+	const [reversedLocation, setReverseLocation] = useState<string>("");
+	const [latitude, setLatitude] = useState();
+	const [longitude, setLongitude] = useState<number>(0);
 	useEffect(() => {
 		(async () => {
 			reverseGeocoding
@@ -40,6 +44,7 @@ const ProfileScreen = () => {
 				latitude: latitude,
 				longitude: longitude,
 				picture_url: avatarUrl,
+				// formattedAddress: formattedAddress,
 			});
 
 			const newUserData = {
@@ -52,6 +57,7 @@ const ProfileScreen = () => {
 				latitude: latitude,
 				longitude: longitude,
 				picture_url: avatarUrl,
+				// formattedAddress: formattedAddress,
 			};
 			setUser(newUserData);
 			alert("Profile updated successfully");
@@ -71,6 +77,7 @@ const ProfileScreen = () => {
 						uri: avatarUrl || "https://example.com/default_avatar.png",
 					}}
 				/>
+				<Text>{formattedAddress}</Text>
 			</View>
 			<TextInput
 				label="Display Name"
@@ -111,11 +118,27 @@ const ProfileScreen = () => {
 				style={styles.input}
 			/>
 			<TextInput
-				label="Address"
-				value={formattedAddress}
-				keyboardType="numeric"
+				label="Enter Postcode"
+				value={address}
 				mode="outlined"
+				maxLength={8}
 				style={styles.input}
+				onChangeText={(value) => {
+					setAddress(value);
+				}}
+				onSubmitEditing={() => {
+					reverseGeocoding
+						.findAddress(address)
+						.then(({ data }) => {
+							setReverseLocation(data.results[0].formatted_address);
+							setLatitude(data.results[0].geometry.location.lat);
+							setLongitude(data.results[0].geometry.location.lng);
+							setAddress("");
+						})
+						.catch((err) => {
+							console.log(err);
+						});
+				}}
 			/>
 			<Button mode="contained" onPress={updateProfile} style={styles.button}>
 				Update Profile
