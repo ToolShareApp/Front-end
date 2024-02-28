@@ -36,7 +36,6 @@ const WelcomeScreen = () => {
     React.useCallback(() => {
       if(user){
         navigation.navigate("BrowseTools");
-
       }
     }, [user]),
   );
