@@ -22,6 +22,7 @@ interface Message {
   userAvatar: string | null;
   text: string;
   date: string;
+  status: number;
 }
 let socket: Socket;
 const ChatScreen: React.FC = () => {
