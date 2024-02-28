@@ -288,7 +288,17 @@ const ToolDetailsScreen: React.FC = () => {
 								)}
 							</Card.Content>
 						</Card>
-						<Text style={styles.location}>{formattedAddress}</Text>
+				<View style={styles.about}>
+                    <View style={styles.about}>
+                      <Icon name="location-on" size={20}/>
+                      <Text variant="titleMedium" style={styles.aboutTitle}>
+                        Location
+                      </Text>
+                    </View>
+                </View>
+                <Text variant="bodyMedium" style={styles.location}>
+                  {formattedAddress}
+                </Text>
                 { user.profile_id !== owner_id ?
               <View style={styles.buttons}>
                 {!interested ?(
@@ -355,7 +365,6 @@ const ToolDetailsScreen: React.FC = () => {
 const styles = StyleSheet.create({
 	toolDetails: {
 		marginTop: 20,
-		// flex: 1,
 		alignItems: "center",
 		justifyContent: "center",
 	},
@@ -394,17 +403,11 @@ const styles = StyleSheet.create({
 		marginRight: 8,
 	},
 	location: {
-		marginTop: 15,
 		marginBottom: 15,
-		marginRight: 10,
-		borderWidth: 1,
-		borderColor: GreenTheme.colors.primary,
-		borderRadius: 15,
-		padding: 10,
 	},
 	ownerCard: {
 		marginTop: 20,
-		marginBottom: 15,
+		marginBottom: 20,
 		width: "95%",
 		backgroundColor: GreenTheme.colors.surface,
 	},
