@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { FlatList, StyleSheet, TouchableOpacity } from "react-native";
-import { List, Avatar } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
+import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { List, Avatar } from 'react-native-paper'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import GlobalStateContext from '../Contexts/GlobalStateContext'
 import Loader from '../Components/Loader'
+import Button from '../Components/Button'
+import Alert from '../Components/Alert'
 
 interface Chat {
   chat_id: string;
@@ -15,31 +17,37 @@ interface Chat {
 }
 
 const ChatsListScreen: React.FC = () => {
-  const navigation = useNavigation();
-  const { user, api } = useContext(GlobalStateContext);
+  const navigation = useNavigation()
+  const { user, api } = useContext(GlobalStateContext)
   const [chats, setChats] = useState<Chat[]>([])
   const [loading, setLoading] = useState<boolean>(true)
+  const [connectingWithError, setConnectingWithError] = useState<boolean>(false)
 
-  useEffect(() => {
-    getChatsByUserUd();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+
+      getChatsByUserUd()
+
+    }, []),
+  )
 
   const getChatsByUserUd = async () => {
     try {
-      const response = await api.get(`/chat/user/${user.profile_id}`);
+      const response = await api.get(`/chat/user/${user.profile_id}`)
       console.log(response.data.data)
-      setChats(response.data.data);
-      setLoading(false);
+      setChats(response.data.data)
+      setConnectingWithError(false)
     } catch (error) {
-      console.log(error);
-      alert('Error', error);
+      setConnectingWithError(true)
+      console.error(error)
     }
-  };
+    setLoading(false)
+  }
 
   const renderItem = ({ item }: { item: Chat }) => (
     <TouchableOpacity
       onPress={() =>
-        navigation.navigate("ChatScreen", { chatId: item.chat_id, title: item.otherUserName })
+        navigation.navigate('ChatScreen', { chatId: item.chat_id, title: item.otherUserName })
       }
     >
       <List.Item
@@ -47,29 +55,45 @@ const ChatsListScreen: React.FC = () => {
         description={item?.lastMessage}
         descriptionNumberOfLines={1}
         left={() => (
-          <Avatar.Text
-            style={styles.avatar}
-            size={46}
-            label={item.otherUserName?.substring(0, 1)}
-          />
+          item.otherUserAvatar ? (
+            <Avatar.Image size={46} source={{ uri: item.otherUserAvatar }} style={styles.avatar}/>
+          ) : (
+            <Avatar.Text
+              style={styles.avatar}
+              size={46}
+              label={item.otherUserName?.substring(0, 1)}
+            />
+          )
         )}
-        right={() => <List.Icon icon="chevron-right" />}
+        right={() => <List.Icon icon="chevron-right"/>}
       />
     </TouchableOpacity>
-  );
+  )
 
   return (
-    loading ? (<Loader visible={loading} message={'Loading Chats...'}/>) : (
+    <View style={styles.container}>
       <FlatList
         data={chats}
         renderItem={renderItem}
         keyExtractor={(item) => item.chat_id + Math.random()}
         style={styles.container}
       />
-    )
+      {connectingWithError && (
+      <View>
+        <Alert text={'Failed to load chats'} error={true}/>
+        <Button
+          label="Try again"
+          onPress={() => {
+            getChatsByUserUd()
+          }}
+        />
+      </View>
+      ) }
+      {loading && (<Loader visible={loading} message={'Loading Chats...'}/>)}
 
-  );
-};
+    </View>
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -77,7 +101,7 @@ const styles = StyleSheet.create({
   },
   avatar: {
     // Shadows for iOS
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -88,6 +112,6 @@ const styles = StyleSheet.create({
     elevation: 4,
     marginLeft: 20,
   }
-});
+})
 
-export default ChatsListScreen;
+export default ChatsListScreen

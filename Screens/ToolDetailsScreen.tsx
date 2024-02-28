@@ -1,126 +1,147 @@
-import React from 'react'
-import { View, StyleSheet, Image } from 'react-native'
+import React from "react";
+import { View, StyleSheet, Image } from "react-native";
 import {
-  Button,
-  Avatar,
-  Card,
-  Text,
-  Chip,
-  TouchableRipple,
-  Snackbar
-} from 'react-native-paper'
-import { useContext, useEffect, useState } from 'react'
-import GlobalStateContext from '../Contexts/GlobalStateContext'
-import { useNavigation, useRoute } from '@react-navigation/native'
-import { GreenTheme } from '../Themes/GreenTheme'
+	Button,
+	Avatar,
+	Card,
+	Text,
+	Chip,
+	TouchableRipple,
+	Snackbar,
+} from "react-native-paper";
+import { useContext, useEffect, useState } from "react";
+import GlobalStateContext from "../Contexts/GlobalStateContext";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { GreenTheme } from "../Themes/GreenTheme";
 // @ts-ignore
-import Icon from 'react-native-vector-icons/MaterialIcons'
-import { ScrollView } from 'react-native-gesture-handler'
-import Loader from '../Components/Loader'
+import Icon from "react-native-vector-icons/MaterialIcons";
+import { ScrollView } from "react-native-gesture-handler";
+import Loader from "../Components/Loader";
+import reverseGeocoding from "../utils/reverseGeocoding";
 import DeleteListing from '../Components/DeleteListing'
 
-interface ToolDetailsScreenProps {
-  setTools: any;
-}
+const ToolDetailsScreen: React.FC = () => {
+	const { api, user } = useContext(GlobalStateContext);
+	const [toolDetails, setToolDetails] = useState<object>();
+	const [ownerDetails, setOwnerDetails] = useState<object>();
+	const [isLoading, setIsLoading] = useState<boolean>(true);
+	const [descriptionOpen, setDescriptionOpen] = useState<boolean>(false);
+	const [interested, setInterested] = useState<boolean>();
+	const [toast, setToast] = useState<boolean>(false);
+	const [loading, setLoading] = useState<boolean>(false);
+	const [formattedAddress, setFormattedAddress] = useState<string>("");
+	const navigation = useNavigation();
+	const route = useRoute();
+	// @ts-ignore
+	const { listing_id } = route.params;
 
-const ToolDetailsScreen: React.FC<ToolDetailsScreenProps> = ({ setTools }) => {
-  const { api, user } = useContext(GlobalStateContext)
-  const [toolDetails, setToolDetails] = useState<object>()
-  const [ownerDetails, setOwnerDetails] = useState<object>()
-  const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [descriptionOpen, setDescriptionOpen] = useState<boolean>(false)
-  const [interested, setInterested] = useState<boolean>()
-  const [toast, setToast] = useState<boolean>(false)
+	const onToggleSnackBar = () => setToast(!toast);
 
-  const navigation = useNavigation()
-  const route = useRoute()
-  // @ts-ignore
-  const { listing_id } = route.params 
+	const onDismissSnackBar = () => setToast(false);
 
-  const onToggleSnackBar = () => setToast(!toast)
+	function getToolByToolId(listing_id: number) {
+		return api.get(`/listing/${listing_id}`).then((apiResponse) => {
+			const {
+				data: { data },
+			} = apiResponse;
+			const currentTool = data[0];
+			return currentTool;
+		});
+	}
 
-  const onDismissSnackBar = () => setToast(false)
+	function getOwnerDetails(profile_id: number) {
+		return api.get(`/profile/${profile_id}`).then((apiResponse) => {
+			const {
+				data: { data },
+			} = apiResponse;
+			const ownerDetails = data[0];
+			return ownerDetails;
+		});
+	}
 
-  function getToolByToolId (listing_id: number) {
-    return api.get(`/listing/${listing_id}`).then((apiResponse) => {
-      const {
-        data: { data },
-      } = apiResponse
-      const currentTool = data[0]
-      return currentTool
-    })
-  }
+	function postInterest(listing_id: number, currentUser_id: number) {
+		return api
+			.post("/interest", {
+				listingId: listing_id,
+				userId: currentUser_id,
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
 
-  function getOwnerDetails (profile_id: number) {
-    return api.get(`/profile/${profile_id}`).then((apiResponse) => {
-      const {
-        data: { data },
-      } = apiResponse
-      const ownerDetails = data[0]
-      return ownerDetails
-    })
-  }
+	function deleteInterest(listing_id: number, currentUser_id: number) {
+		return api
+			.delete("/interest", {
+				data: {
+					listingId: listing_id,
+					userId: currentUser_id,
+				},
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
 
-  function postInterest (listing_id: number, currentUser_id: number) {
-    return api.post('/interest', {
-      listingId: listing_id,
-      userId: currentUser_id,
-    })
-      .catch((err) => {
-        console.log(err)
-      })
-  }
+	function getInterestedByUserID(currentUser_id: number, listing_id: number) {
+		return api.get(`/interest/lendee/${currentUser_id}`).then((apiResponse) => {
+			const {
+				data: { data },
+			} = apiResponse;
+			const userInterested: boolean = data.some((tool: object) => {
+				return listing_id === tool?.listing_id;
+			});
+			return userInterested;
+		});
+	}
 
-  function deleteInterest (listing_id: number, currentUser_id: number) {
-    return api.delete('/interest', {
-      data: {
-        listingId: listing_id,
-        userId: currentUser_id,
-      }
-    })
-      .catch((err) => {
-        console.log(err)
-      })
-  }
+	useEffect(() => {
+		(async () => {
+			const toolDetails = await getToolByToolId(listing_id);
+			setToolDetails(toolDetails);
+			setIsLoading(false);
+			const profile_id: number = toolDetails?.owner_id;
+			const ownerDetails = await getOwnerDetails(profile_id);
+			setOwnerDetails(ownerDetails);
+			const userInterested = await getInterestedByUserID(
+				user.profile_id,
+				listing_id
+			);
+			setInterested(userInterested);
+		})();
+	}, []);
 
-  function getInterestedByUserID (currentUser_id: number, listing_id: number) {
-    return api.get(`/interest/lendee/${currentUser_id}`)
-      .then((apiResponse) => {
-        const {
-          data: { data },
-        } = apiResponse
-        const userInterested: boolean = data.some((tool: object) => {
-          return listing_id === tool?.listing_id
-        })
-        return userInterested
-      })
-  }
-
-  useEffect(() => {
-    (async () => {
-      const toolDetails = await getToolByToolId(listing_id)
-      setToolDetails(toolDetails)
-      setIsLoading(false)
-      const profile_id: number = toolDetails?.owner_id
-      const ownerDetails = await getOwnerDetails(profile_id)
-      setOwnerDetails(ownerDetails)
-      const userInterested = await getInterestedByUserID(user.profile_id, listing_id)
-      setInterested(userInterested)
-    })()
-  }, [])
+	useEffect(() => {
+		(async () => {
+			reverseGeocoding
+				.reverseGeocode(ownerDetails?.latitude, ownerDetails?.longitude)
+				.then(({ data }) => {
+					setFormattedAddress(data.results[6].formatted_address);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		})();
+	});
 
   const createNewChat = () => {
     return api.post('/chat/', {
       listingId: listing_id,
-      userId: toolDetails?.owner_id
+      userId: user?.profile_id
     })
   }
 
   function startChat () {
     const owner_id: number = toolDetails?.owner_id
+    if(toolDetails?.owner_id === user?.profile_id){
+      alert('Sorry, you can\'t create a chat with yourself')
+      return
+    }
     createNewChat().then((response) => {
       if (response?.data?.recordId) {
         const recordId = response?.data?.recordId
+
+        console.log({user_id: owner_id, title: ownerName, tool_name: toolName, listing_id, recordId})
         // @ts-ignore
         navigation.navigate('Messages', {
           screen: 'ChatScreen',
@@ -144,29 +165,29 @@ const ToolDetailsScreen: React.FC<ToolDetailsScreenProps> = ({ setTools }) => {
     }
   }
 
-  async function removeFromInterested () {
-    try {
-      setInterested(false)
-      // @ts-ignore
-      await deleteInterest(listing_id, user.profile_id)
-    } catch (err) {
-      console.log(err)
-    }
-  }
+	async function removeFromInterested() {
+		try {
+			setInterested(false);
+			// @ts-ignore
+			await deleteInterest(listing_id, user.profile_id);
+		} catch (err) {
+			console.log(err);
+		}
+	}
 
-  const image_url: string = toolDetails?.photo_url
-  const toolName: string = toolDetails?.tool
-  const description: string = toolDetails?.description
-  const category: string = toolDetails?.category
-  const subcategory: string = toolDetails?.subcategory
-  const depositRequired: boolean = toolDetails?.deposit_required
-  const owner_id: number = toolDetails?.owner_id
-  const depositAmount: number = toolDetails?.deposit_amount
-  const profilePicture_url: string = ownerDetails?.picture_url
-  const ownerName: string = ownerDetails?.display_name
+	const image_url: string = toolDetails?.photo_url;
+	const toolName: string = toolDetails?.tool;
+	const description: string = toolDetails?.description;
+	const category: string = toolDetails?.category;
+	const subcategory: string = toolDetails?.subcategory;
+	const depositRequired: boolean = toolDetails?.deposit_required;
+	const owner_id: number = toolDetails?.owner_id
+  const depositAmount: number = toolDetails?.deposit_amount;
+	const profilePicture_url: string = ownerDetails?.picture_url;
+	const ownerName: string = ownerDetails?.display_name;
 
   return (
-    isLoading ? (<Loader visible={isLoading} message={'Loading'}/>) : (
+    isLoading ? (<Loader visible={isLoading} message={'Loading...'}/>) : (
       <ScrollView>
         <View style={styles.toolDetails}>
           {isLoading ? (
@@ -239,137 +260,135 @@ const ToolDetailsScreen: React.FC<ToolDetailsScreenProps> = ({ setTools }) => {
                     <Text variant="bodyLarge">{ownerName}</Text>
                   </View>
 
-                  {profilePicture_url ? (
-                    <Avatar.Image
-                      source={{
-                        uri: profilePicture_url,
-                      }}
-                      style={styles.ownerAvatar}
-                    />
-                  ) : (
-                    <Avatar.Text
-                      label={ownerName?.substring(0, 1)}
-                      style={styles.ownerAvatar}
-                    />
-                  )}
-                </Card.Content>
-              </Card>
-              <Button
-                style={styles.location}
-                icon={() => <Icon name="location-pin" size={30} color="green"/>}
-              >
-                {' '}
-                Get location
-              </Button>
+								{profilePicture_url ? (
+									<Avatar.Image
+										source={{
+											uri: profilePicture_url,
+										}}
+										style={styles.ownerAvatar}
+									/>
+								) : (
+									<Avatar.Text
+										label={ownerName?.substring(0, 1)}
+										style={styles.ownerAvatar}
+									/>
+								)}
+							</Card.Content>
+						</Card>
+						<Text style={styles.depositRequired}>{formattedAddress}</Text>
                 { user.profile_id !== owner_id ?
               <View style={styles.buttons}>
-                {!interested ?
-                  <Button icon="star" mode="contained" style={styles.button} onPress={() => addToInterested()}>
-                    Add to Interested
-                  </Button>
-                  :
-                  <Button icon="star" mode="contained" style={styles.button} onPress={() => removeFromInterested()}>
-                    Remove from Interested
-                  </Button>
-                }
+                {!interested ?(
+								<Button
+									icon="star"
+									mode="contained"
+									style={styles.button}
+									onPress={() => addToInterested()}>
+									Add to Interested
+								</Button>
+							) : (
+								<Button
+									icon="star"
+									mode="contained"
+									style={styles.button}
+									onPress={() => removeFromInterested()}>
+									Remove from Interested
+								</Button>
+							)}
                 <Button icon="chat" mode="contained" style={styles.button} onPress={() => startChat()}>
                   Start Chat
                 </Button>
               </View>
-              : 
+              :
               <DeleteListing listing={toolDetails} listing_id={listing_id} setTools={null}/>
               }
-              <Snackbar
-                visible={toast}
-                onDismiss={onDismissSnackBar}
-              >
-                Error!
-              </Snackbar>
-            </>
-          )}
-        </View>
-      </ScrollView>
-    )
-  )
-}
+						<Snackbar visible={toast} onDismiss={onDismissSnackBar}>
+							Error!
+						</Snackbar>
+					</>
+				)}
+			</View>
+		</ScrollView>
+	));
+};
 
 const styles = StyleSheet.create({
-  toolDetails: {
-    marginTop: 20,
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  image: {
-    marginTop: 20,
-    marginBottom: 20,
-    width: '95%',
-    height: 225,
-    borderRadius: 20,
-  },
-  category: {
-    flexDirection: 'row',
-    marginBottom: 20,
-  },
-  chip: {
-    marginRight: 10,
-    backgroundColor: GreenTheme.colors.surface,
-  },
-  about: {
-    marginBottom: 10,
-    flexDirection: 'row',
-  },
-  aboutTitle: {
-    marginLeft: 5,
-  },
-  description: {
-    width: '95%',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  deposit: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  depositRequired: {
-    marginRight: 8,
-  },
-  location: {
-    marginTop: 15,
-    marginBottom: 15,
-    marginRight: 10,
-    borderWidth: 1,
-    borderColor: GreenTheme.colors.primary,
-    borderRadius: 15,
-  },
-  ownerCard: {
-    marginTop: 20,
-    marginBottom: 15,
-    width: '95%',
-    backgroundColor: GreenTheme.colors.surface,
-  },
-  cardContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  cardText: {
-    flexDirection: 'row',
-    color: GreenTheme.colors.darkText,
-  },
-  ownerAvatar: {
-    marginLeft: 30,
-  },
-  chatIcon: {
-    marginRight: 30,
-    textAlign: 'center',
-  },
-  buttons: {
-    flexDirection: 'row',
-  },
-  button: {
-    margin: 15,
-  },
-})
+	toolDetails: {
+		marginTop: 20,
+		// flex: 1,
+		alignItems: "center",
+		justifyContent: "center",
+	},
+	image: {
+		marginTop: 20,
+		marginBottom: 20,
+		width: "95%",
+		height: 225,
+		borderRadius: 20,
+	},
+	category: {
+		flexDirection: "row",
+		marginBottom: 20,
+	},
+	chip: {
+		marginRight: 10,
+		backgroundColor: GreenTheme.colors.surface,
+	},
+	about: {
+		marginBottom: 10,
+		flexDirection: "row",
+	},
+	aboutTitle: {
+		marginLeft: 5,
+	},
+	description: {
+		width: "95%",
+		textAlign: "center",
+		marginBottom: 20,
+	},
+	deposit: {
+		flexDirection: "row",
+		alignItems: "center",
+	},
+	depositRequired: {
+		marginRight: 8,
+	},
+	location: {
+		marginTop: 15,
+		marginBottom: 15,
+		marginRight: 10,
+		borderWidth: 1,
+		borderColor: GreenTheme.colors.primary,
+		borderRadius: 15,
+	},
+	ownerCard: {
+		marginTop: 20,
+		marginBottom: 15,
+		width: "95%",
+		backgroundColor: GreenTheme.colors.surface,
+	},
+	cardContent: {
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "center",
+	},
+	cardText: {
+		flexDirection: "row",
+		color: GreenTheme.colors.darkText,
+	},
+	ownerAvatar: {
+		marginLeft: 30,
+	},
+	chatIcon: {
+		marginRight: 30,
+		textAlign: "center",
+	},
+	buttons: {
+		flexDirection: "row",
+	},
+	button: {
+		margin: 15,
+	},
+});
 
-export default ToolDetailsScreen
+export default ToolDetailsScreen;
