@@ -47,182 +47,6 @@ const DrawerNavigator: React.FC = () => {
 						<Logo size={80} />
 					</View>
 
-          {!user ? (
-            <>
-              <DrawerItem
-                label={"Welcome"}
-                onPress={() => {
-                  props.navigation.navigate("Welcome");
-                }}
-                icon={({ focused, size }) => (
-                  <Icon
-                    source="leaf"
-                    color={
-                      focused
-                        ? GreenTheme.colors.accent
-                        : GreenTheme.colors.primary
-                    }
-                    size={size}
-                  />
-                )}
-              />
-              <DrawerItem
-                label={"Log In"}
-                onPress={() => {
-                  props.navigation.navigate("LogIn");
-                }}
-                icon={({ focused, size }) => (
-                  <Icon
-                    source="login"
-                    color={
-                      focused
-                        ? GreenTheme.colors.accent
-                        : GreenTheme.colors.primary
-                    }
-                    size={size}
-                  />
-                )}
-              />
-              <DrawerItem
-                label={"Sign Up"}
-                onPress={() => {
-                  props.navigation.navigate("SignUp");
-                }}
-                icon={({ focused, size }) => (
-                  <Icon
-                    source="account-plus"
-                    color={
-                      focused
-                        ? GreenTheme.colors.accent
-                        : GreenTheme.colors.primary
-                    }
-                    size={size}
-                  />
-                )}
-              />
-            </>
-          ) : (
-            <>
-              <DrawerItem
-                label={"Browse Tools"}
-                onPress={() => {
-                  props.navigation.navigate("BrowseTools");
-                }}
-                icon={({ focused, size }) => (
-                  <Icon
-                    source="map-search"
-                    color={
-                      focused
-                        ? GreenTheme.colors.accent
-                        : GreenTheme.colors.primary
-                    }
-                    size={size}
-                  />
-                )}
-              />
-              <DrawerItem
-                label={"My Tools"}
-                onPress={() => {
-                  props.navigation.navigate("MyTools");
-                }}
-                icon={({ focused, size }) => (
-                  <Icon
-                    source="hammer-wrench"
-                    color={
-                      focused
-                        ? GreenTheme.colors.accent
-                        : GreenTheme.colors.primary
-                    }
-                    size={size}
-                  />
-                )}
-              />
-              <DrawerItem
-                label={"Profile"}
-                onPress={() => {
-                  props.navigation.navigate("Profile");
-                }}
-                icon={({ focused, size }) => (
-                  <Icon
-                    source="account"
-                    color={
-                      focused
-                        ? GreenTheme.colors.accent
-                        : GreenTheme.colors.primary
-                    }
-                    size={size}
-                  />
-                )}
-              />
-              <DrawerItem
-                label={"Messages"}
-                onPress={() => {
-                  props.navigation.navigate("Messages");
-                }}
-                icon={({ focused, size }) => (
-                  <Icon
-                    source="forum-outline"
-                    color={
-                      focused
-                        ? GreenTheme.colors.accent
-                        : GreenTheme.colors.primary
-                    }
-                    size={size}
-                  />
-                )}
-              />
-              <DrawerItem
-                label={"Log Out"}
-                onPress={() => {
-                  props.navigation.navigate("LogOut");
-                }}
-                icon={({ focused, size }) => (
-                  <Icon
-                    source="logout"
-                    color={
-                      focused
-                        ? GreenTheme.colors.warning
-                        : GreenTheme.colors.error
-                    }
-                    size={size}
-                  />
-                )}
-              />
-            </>
-          )}
-        </DrawerContentScrollView>
-      )}
-    >
-      <Drawer.Screen
-        name="BrowseTools"
-        component={BrowseToolsStackNavigator}
-        options={{ title: "Browse Tools" }}
-      />
-      <Drawer.Screen
-        name="MyTools"
-        component={MyToolsStackNavigator}
-        options={{ title: "My Tools" }}
-      />
-      <Drawer.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{ title: "Profile" }}
-      />
-      <Drawer.Screen
-        name="Messages"
-        component={ChatStackNavigator}
-        options={{ title: "Messages" }}
-      />
-      <Drawer.Screen
-        name="LogIn"
-        component={LogInScreen}
-        options={{ title: "Log In" }}
-      />
-      <Drawer.Screen
-        name="SignUp"
-        component={SignUpScreen}
-        options={{ title: "Sign Up" }}
-      />
 					{!user ? (
 						<>
 							<DrawerItem
@@ -370,12 +194,12 @@ const DrawerNavigator: React.FC = () => {
 			)}>
 			<Drawer.Screen
 				name="BrowseTools"
-				component={ToolsStackNavigator}
+				component={BrowseToolsStackNavigator}
 				options={{ title: "Browse Tools" }}
 			/>
 			<Drawer.Screen
 				name="MyTools"
-				component={MyToolsScreen}
+				component={MyToolsStackNavigator}
 				options={{ title: "My Tools" }}
 			/>
 			<Drawer.Screen
@@ -414,25 +238,6 @@ const DrawerNavigator: React.FC = () => {
 };
 
 const BrowseToolsStackNavigator: React.FC = () => {
-  return (
-    <ToolsStack.Navigator
-      screenOptions={{
-        headerTintColor: GreenTheme.colors.primary, // Apply color to the header items (title, back button)
-      }}
-    >
-      <ToolsStack.Screen
-        name="ToolsList"
-        component={BrowseToolsScreen}
-        options={{ title: "Available Tools" }}
-      />
-      <ToolsStack.Screen
-        name="ToolDetailsScreen"
-        component={ToolDetailsScreen}
-        options={{ title: "Details" }}
-      />
-    </ToolsStack.Navigator>
-  );
-const ToolsStackNavigator: React.FC = () => {
 	return (
 		<ToolsStack.Navigator
 			screenOptions={{
@@ -441,7 +246,7 @@ const ToolsStackNavigator: React.FC = () => {
 			<ToolsStack.Screen
 				name="ToolsList"
 				component={BrowseToolsScreen}
-				options={{ title: "Tools List" }}
+				options={{ title: "Available Tools" }}
 			/>
 			<ToolsStack.Screen
 				name="ToolDetailsScreen"
@@ -453,28 +258,28 @@ const ToolsStackNavigator: React.FC = () => {
 };
 
 const MyToolsStackNavigator: React.FC = () => {
-  return (
-    <ToolsStack.Navigator
-      screenOptions={{
-        headerTintColor: GreenTheme.colors.primary, // Apply color to the header items (title, back button)
-      }}
-    >
-      <ToolsStack.Screen
-        name="ToolsList"
-        component={MyToolsScreen}
-        options={{ title: "Your Tools Available for Rent" }}
-      />
-      <ToolsStack.Screen
-        name="ToolDetailsScreen"
-        component={ToolDetailsScreen}
-        options={{ title: "Details" }}
-      />
-      <ToolsStack.Screen
-      name="AddListingScreen"
-      component={AddListingScreen}
-      options={{ title: "+ Add A Listing"}}/>
-    </ToolsStack.Navigator>
-  );
+	return (
+		<ToolsStack.Navigator
+			screenOptions={{
+				headerTintColor: GreenTheme.colors.primary, // Apply color to the header items (title, back button)
+			}}>
+			<ToolsStack.Screen
+				name="ToolsList"
+				component={MyToolsScreen}
+				options={{ title: "Your Tools Available for Rent" }}
+			/>
+			<ToolsStack.Screen
+				name="ToolDetailsScreen"
+				component={ToolDetailsScreen}
+				options={{ title: "Details" }}
+			/>
+			<ToolsStack.Screen
+				name="AddListingScreen"
+				component={AddListingScreen}
+				options={{ title: "+ Add A Listing" }}
+			/>
+		</ToolsStack.Navigator>
+	);
 };
 
 const ChatStackNavigator: React.FC = () => {
