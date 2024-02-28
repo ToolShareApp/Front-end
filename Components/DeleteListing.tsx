@@ -1,44 +1,60 @@
 import React, { useState, useContext, useEffect } from "react";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 import { StyleSheet, View } from "react-native";
-import { Button, Portal, Dialog, Text, Snackbar } from "react-native-paper";
+import { Button, Portal, Dialog, Text } from "react-native-paper";
 import { GreenTheme } from "../Themes/GreenTheme";
-import Alert from "./Alert";
 
 interface DeleteListingProps {
   listing: object;
   listing_id: number;
-  setTools: any;
+  setTools?: any;
+  setDeleteSuccess: any;
+  setDeleteError: any;
 }
 
 const DeleteListing: React.FC<DeleteListingProps> = ({
   listing,
   listing_id,
   setTools,
+  setDeleteSuccess,
+  setDeleteError,
 }) => {
   const { api } = useContext(GlobalStateContext);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
-  const [successVisible, setSuccessVisible] = useState<boolean>(false)
+  const navigation = useNavigation();
+  const route = useRoute();
 
   const deleteListing = (listing_id) => {
     return api.delete(`/listing/${listing_id}`);
   };
 
+  const currentRouteName: string = route.name;
+
   useEffect(() => {
     (async () => {
       try {
         if (confirmDelete) {
+          if (currentRouteName === "ToolsList") {
             setTools((prevTools: object[]) =>
-            prevTools.filter((currentTool: object) => currentTool !== listing)
+              prevTools.filter((currentTool: object) => currentTool !== listing)
             );
-        setSuccessVisible(true)
-        await deleteListing(listing_id);
+            setDeleteSuccess(true);
+            await deleteListing(listing_id);
+          }
+          if (currentRouteName === "ToolDetailsScreen") {
+            setDeleteSuccess(true);
+            // @ts-ignore
+            navigation.navigate("MyTools", {
+              screen: "ToolsList",
+            });
+            await deleteListing(listing_id);
+          }
         }
-      } catch (error) {
-        setTools((prevTools: object[]) => [...prevTools, listing]);
-        setError(error);
+      } catch (error: any) {
+        setTools((prevTools: object[]) => [...prevTools, listing])
+        setDeleteError(true);
         console.error("Error deleting tool:", error);
       }
     })();
@@ -50,21 +66,6 @@ const DeleteListing: React.FC<DeleteListingProps> = ({
 
   return (
     <View>
-        <Snackbar visible={successVisible} onDismiss={() => setSuccessVisible(false)} action={{
-          label: 'Close',
-          onPress: () => {
-            setSuccessVisible(false)
-          }
-        }}>
-        Your listing has been succesfully deleted!
-        </Snackbar>
-      {error ? (
-        <Alert
-          text={
-            "Sorry, we cannot delete your listing at this time. Please try again later."
-          }
-        />
-      ) : null}
       <Button icon="delete" onPress={clickDelete} style={styles.deleteButton}>
         Delete
       </Button>

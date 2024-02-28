@@ -18,6 +18,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { ScrollView } from "react-native-gesture-handler";
 import Loader from "../Components/Loader";
 import reverseGeocoding from "../utils/reverseGeocoding";
+import DeleteListing from '../Components/DeleteListing'
 
 const ToolDetailsScreen: React.FC = () => {
 	const { api, user } = useContext(GlobalStateContext);
@@ -32,7 +33,7 @@ const ToolDetailsScreen: React.FC = () => {
 	const navigation = useNavigation();
 	const route = useRoute();
 	// @ts-ignore
-	const { listing_id } = route.params;
+	const { listing_id, setTools } = route.params;
 
 	const onToggleSnackBar = () => setToast(!toast);
 
@@ -180,83 +181,84 @@ const ToolDetailsScreen: React.FC = () => {
 	const category: string = toolDetails?.category;
 	const subcategory: string = toolDetails?.subcategory;
 	const depositRequired: boolean = toolDetails?.deposit_required;
-	const depositAmount: number = toolDetails?.deposit_amount;
+	const owner_id: number = toolDetails?.owner_id
+  const depositAmount: number = toolDetails?.deposit_amount;
 	const profilePicture_url: string = ownerDetails?.picture_url;
 	const ownerName: string = ownerDetails?.display_name;
 
-	return loading ? (
-		<Loader visible={loading} message={"Loading"} />
-	) : (
-		<ScrollView>
-			<View style={styles.toolDetails}>
-				{isLoading ? (
-					<Text variant="bodyMedium">Loading tool...</Text>
-				) : (
-					<>
-						<Text variant="headlineMedium">{toolName}</Text>
-						{image_url && (
-							<Image
-								source={{
-									uri: image_url,
-								}}
-								style={styles.image}
-							/>
-						)}
-						<View style={styles.category}>
-							<Chip icon="toolbox" style={styles.chip}>
-								{category}
-							</Chip>
-							<Chip icon="toolbox" style={styles.chip}>
-								{subcategory}
-							</Chip>
-						</View>
-						{description !== "" ? (
-							<View style={styles.about}>
-								<TouchableRipple
-									onPress={() => {
-										setDescriptionOpen(!descriptionOpen);
-									}}>
-									<View style={styles.about}>
-										<Icon name="info-outline" size={20} />
-										<Text variant="titleMedium" style={styles.aboutTitle}>
-											Learn more about this tool
-										</Text>
-										<Icon name="expand-more" size={30} color="black" />
-									</View>
-								</TouchableRipple>
-							</View>
-						) : null}
-						{descriptionOpen ? (
-							<Text variant="bodyMedium" style={styles.description}>
-								{description}
-							</Text>
-						) : null}
-						<View>
-							<View style={styles.deposit}>
-								{depositRequired ? (
-									<>
-										<Text style={styles.depositRequired}>Deposit required</Text>
-										<Icon name="check" size={30} color="green" />
-									</>
-								) : (
-									<>
-										<Text style={styles.depositRequired}>
-											No deposit required
-										</Text>
-										<Icon name="cancel" size={30} color="green" />
-									</>
-								)}
-							</View>
-							{depositRequired ? (
-								<Text>Deposit amount: £{depositAmount}</Text>
-							) : null}
-						</View>
-						<Card style={styles.ownerCard}>
-							<Card.Content style={styles.cardContent}>
-								<View style={styles.cardText}>
-									<Text variant="bodyLarge">Lender: </Text>
-									<Text variant="bodyLarge">{ownerName}</Text>
-								</View>
+  return (
+    isLoading ? (<Loader visible={isLoading} message={'Loading...'}/>) : (
+      <ScrollView>
+        <View style={styles.toolDetails}>
+          {isLoading ? (
+            <Text variant="bodyMedium">Loading tool...</Text>
+          ) : (
+            <>
+              <Text variant="headlineMedium">{toolName}</Text>
+              {image_url && (
+                <Image
+                  source={{
+                    uri: image_url,
+                  }}
+                  style={styles.image}
+                />
+              )}
+              <View style={styles.category}>
+                <Chip icon="toolbox" style={styles.chip}>
+                  {category}
+                </Chip>
+                <Chip icon="toolbox" style={styles.chip}>
+                  {subcategory}
+                </Chip>
+              </View>
+              {description !== '' ?
+                <View style={styles.about}>
+                  <TouchableRipple
+                    onPress={() => {
+                      setDescriptionOpen(!descriptionOpen)
+                    }}
+                  >
+                    <View style={styles.about}>
+                      <Icon name="info-outline" size={20}/>
+                      <Text variant="titleMedium" style={styles.aboutTitle}>
+                        Learn more about this tool
+                      </Text>
+                      <Icon name="expand-more" size={30} color="black"/>
+                    </View>
+                  </TouchableRipple>
+                </View>
+                : null}
+              {descriptionOpen ? (
+                <Text variant="bodyMedium" style={styles.description}>
+                  {description}
+                </Text>
+              ) : null}
+              <View>
+                <View style={styles.deposit}>
+                  {depositRequired ? (
+                    <>
+                      <Text style={styles.depositRequired}>Deposit required</Text>
+                      <Icon name="check" size={30} color="green"/>
+                    </>
+                  ) : (
+                    <>
+                      <Text style={styles.depositRequired}>
+                        No deposit required
+                      </Text>
+                      <Icon name="cancel" size={30} color="green"/>
+                    </>
+                  )}
+                </View>
+                {depositRequired ? (
+                  <Text>Deposit amount: £{depositAmount}</Text>
+                ) : null}
+              </View>
+              <Card style={styles.ownerCard}>
+                <Card.Content style={styles.cardContent}>
+                  <View style={styles.cardText}>
+                    <Text variant="bodyLarge">Lender: </Text>
+                    <Text variant="bodyLarge">{ownerName}</Text>
+                  </View>
 
 								{profilePicture_url ? (
 									<Avatar.Image
@@ -274,8 +276,9 @@ const ToolDetailsScreen: React.FC = () => {
 							</Card.Content>
 						</Card>
 						<Text style={styles.depositRequired}>{formattedAddress}</Text>
-						<View style={styles.buttons}>
-							{!interested ? (
+                { user.profile_id !== owner_id ?
+              <View style={styles.buttons}>
+                {!interested ?(
 								<Button
 									icon="star"
 									mode="contained"
@@ -292,14 +295,13 @@ const ToolDetailsScreen: React.FC = () => {
 									Remove from Interested
 								</Button>
 							)}
-							<Button
-								icon="chat"
-								mode="contained"
-								style={styles.button}
-								onPress={() => startChat()}>
-								Start Chat
-							</Button>
-						</View>
+                <Button icon="chat" mode="contained" style={styles.button} onPress={() => startChat()}>
+                  Start Chat
+                </Button>
+              </View>
+              :
+              <DeleteListing listing={{toolDetails}} listing_id={listing_id} setDeleteError={'error'} setDeleteSuccess={'Deleted'}/>
+              }
 						<Snackbar visible={toast} onDismiss={onDismissSnackBar}>
 							Error!
 						</Snackbar>
@@ -307,13 +309,13 @@ const ToolDetailsScreen: React.FC = () => {
 				)}
 			</View>
 		</ScrollView>
-	);
+	));
 };
 
 const styles = StyleSheet.create({
 	toolDetails: {
 		marginTop: 20,
-		flex: 1,
+		// flex: 1,
 		alignItems: "center",
 		justifyContent: "center",
 	},

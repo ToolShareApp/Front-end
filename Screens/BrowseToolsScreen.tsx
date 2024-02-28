@@ -8,10 +8,10 @@ const BrowseToolsScreen: React.FC = () => {
 	return (
 		<>
 			<KeyboardAvoidingView>
-				<View style={{ height: "50%" }}>
+				<View style={{ height: "40%" }}>
 					<Map />
 				</View>
-				<View style={{ height: "50%" }}>
+				<View style={{ height: "60%" }}>
 					<ToolsList />
 				</View>
 			</KeyboardAvoidingView>
