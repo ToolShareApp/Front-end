@@ -120,8 +120,8 @@ export default function Map() {
 						provider={PROVIDER_GOOGLE} // remove if not using Google Maps
 						style={styles.map}
 						region={{
-							latitude: user.latitude ? user.latitude : 0,
-							longitude: user.longitude ? user.longitude : 0,
+							latitude: user?.latitude ? user?.latitude : 0,
+							longitude: user?.longitude ? user?.longitude : 0,
 							latitudeDelta: 0.75,
 							longitudeDelta: 0.75,
 						}}>
