@@ -10,11 +10,10 @@ import {
   Menu,
   Divider,
   Button,
-  PaperProvider,
-  Text,
 } from "react-native-paper";
 import { GreenTheme } from "../Themes/GreenTheme";
 import Loader from "./Loader";
+import MapModal from './MapModal'
 
 export default function ToolsList() {
   const { api, user } = useContext(GlobalStateContext);
@@ -121,123 +120,129 @@ export default function ToolsList() {
   ];
 
   return (
-    <View>
-      <Searchbar
-        placeholder="Search"
-        onChangeText={onChangeSearch}
-        value={searchQuery}
-        theme={GreenTheme}
-        iconColor={GreenTheme.colors.primary}
-        style={{ borderRadius: 0, elevation: 0 }}
-      />
-      <Menu
-        visible={visibleCategory}
-        onDismiss={closeCategoryMenu}
-        anchor={
-          <Button
-            icon="menu-down"
-            mode="contained"
-            onPress={openCategoryMenu}
-            theme={GreenTheme}
-            style={styles.squareButton}
-            contentStyle={styles.squareButtonContent}
-            labelStyle={{ color: GreenTheme.colors.lightText }}
-          >
-            {selectedCategory}
-          </Button>
-        }
-      >
-        {categories.map((category, index) => (
-          <Menu.Item
-            key={index}
-            onPress={() => {
-              setSelectedCategory(category);
-              setSelectedSubcategory("All");
-              closeCategoryMenu();
-            }}
-            title={category}
-          />
-        ))}
-      </Menu>
-      {selectedCategory !== "All" ? (
+    <View style={styles.main}>
+      <View>
+        <Searchbar
+          placeholder="Search"
+          onChangeText={onChangeSearch}
+          value={searchQuery}
+          theme={GreenTheme}
+          iconColor={GreenTheme.colors.primary}
+          style={{ borderRadius: 0, elevation: 0 }}
+        />
         <Menu
-          visible={visibleSubcategory}
-          onDismiss={closeSubcategoryMenu}
+          visible={visibleCategory}
+          onDismiss={closeCategoryMenu}
           anchor={
             <Button
               icon="menu-down"
               mode="contained"
-              onPress={openSubcategoryMenu}
+              onPress={openCategoryMenu}
               theme={GreenTheme}
               style={styles.squareButton}
               contentStyle={styles.squareButtonContent}
               labelStyle={{ color: GreenTheme.colors.lightText }}
             >
-              {selectedSubcategory}
+              {selectedCategory}
             </Button>
           }
         >
-          {subcategories.map((subcategory, index) => (
+          {categories.map((category, index) => (
             <Menu.Item
               key={index}
               onPress={() => {
-                setSelectedSubcategory(subcategory);
-                closeSubcategoryMenu();
+                setSelectedCategory(category);
+                setSelectedSubcategory("All");
+                closeCategoryMenu();
               }}
-              title={subcategory}
+              title={category}
             />
           ))}
         </Menu>
-      ) : null}
-      { !filterByInterested ?
-      <Button
-        icon="star"
-        mode="contained"
-        onPress={applyInterestedFilter}
-        theme={GreenTheme}
-        style={styles.squareButton}
-        contentStyle={styles.squareButtonContent}
-        labelStyle={{ color: GreenTheme.colors.lightText }}
-      >
-       Tools You're Interested In
-      </Button>
-      : 
-      <Button
-        icon="star"
-        mode="contained"
-        onPress={removeInterestedFilter}
-        theme={GreenTheme}
-        style={styles.removeButton}
-        contentStyle={styles.squareButtonContent}
-        labelStyle={{ color: GreenTheme.colors.lightText }}
-      >
-       Remove Filter By Interested
-      </Button>}
-      <Divider theme={GreenTheme} />
-
-      <ScrollView>
-        {loading ? (
-          <Loader message={"Loading Tools..."} visible={loading} />
-        ) : (
-          <>
-            {filterListings().map((listing) => (
-              <ToolCard
-                key={listing.listing_id}
-                listing_id={listing.listing_id}
-                category={listing.category}
-                name={listing.tool}
-                subcategory={listing.subcategory}
-                photo={listing.photo_url}
+        {selectedCategory !== "All" ? (
+          <Menu
+            visible={visibleSubcategory}
+            onDismiss={closeSubcategoryMenu}
+            anchor={
+              <Button
+                icon="menu-down"
+                mode="contained"
+                onPress={openSubcategoryMenu}
+                theme={GreenTheme}
+                style={styles.squareButton}
+                contentStyle={styles.squareButtonContent}
+                labelStyle={{ color: GreenTheme.colors.lightText }}
+              >
+                {selectedSubcategory}
+              </Button>
+            }
+          >
+            {subcategories.map((subcategory, index) => (
+              <Menu.Item
+                key={index}
+                onPress={() => {
+                  setSelectedSubcategory(subcategory);
+                  closeSubcategoryMenu();
+                }}
+                title={subcategory}
               />
             ))}
-          </>
-        )}
-      </ScrollView>
+          </Menu>
+        ) : null}
+        { !filterByInterested ?
+          <Button
+            icon="star"
+            mode="contained"
+            onPress={applyInterestedFilter}
+            theme={GreenTheme}
+            style={styles.squareButton}
+            contentStyle={styles.squareButtonContent}
+            labelStyle={{ color: GreenTheme.colors.lightText }}
+          >
+            Tools You're Interested In
+          </Button>
+          :
+          <Button
+            icon="star"
+            mode="contained"
+            onPress={removeInterestedFilter}
+            theme={GreenTheme}
+            style={styles.removeButton}
+            contentStyle={styles.squareButtonContent}
+            labelStyle={{ color: GreenTheme.colors.lightText }}
+          >
+            Remove Filter By Interested
+          </Button>}
+        <Divider theme={GreenTheme} />
+        <ScrollView>
+          {loading ? (
+            <Loader message={"Loading Tools..."} visible={loading} />
+          ) : (
+            <>
+              {filterListings().map((listing) => (
+                <ToolCard
+                  key={listing.listing_id}
+                  listing_id={listing.listing_id}
+                  category={listing.category}
+                  name={listing.tool}
+                  subcategory={listing.subcategory}
+                  photo={listing.photo_url}
+                />
+              ))}
+            </>
+          )}
+
+        </ScrollView>
+      </View>
+      <MapModal/>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  main: {
+    flex: 1,
+  },
   squareButton: {
     margin: 10,
     height: 50,
