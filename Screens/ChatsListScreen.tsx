@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { FlatList, StyleSheet, TouchableOpacity } from "react-native";
 import { List, Avatar } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import GlobalStateContext from '../Contexts/GlobalStateContext'
 import Loader from '../Components/Loader'
 
@@ -20,9 +20,17 @@ const ChatsListScreen: React.FC = () => {
   const [chats, setChats] = useState<Chat[]>([])
   const [loading, setLoading] = useState<boolean>(true)
 
-  useEffect(() => {
-    getChatsByUserUd();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+
+      getChatsByUserUd();
+
+      return () => {
+        setChats([])
+      };
+    }, []),
+  );
+
 
   const getChatsByUserUd = async () => {
     try {
@@ -31,8 +39,10 @@ const ChatsListScreen: React.FC = () => {
       setChats(response.data.data);
       setLoading(false);
     } catch (error) {
-      console.log(error);
-      alert('Error', error);
+      console.error(error);
+      setTimeout(() => {
+        getChatsByUserUd()
+      }, 10000)
     }
   };
 
