@@ -123,47 +123,46 @@ const ToolDetailsScreen: React.FC = () => {
 		})();
 	});
 
-	const createNewChat = () => {
-		return api.post("/chat/", {
-			listingId: listing_id,
-			userId: toolDetails?.owner_id,
-		});
-	};
+  const createNewChat = () => {
+    return api.post('/chat/', {
+      listingId: listing_id,
+      userId: user?.profile_id
+    })
+  }
 
-	function startChat() {
-		const owner_id: number = toolDetails?.owner_id;
-		createNewChat()
-			.then((response) => {
-				if (response?.data?.recordId) {
-					const recordId = response?.data?.recordId;
-					// @ts-ignore
-					navigation.navigate("Messages", {
-						screen: "ChatScreen",
-						params: {
-							user_id: owner_id,
-							title: ownerName,
-							tool_name: toolName,
-							listing_id,
-							recordId,
-						},
-					});
-				}
-			})
-			.catch((error) => {
-				setToast(true);
-				console.error(error);
-			});
-	}
+  function startChat () {
+    const owner_id: number = toolDetails?.owner_id
+    if(toolDetails?.owner_id === user?.profile_id){
+      alert('Sorry, you can\'t create a chat with yourself')
+      return
+    }
+    createNewChat().then((response) => {
+      if (response?.data?.recordId) {
+        const recordId = response?.data?.recordId
 
-	async function addToInterested() {
-		try {
-			setInterested(true);
-			// @ts-ignore
-			await postInterest(listing_id, user.profile_id);
-		} catch (err) {
-			console.log(err);
-		}
-	}
+        console.log({user_id: owner_id, title: ownerName, tool_name: toolName, listing_id, recordId})
+        // @ts-ignore
+        navigation.navigate('Messages', {
+          screen: 'ChatScreen',
+          params: { user_id: owner_id, title: ownerName, tool_name: toolName, listing_id, recordId }
+        })
+      }
+    }).catch((error) => {
+      setToast(true)
+      console.error(error)
+    })
+
+  }
+
+  async function addToInterested () {
+    try {
+      setInterested(true)
+      // @ts-ignore
+      await postInterest(listing_id, user.profile_id)
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
 	async function removeFromInterested() {
 		try {
