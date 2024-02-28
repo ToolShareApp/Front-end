@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { FlatList, StyleSheet, TouchableOpacity } from "react-native";
+import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { List, Avatar } from "react-native-paper";
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import GlobalStateContext from '../Contexts/GlobalStateContext'
 import Loader from '../Components/Loader'
+import Button from '../Components/Button'
+import Alert from '../Components/Alert'
 
 interface Chat {
   chat_id: string;
@@ -19,6 +21,7 @@ const ChatsListScreen: React.FC = () => {
   const { user, api } = useContext(GlobalStateContext);
   const [chats, setChats] = useState<Chat[]>([])
   const [loading, setLoading] = useState<boolean>(true)
+  const [connectingWithError, setConnectingWithError] = useState<boolean>(false)
 
   useFocusEffect(
     React.useCallback(() => {
@@ -37,14 +40,12 @@ const ChatsListScreen: React.FC = () => {
       const response = await api.get(`/chat/user/${user.profile_id}`);
       console.log(response.data.data)
       setChats(response.data.data);
-      setLoading(false);
+      setConnectingWithError(false)
     } catch (error) {
+      setConnectingWithError(true)
       console.error(error);
-      setLoading(true);
-      setTimeout(() => {
-        getChatsByUserUd()
-      }, 5000)
     }
+    setLoading(false);
   };
 
   const renderItem = ({ item }: { item: Chat }) => (
@@ -74,15 +75,26 @@ const ChatsListScreen: React.FC = () => {
   );
 
   return (
-    loading ? (<Loader visible={loading} message={'Loading Chats...'}/>) : (
-      <FlatList
-        data={chats}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.chat_id + Math.random()}
-        style={styles.container}
-      />
+    connectingWithError ? (
+      <View>
+        <Alert text={'Failed to load chats'} error={true}/>
+        <Button
+          label="Try again"
+          onPress={() => {
+            getChatsByUserUd();
+          }}
+        />
+      </View>
+    ) : (
+      loading ? (<Loader visible={loading} message={'Loading Chats...'}/>) : (
+        <FlatList
+          data={chats}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.chat_id + Math.random()}
+          style={styles.container}
+        />
+      )
     )
-
   );
 };
 

@@ -11,7 +11,7 @@ import reverseGeocoding from "../utils/reverseGeocoding";
 import { TextInput } from "react-native-paper";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 import Button from "./Button";
-import CustomCallout from "./CustomCallout";
+import CustomCallout from './customCallout'
 
 export type MarkerWithMetadata = {
 	display_name?: string;
@@ -75,8 +75,8 @@ export default function Map() {
 		reverseGeocoding.findPlace(placeId).then(({ data }) => {
 			setUser({
 				...user,
-				latitude: data.result.geometry.location.lat,
-				longitude: data.result.geometry.location.lng,
+				latitude: data?.result?.geometry?.location?.lat,
+				longitude: data?.result?.geometry?.location?.lng,
 			});
 		});
 		updateLocation();
@@ -171,18 +171,24 @@ const styles = StyleSheet.create({
 		backgroundColor: "#fff",
 		alignItems: "center",
 		justifyContent: "flex-start",
-		paddingBottom: 50,
+		padding: 0,
 	},
 	inputStyle: {
 		alignSelf: "center",
 		width: "40%",
+		height: 44,
 		backgroundColor: "#E0F2F1",
+		marginTop: -6,
 	},
 	map: {
 		width: "95%",
 		height: "75%",
 	},
 	inputs: {
+		display: 'flex',
 		flexDirection: "row",
+		justifyContent: 'center',
+		alignItems: 'center',
+		alignContent: 'center'
 	},
 });
