@@ -17,7 +17,6 @@ import { GreenTheme } from "../Themes/GreenTheme";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { ScrollView } from "react-native-gesture-handler";
 import Loader from "../Components/Loader";
-import { reverseGeocodeAsync } from "expo-location";
 import reverseGeocoding from "../utils/reverseGeocoding";
 
 const ToolDetailsScreen: React.FC = () => {
@@ -112,11 +111,16 @@ const ToolDetailsScreen: React.FC = () => {
 	}, []);
 
 	useEffect(() => {
-		reverseGeocoding
-			.reverseGeocode(ownerDetails?.latitude, ownerDetails?.longitude)
-			.then(({ data }) => {
-				setFormattedAddress(data.results[5].formatted_address);
-			});
+		(async () => {
+			reverseGeocoding
+				.reverseGeocode(ownerDetails?.latitude, ownerDetails?.longitude)
+				.then(({ data }) => {
+					setFormattedAddress(data.results[6].formatted_address);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		})();
 	});
 
 	const createNewChat = () => {
