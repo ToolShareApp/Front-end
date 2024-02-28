@@ -40,9 +40,10 @@ const ChatsListScreen: React.FC = () => {
       setLoading(false);
     } catch (error) {
       console.error(error);
+      setLoading(true);
       setTimeout(() => {
         getChatsByUserUd()
-      }, 10000)
+      }, 5000)
     }
   };
 
@@ -57,11 +58,15 @@ const ChatsListScreen: React.FC = () => {
         description={item?.lastMessage}
         descriptionNumberOfLines={1}
         left={() => (
-          <Avatar.Text
-            style={styles.avatar}
-            size={46}
-            label={item.otherUserName?.substring(0, 1)}
-          />
+          item.otherUserAvatar ? (
+            <Avatar.Image size={46} source={{ uri: item.otherUserAvatar }} style={styles.avatar}/>
+            ) : (
+            <Avatar.Text
+              style={styles.avatar}
+              size={46}
+              label={item.otherUserName?.substring(0, 1)}
+            />
+            )
         )}
         right={() => <List.Icon icon="chevron-right" />}
       />
