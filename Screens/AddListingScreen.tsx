@@ -209,9 +209,9 @@ const AddListingScreen: React.FC = () => {
       >
         Submit listing
       </Button>
-      {showRequiredFieldsAlert ? <Alert text={"Please complete all required fields"}/> : null}
-      { showInvalidAmountAlert ? <Alert text={"Invalid deposit amount. Please enter a whole number"}/> : null}
-      { showInvalidUrlAlert ? <Alert text={"Please enter a valid URL"}/> : null}
+      {showRequiredFieldsAlert ? <Alert text={"Please complete all required fields"} error/> : null}
+      { showInvalidAmountAlert ? <Alert text={"Invalid deposit amount. Please enter a whole number"} error/> : null}
+      { showInvalidUrlAlert ? <Alert text={"Please enter a valid URL"} error/> : null}
       <Snackbar visible={successVisible} onDismiss={() => setSuccessVisible(false)} action={{
           label: 'Back to My Tools',
           onPress: () => {
@@ -259,6 +259,7 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     marginTop: 20,
+    marginBottom: 20,
   },
 });
 
