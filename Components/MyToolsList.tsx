@@ -129,7 +129,7 @@ const MyToolsList: React.FC = () => {
                 setDeleteError={setDeleteError}
               />
             ))
-            : (<Text variant="bodyLarge" style={styles.noToolsMessage}> No tools up for sharing yet...</Text> 
+            : (<Text variant="bodyLarge" style={styles.noToolsMessage}> You don't currently have any tools up for sharing!</Text> 
           )}
       </ScrollView> 
       )}

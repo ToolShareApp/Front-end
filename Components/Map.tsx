@@ -8,11 +8,13 @@ import { Text, View, StyleSheet, KeyboardAvoidingView } from "react-native";
 import * as Location from "expo-location";
 import reverseGeocoding from "../utils/reverseGeocoding";
 
+
 import { TextInput } from "react-native-paper";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 import Button from "./Button";
 import Loader from "./Loader";
 import CustomCallout from "./CustomCallout";
+
 
 export type MarkerWithMetadata = {
 	display_name?: string;
@@ -36,6 +38,7 @@ export default function Map() {
 	const [loading, setLoading] = useState<boolean>(true);
 
 	const { user, setUser, api } = useContext(GlobalStateContext);
+
 
 	useEffect(() => {
 		if (user.latitude === undefined || user.latitude === 0) {
@@ -128,6 +131,7 @@ export default function Map() {
 			{!user ? (
 				<></>
 			) : (
+
 				<>
 					{user.latitude === undefined || 0 ? (
 						<Loader visible={loading} message={"Loading Map"} />
@@ -181,6 +185,7 @@ export default function Map() {
 						</View>
 					)}
 				</>
+
 			)}
 		</>
 	);
@@ -190,26 +195,32 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: "#fff",
-		alignItems: "center",
-		justifyContent: "flex-start",
 		padding: 0,
 	},
 	inputStyle: {
 		alignSelf: "center",
-		width: "40%",
-		height: 44,
+		width: "100%",
+		height: 40,
 		backgroundColor: "#E0F2F1",
 		marginTop: -6,
 	},
 	map: {
-		width: "95%",
-		height: "75%",
+		flex: 1,
+		width: "100%",
+		height: "100%",
 	},
 	inputs: {
+		paddingTop: 10,
 		display: "flex",
-		flexDirection: "row",
-		justifyContent: "center",
-		alignItems: "center",
-		alignContent: "center",
+		flexDirection: "column",
+	},
+	button: {
+		marginTop: 10,
+		backgroundColor: GreenTheme.colors.primary,
+		borderRadius: 6,
+	},
+	buttonLabel: {
+		fontSize: 16,
+		color: '#FFFFFF',
 	},
 });
