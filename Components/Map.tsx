@@ -12,6 +12,7 @@ import { TextInput } from "react-native-paper";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 import Button from "./Button";
 import Loader from "./Loader";
+import { GreenTheme } from "../Themes/GreenTheme";
 import CustomCallout from "./CustomCallout";
 
 export type MarkerWithMetadata = {
