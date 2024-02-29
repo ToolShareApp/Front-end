@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, KeyboardAvoidingView } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Button, HelperText, Text, TextInput } from "react-native-paper";
 import AppTitle from "../Components/AppTitle";
@@ -101,12 +101,8 @@ const SignUpScreen: React.FC = () => {
 			setIsCreatingProfile(false);
 		}
 	};
-
 	return (
-		<KeyboardAwareScrollView
-			contentContainerStyle={styles.container}
-			keyboardShouldPersistTaps="handled"
-			extraScrollHeight={20}>
+		<KeyboardAwareScrollView>
 			<View style={styles.container}>
 				<AppTitle />
 				<Text variant="displaySmall" style={{ marginBottom: 20 }}>
