@@ -13,7 +13,8 @@ import GlobalStateContext from "../Contexts/GlobalStateContext";
 import Button from "./Button";
 import Loader from "./Loader";
 import { GreenTheme } from "../Themes/GreenTheme";
-import CustomCallout from "./CustomCallout";
+import CustomCallout from "./customCallout";
+
 
 export type MarkerWithMetadata = {
 	display_name?: string;
