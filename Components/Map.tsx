@@ -126,7 +126,7 @@ export default function Map() {
 
 	return (
 		<>
-			{!user ? (
+			{user === null ? (
 				<></>
 			) : (
 				<>
