@@ -1,4 +1,4 @@
-import { LogBox } from 'react-native';
+import { LogBox, StatusBar } from "react-native";
 import { PaperProvider } from "react-native-paper";
 import { NavigationContainer } from "@react-navigation/native";
 import { DrawerNavigator } from "./Components/AppNavigator";
@@ -8,6 +8,9 @@ import { GreenTheme } from "./Themes/GreenTheme";
 LogBox.ignoreAllLogs();
 
 const App: React.FC = () => {
+	StatusBar.setTranslucent(true);
+	StatusBar.setBackgroundColor("transparent");
+
 	return (
 		<GlobalState apiUrl={"https://nc-toolshare.onrender.com/api/"}>
 			<PaperProvider theme={GreenTheme}>
