@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, StyleSheet, KeyboardAvoidingView } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Button, HelperText, Text, TextInput } from "react-native-paper";
 import AppTitle from "../Components/AppTitle";
@@ -101,6 +101,7 @@ const SignUpScreen: React.FC = () => {
 			setIsCreatingProfile(false);
 		}
 	};
+
 	return (
 		<KeyboardAwareScrollView>
 			<View style={styles.container}>
@@ -159,13 +160,6 @@ const SignUpScreen: React.FC = () => {
 					value={passwordInput2}
 					onChangeText={(value) => {
 						setPasswordInput2(value);
-						if (!passwordValidation(passwordInput, passwordInput2).isValid) {
-							setPasswordError(
-								passwordValidation(passwordInput, passwordInput2).error
-							);
-						} else {
-							setPasswordError(null);
-						}
 					}}
 					secureTextEntry={secureInputMode}
 					right={
@@ -177,17 +171,17 @@ const SignUpScreen: React.FC = () => {
 					style={styles.inputStyle}
 					mode="outlined"
 				/>
-				<HelperText
+				{/* <HelperText
 					style={styles.helperStyle}
 					type="error"
 					visible={passwordInput !== "" && passwordError}>
 					{passwordError}
-				</HelperText>
+				</HelperText> */}
 				<TextInput
 					label="Display Name"
 					value={displayNameInput}
 					onChangeText={(value) => setDisplayNameInput(value)}
-					style={styles.inputStyle}
+					style={styles.displayName}
 					mode="outlined"
 				/>
 				<Button
@@ -238,6 +232,11 @@ const styles = StyleSheet.create({
 	inputStyle: {
 		alignSelf: "stretch",
 		backgroundColor: "#E0F2F1",
+	},
+	displayName: {
+		alignSelf: "stretch",
+		backgroundColor: "#E0F2F1",
+		marginTop: 20,
 	},
 	helperStyle: {
 		padding: 0,
