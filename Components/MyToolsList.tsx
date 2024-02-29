@@ -19,17 +19,19 @@ const MyToolsList: React.FC = () => {
   const [deleteError, setDeleteError] = useState<boolean>(false);
   const navigation: any = useNavigation();
 
-  const fetchUserTools = async () => {
-    try {
-      const response = await api.get(`/listing/owner/${user.profile_id}`)
-      if (response.status && response.data) {
-        setTools(response.data.data)
-        setLoading(false)
-      }
-    } catch (error) {
-      console.error('Error when retrieving a list of user tools:', error)
-    }
-  }
+
+	const fetchUserTools = async () => {
+		try {
+			const response = await api.get(`/listing/owner/${user.profile_id}`);
+			if (response.status && response.data) {
+				setTools(response.data.data);
+				setLoading(false);
+			}
+		} catch (error) {
+			console.error("Error when retrieving a list of user tools:", error);
+		}
+	};
+
 
   useFocusEffect(
     React.useCallback(() => {
@@ -40,24 +42,32 @@ const MyToolsList: React.FC = () => {
   )
 
 
-  const onChangeSearch = (query: string) => setSearchQuery(query)
+	const onChangeSearch = (query: string) => setSearchQuery(query);
 
-  const openMenu = () => setVisible(true)
+	const openMenu = () => setVisible(true);
 
-  const closeMenu = () => setVisible(false)
+	const closeMenu = () => setVisible(false);
 
-  const filterListings = () => {
-    return tools.filter((listing: any) => {
-      const matchCategory = selectedCategory === 'All' || listing.category === selectedCategory || listing.subcategory === selectedCategory
-      const matchQuery = listing.tool.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        listing.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        listing.subcategory.toLowerCase().includes(searchQuery.toLowerCase())
+	const filterListings = () => {
+		return tools.filter((listing: any) => {
+			const matchCategory =
+				selectedCategory === "All" ||
+				listing.category === selectedCategory ||
+				listing.subcategory === selectedCategory;
+			const matchQuery =
+				listing.tool.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				listing.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				listing.subcategory.toLowerCase().includes(searchQuery.toLowerCase());
 
-      return matchCategory && matchQuery
-    })
-  }
+			return matchCategory && matchQuery;
+		});
+	};
 
-  const categories = ['All', ...new Set(tools.map((listing: any) => listing.category))]
+	const categories = [
+		"All",
+		...new Set(tools.map((listing: any) => listing.category)),
+	];
+
 
   return (
     <View><View style={styles.buttonContainer}>
@@ -169,4 +179,5 @@ const styles = StyleSheet.create({
   }
 })
 
-export default MyToolsList
+
+export default MyToolsList;

@@ -5,8 +5,8 @@ import AppTitle from "../Components/AppTitle";
 import { GreenTheme } from "../Themes/GreenTheme";
 import * as Location from "expo-location";
 
-import { useFocusEffect, useNavigation } from '@react-navigation/native'
-import GlobalStateContext from '../Contexts/GlobalStateContext'
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import GlobalStateContext from "../Contexts/GlobalStateContext";
 const welcomeScreenImage = require(".././assets/welcome-screen-image.webp");
 
 const WelcomeScreen = () => {
@@ -16,7 +16,6 @@ const WelcomeScreen = () => {
 	const [errorMsg, setErrorMsg] = useState<string>("");
 	const [latitudeInput, setLatitudeInput] = useState<number>(0);
 	const [longitudeInput, setLongitudeInput] = useState<number>(0);
-
 
 	useEffect(() => {
 		(async () => {
@@ -32,13 +31,13 @@ const WelcomeScreen = () => {
 			setLongitudeInput(location.coords.longitude);
 		})();
 	}, []);
-  useFocusEffect(
-    React.useCallback(() => {
-      if(user){
-        navigation.navigate("BrowseTools");
-      }
-    }, [user]),
-  );
+	useFocusEffect(
+		React.useCallback(() => {
+			if (user) {
+				navigation.navigate("BrowseTools");
+			}
+		}, [user])
+	);
 
 	let text = "Waiting..";
 	if (errorMsg) {
