@@ -8,13 +8,11 @@ import { Text, View, StyleSheet, KeyboardAvoidingView } from "react-native";
 import * as Location from "expo-location";
 import reverseGeocoding from "../utils/reverseGeocoding";
 
-
 import { TextInput } from "react-native-paper";
 import GlobalStateContext from "../Contexts/GlobalStateContext";
 import Button from "./Button";
 import Loader from "./Loader";
 import CustomCallout from "./CustomCallout";
-
 
 export type MarkerWithMetadata = {
 	display_name?: string;
@@ -38,7 +36,6 @@ export default function Map() {
 	const [loading, setLoading] = useState<boolean>(true);
 
 	const { user, setUser, api } = useContext(GlobalStateContext);
-
 
 	useEffect(() => {
 		if (user.latitude === undefined || user.latitude === 0) {
@@ -131,7 +128,6 @@ export default function Map() {
 			{!user ? (
 				<></>
 			) : (
-
 				<>
 					{user.latitude === undefined || 0 ? (
 						<Loader visible={loading} message={"Loading Map"} />
@@ -185,7 +181,6 @@ export default function Map() {
 						</View>
 					)}
 				</>
-
 			)}
 		</>
 	);
@@ -221,6 +216,6 @@ const styles = StyleSheet.create({
 	},
 	buttonLabel: {
 		fontSize: 16,
-		color: '#FFFFFF',
+		color: "#FFFFFF",
 	},
 });
