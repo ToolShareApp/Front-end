@@ -29,7 +29,7 @@ const CustomCallout: React.FC<{
 								fontSize: 18,
 								textAlign: "center",
 							}}>
-							Listings:
+							{`Listings: `}
 							{
 								listingArray.filter((listing: { owner_id: number }) => {
 									return listing.owner_id === marker.profile_id;
