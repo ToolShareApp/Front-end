@@ -13,6 +13,8 @@ interface MyToolCardProps {
   name: string;
   photo: string;
   setTools: any;
+  setDeleteSuccess: any;
+  setDeleteError: any;
 }
 
 const MyToolCard: React.FC<MyToolCardProps> = ({
@@ -23,6 +25,8 @@ const MyToolCard: React.FC<MyToolCardProps> = ({
   subcategory,
   name,
   setTools,
+  setDeleteSuccess,
+  setDeleteError,
 }) => {
   const navigation: any = useNavigation();
 
@@ -46,6 +50,8 @@ const MyToolCard: React.FC<MyToolCardProps> = ({
             listing={listing}
             listing_id={listing_id}
             setTools={setTools}
+            setDeleteSuccess={setDeleteSuccess}
+            setDeleteError={setDeleteError}
           />
           <View style={styles.image}>
             {photo && <Avatar.Image source={{ uri: photo }} />}

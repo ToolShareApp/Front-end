@@ -1,17 +1,12 @@
 import React from "react";
-import { KeyboardAvoidingView, View } from "react-native";
-
+import { KeyboardAvoidingView, StyleSheet, View } from 'react-native'
 import ToolsList from "../Components/ToolsList";
-import Map from "../Components/Map";
 
 const BrowseToolsScreen: React.FC = () => {
 	return (
 		<>
-			<KeyboardAvoidingView>
-				<View style={{ height: "50%" }}>
-					<Map />
-				</View>
-				<View style={{ height: "50%" }}>
+			<KeyboardAvoidingView style={styles.container}>
+				<View style={styles.container}>
 					<ToolsList />
 				</View>
 			</KeyboardAvoidingView>
@@ -20,3 +15,10 @@ const BrowseToolsScreen: React.FC = () => {
 };
 
 export default BrowseToolsScreen;
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		height: '100%',
+	},
+});
