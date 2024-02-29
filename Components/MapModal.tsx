@@ -16,7 +16,7 @@ const MapModal: React.FC = () => {
         style={styles.fab}
         icon="map"
         onPress={showModal}
-        color={GreenTheme.colors.warning}
+        color={"white"}
       />
       <Portal>
         <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modal}>

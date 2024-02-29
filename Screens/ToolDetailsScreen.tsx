@@ -305,7 +305,7 @@ const ToolDetailsScreen: React.FC = () => {
                     <Button
                       icon="star"
                       mode="contained"
-                      style={styles.button}
+                      style={{margin: 15}}
                       onPress={() => addToInterested()}>
                       Add to Interested
                     </Button>
@@ -313,7 +313,7 @@ const ToolDetailsScreen: React.FC = () => {
                     <Button
                       icon="star"
                       mode="contained"
-                      style={styles.button}
+                      style={{margin: 15, backgroundColor: "grey"}}
                       onPress={() => removeFromInterested()}>
                       Remove from Interested
                     </Button>
